@@ -27,6 +27,11 @@ const resolveMigrationsFolder = () => {
       path.join(moduleDir, 'drizzle'),
       path.join(moduleDir, 'storage', 'postgres', 'drizzle-core'),
       path.join(moduleDir, 'storage', 'postgres', 'drizzle'),
+      // 打包后 enterprise 入口（dist-server/.../enterprise/index.js）会内联本模块，
+      // 其 moduleDir 指向 enterprise/ 目录；向上回到与 core 入口相同的 storage/postgres 层。
+      path.join(moduleDir, '..', 'storage', 'postgres', 'drizzle-core'),
+      path.join(moduleDir, '..', 'storage', 'postgres', 'drizzle'),
+      path.join(moduleDir, '..', '..', 'storage', 'postgres', 'drizzle-core'),
     )
   } catch {
     // Ignore import.meta.url resolution failures and fall back to cwd-based paths below.
