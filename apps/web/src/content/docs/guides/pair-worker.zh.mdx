@@ -1,0 +1,102 @@
+---
+title: 配对 Worker
+description: 在 Wemux 中将您的机器连接为 Worker 执行器。
+---
+
+# 配对 Worker
+
+配对将您的机器连接到 Wemux，以便可以接收和执行任务。
+
+## 前置要求
+
+- Wemux Worker 守护进程已安装
+- 访问 Wemux Web 界面
+- 机器需要能够访问控制面的网络
+
+## 第 1 步：安装 Worker
+
+```bash
+npm install -g wemux-worker
+```
+
+或使用 pnpm：
+
+```bash
+pnpm add -g wemux-worker
+```
+
+## 第 2 步：启动守护进程
+
+```bash
+Wemux worker daemon
+```
+
+Worker 控制台将在 `http://127.0.0.1:48121` 启动。
+
+## 第 3 步：生成配对码
+
+1. 打开 Wemux Web 界面
+2. 导航到您的 **项目** → **Worker** 选项卡
+3. 点击**"添加 Worker"**
+4. 将显示配对码（例如 `VMX-A3F7-9X2K`）
+
+## 第 4 步：完成配对
+
+1. 在 Worker 控制台中，输入配对码
+2. 点击**"配对"**连接
+3. 控制台将显示"已连接"状态
+
+## 第 5 步：验证连接
+
+返回 Web 界面：
+
+1. 刷新 Worker 选项卡
+2. 您的 Worker 应出现在列表中
+3. 状态应显示为**"已连接"**或**"空闲"**
+
+## 配置
+
+Worker 从环境变量读取配置：
+
+```bash
+# 控制面 URL（默认：http://127.0.0.1:8989）
+WEMUX_CLOUD_URL=http://127.0.0.1:8989
+
+# 任务工作目录（默认：/tmp/wemux-runtime）
+WEMUX_RUNTIME_DIR=/tmp/wemux-runtime
+
+# Worker 显示名称（可选）
+WEMUX_WORKER_NAME=my-macbook-pro
+```
+
+## 管理多个 Worker
+
+您可以在不同机器上运行多个 Worker：
+
+1. 在每台机器上安装 Worker 守护进程
+2. 使用相同的工作流程配对每台机器
+3. Worker 出现在项目 Worker 选项卡中
+4. 将任务路由到特定 Worker 或使用自动选择
+
+## 取消配对 Worker
+
+移除 Worker：
+
+1. 导航到 **项目** → **Worker**
+2. 找到要移除的 Worker
+3. 点击 **"..."** 菜单 → **"移除"**
+
+Worker 守护进程可以继续运行，但将不再接收任务。
+
+## 故障排除
+
+| 问题 | 解决方案 |
+|-------|----------|
+| 配对码不被接受 | 检查代码是否未过期（代码在 5 分钟后过期） |
+| Worker 显示离线 | 验证守护进程仍在运行；检查网络连接 |
+| 未收到任务 | 确保 Worker 配对到正确的项目 |
+
+## 后续步骤
+
+- [创建任务](/docs/guides/create-task) - 开始执行工作
+- [审核结果](/docs/guides/review-results) - 评估任务输出

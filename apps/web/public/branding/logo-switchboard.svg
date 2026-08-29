@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="wemux Switchboard">
+  <defs>
+    <linearGradient id="switch-bg" x1="8" x2="57" y1="5" y2="61" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#121316" />
+      <stop offset="1" stop-color="#09090b" />
+    </linearGradient>
+    <linearGradient id="switch-trace" x1="14" x2="50" y1="18" y2="46" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8fb7c9" />
+      <stop offset=".65" stop-color="#f5ecdd" />
+      <stop offset="1" stop-color="#d96f32" />
+    </linearGradient>
+  </defs>
+
+  <rect width="64" height="64" rx="16" fill="url(#switch-bg)" />
+  <rect x="14" y="14" width="36" height="36" rx="12" fill="#111318" stroke="#2b313a" stroke-width="1.5" />
+  <path d="M20 22h10c2.2 0 4 1.8 4 4v2" fill="none" stroke="#8fb7c9" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" />
+  <path d="M20 42h10c2.2 0 4-1.8 4-4v-2" fill="none" stroke="#8fb7c9" stroke-linecap="round" stroke-linejoin="round" stroke-width="4" />
+  <path d="M34 30h10" fill="none" stroke="#f5ecdd" stroke-linecap="round" stroke-width="4" />
+  <path d="M34 34h10" fill="none" stroke="url(#switch-trace)" stroke-linecap="round" stroke-width="4" />
+  <circle cx="20" cy="22" r="3.5" fill="#8fb7c9" />
+  <circle cx="20" cy="42" r="3.5" fill="#8fb7c9" />
+  <rect x="28" y="26" width="8" height="12" rx="2.5" fill="#09090b" stroke="#f5ecdd" stroke-width="2.5" />
+  <circle cx="44" cy="30" r="3.5" fill="#f5ecdd" />
+  <circle cx="44" cy="34" r="4.2" fill="#d96f32" />
+</svg>

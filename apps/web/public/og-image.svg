@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" role="img" aria-label="wemux AI Coding Delivery Platform">
+  <defs>
+    <radialGradient id="glow" cx="50%" cy="28%" r="68%">
+      <stop offset="0%" stop-color="#7c3aed" stop-opacity="0.42" />
+      <stop offset="45%" stop-color="#312e81" stop-opacity="0.2" />
+      <stop offset="100%" stop-color="#09090b" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="orb" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#a78bfa" />
+      <stop offset="48%" stop-color="#38bdf8" />
+      <stop offset="100%" stop-color="#22c55e" />
+    </linearGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#09090b" />
+  <rect width="1200" height="630" fill="url(#glow)" />
+  <path d="M92 104h1016v422H92z" fill="#0f0f13" stroke="#27272a" stroke-width="2" rx="36" />
+  <circle cx="162" cy="164" r="42" fill="url(#orb)" opacity="0.96" />
+  <circle cx="162" cy="164" r="20" fill="#09090b" opacity="0.9" />
+  <text x="226" y="178" fill="#fafafa" font-family="Inter, Geist, Arial, sans-serif" font-size="44" font-weight="760" letter-spacing="-1.2">wemux</text>
+  <text x="104" y="286" fill="#fafafa" font-family="Inter, Geist, Arial, sans-serif" font-size="70" font-weight="760" letter-spacing="-3.4">AI coding agents</text>
+  <text x="104" y="366" fill="#fafafa" font-family="Inter, Geist, Arial, sans-serif" font-size="70" font-weight="760" letter-spacing="-3.4">that ship real work</text>
+  <text x="108" y="434" fill="#d4d4d8" font-family="Inter, Geist, Arial, sans-serif" font-size="30" font-weight="480">Real repos · real workstations · real Git identity</text>
+  <g transform="translate(104 478)">
+    <rect width="216" height="44" rx="22" fill="#7c3aed" opacity="0.92" />
+    <text x="28" y="29" fill="#ffffff" font-family="Inter, Geist, Arial, sans-serif" font-size="18" font-weight="700" letter-spacing="0.6">Book demo</text>
+  </g>
+  <g transform="translate(346 478)">
+    <rect width="256" height="44" rx="22" fill="#18181b" stroke="#3f3f46" />
+    <text x="28" y="29" fill="#e4e4e7" font-family="Inter, Geist, Arial, sans-serif" font-size="18" font-weight="700" letter-spacing="0.6">Apply for beta</text>
+  </g>
+</svg>

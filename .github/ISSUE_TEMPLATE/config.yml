@@ -1,0 +1,17 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Usage questions and troubleshooting
+    url: https://github.com/wemux-ai/wemux/discussions/categories/q-a
+    about: Ask how to install, configure, deploy, or use Wemux in Discussions / Q&A.
+  - name: Ideas and product direction
+    url: https://github.com/wemux-ai/wemux/discussions/categories/ideas
+    about: Discuss open-ended ideas and product direction in Discussions / Ideas.
+  - name: Use cases and project showcases
+    url: https://github.com/wemux-ai/wemux/discussions/categories/show-and-tell
+    about: Share how you use Wemux or show a project in Discussions / Show and tell.
+  - name: Roadmap discussion
+    url: https://github.com/wemux-ai/wemux/discussions
+    about: Follow and discuss maintainer-led roadmap topics in Discussions. Maintainers should tag roadmap posts clearly.
+  - name: Security vulnerability
+    url: https://github.com/wemux-ai/wemux/security/advisories/new
+    about: Report security vulnerabilities privately. Do not open a public issue.

@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 280 72" role="img" aria-label="wemux">
+  <defs>
+    <linearGradient id="wordmark-icon-bg" x1="9" x2="51" y1="8" y2="58" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#18181b" />
+      <stop offset="1" stop-color="#09090b" />
+    </linearGradient>
+    <linearGradient id="wordmark-icon-flow" x1="16" x2="48" y1="18" y2="46" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8fb7c9" />
+      <stop offset=".52" stop-color="#f5ecdd" />
+      <stop offset="1" stop-color="#d96f32" />
+    </linearGradient>
+    <linearGradient id="wordmark-text" x1="76" x2="228" y1="20" y2="55" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f5ecdd" />
+      <stop offset=".7" stop-color="#fafaf9" />
+      <stop offset="1" stop-color="#d96f32" />
+    </linearGradient>
+  </defs>
+
+  <rect x="4" y="4" width="64" height="64" rx="18" fill="url(#wordmark-icon-bg)" />
+  <path d="M22 25c6 0 9 5 14 11 5-6 8-11 14-11" fill="none" stroke="#f5ecdd" stroke-linecap="round" stroke-width="4.5" />
+  <path d="M22 47c6 0 9-5 14-11 5 6 8 11 14 11" fill="none" stroke="url(#wordmark-icon-flow)" stroke-linecap="round" stroke-width="4.5" />
+  <circle cx="36" cy="36" r="7.5" fill="#09090b" stroke="#f5ecdd" stroke-width="3" />
+  <path d="M36 28c7.5 0 13 2.8 16 8-3 5.2-8.5 8-16 8-7.5 0-13-2.8-16-8 3-5.2 8.5-8 16-8Z" fill="none" opacity=".45" stroke="#8fb7c9" stroke-width="2" />
+  <circle cx="22" cy="25" r="3.5" fill="#8fb7c9" />
+  <circle cx="22" cy="47" r="3.5" fill="#8fb7c9" />
+  <circle cx="50" cy="25" r="3.5" fill="#f5ecdd" />
+  <circle cx="50" cy="47" r="3.5" fill="#f5ecdd" />
+  <circle cx="52" cy="36" r="4.5" fill="#d96f32" />
+
+  <text x="84" y="45" fill="url(#wordmark-text)" font-family="Geist, Inter, Segoe UI, sans-serif" font-size="34" font-weight="720" letter-spacing="-.8">wemux</text>
+  <path d="M86 54h74" stroke="#8fb7c9" stroke-linecap="round" stroke-width="2" opacity=".5" />
+  <path d="M166 54h28" stroke="#d96f32" stroke-linecap="round" stroke-width="2" opacity=".75" />
+</svg>

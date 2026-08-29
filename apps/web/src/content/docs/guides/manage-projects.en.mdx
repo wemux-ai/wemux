@@ -1,0 +1,89 @@
+---
+title: Manage Projects
+description: Create, configure, and manage your Wemux projects.
+---
+
+# Manage Projects
+
+Projects organize your work, workers, and team collaboration.
+
+## Creating a Project
+
+1. Click **"New Project"** on the dashboard
+2. Fill in the project form:
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| **Name** | Yes | Project identifier |
+| **Repository URL** | Yes | Git remote (e.g., `https://github.com/org/repo`) |
+| **Description** | No | What the project does |
+| **Default Branch** | No | Base branch for worktrees (default: main) |
+
+3. Click **"Create"**
+
+## Project Dashboard
+
+Each project has a dashboard showing:
+
+- **Kanban Board** - Task workflow visualization
+- **Recent Tasks** - Latest activity
+- **Worker Status** - Connected workers and their states
+- **Team Members** - Collaborators
+
+## Project Settings
+
+Navigate to **Project** → **Settings** to configure:
+
+### General Settings
+
+| Setting | Description |
+|---------|-------------|
+| Project Name | Display name |
+| Description | Project description |
+| Repository | Git remote URL |
+
+### Execution Settings
+
+| Setting | Description |
+|---------|-------------|
+| Auto-cleanup | Automatically remove worktrees after task completion |
+| Approval Required | Require human review before task completion |
+| Max Concurrent Tasks | Limit parallel tasks per worker |
+
+### Notification Settings
+
+| Setting | Description |
+|---------|-------------|
+| Task Completed | Notify when tasks finish execution |
+| Review Needed | Notify when tasks enter review |
+| Worker Offline | Notify when a worker disconnects |
+
+## Managing Team Members
+
+1. Navigate to **Project** → **Team**
+2. Click **"Invite Member"**
+3. Enter the team member's email
+4. Select their role:
+
+| Role | Permissions |
+|------|-------------|
+| **Owner** | Full project access, can delete project |
+| **Admin** | Manage settings, workers, and team |
+| **Member** | Create, edit, and review tasks |
+| **Viewer** | Read-only access to project |
+
+## Deleting a Project
+
+To delete a project:
+
+1. Go to **Project** → **Settings**
+2. Scroll to the bottom
+3. Click **"Delete Project"**
+4. Confirm with project name
+
+> **Warning**: This removes all tasks, workers, and history. This cannot be undone.
+
+## Next Steps
+
+- [Create Your First Task](/docs/getting-started/first-task) - Start working
+- [Workers](/docs/core-concepts/workers) - Connect executor machines

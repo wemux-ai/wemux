@@ -1,0 +1,101 @@
+---
+title: MCP Servers
+description: Configure Model Context Protocol servers for extended agent capabilities.
+---
+
+# MCP Servers
+
+MCP (Model Context Protocol) servers extend OpenCode's capabilities by providing tools and context from external services.
+
+## What are MCP Servers?
+
+MCP servers provide:
+
+- **Filesystem Access** - Read and write files
+- **Git Operations** - Commit, branch, merge operations
+- **Search** - Search across codebases
+- **Tool Integration** - Connect to external APIs and services
+
+## Available MCP Servers
+
+| Server | Capabilities |
+|--------|-------------|
+| **filesystem** | Read, write, and navigate the filesystem |
+| **git** | Git operations (commit, push, branch) |
+| **search** | Code search and grep |
+| **terminal** | Run shell commands |
+| **github** | GitHub API integration |
+| **linear** | Linear issue tracking |
+
+## Worker Configuration
+
+Configure MCP servers in your worker's environment:
+
+```bash
+# Enable MCP servers (space-separated list)
+OPENCODE_MCP_SERVERS=filesystem git search terminal
+
+# Or use full server commands:
+OPENCODE_MCP_CONFIG=/path/to/mcp-config.json
+```
+
+## MCP Configuration File
+
+For advanced setup, create a JSON config:
+
+```json
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/path/to/allowed/directory"]
+    },
+    "git": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-git"]
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_TOKEN": "your-token-here"
+      }
+    }
+  }
+}
+```
+
+## Local MCP Servers
+
+For local development, you can run MCP servers manually:
+
+```bash
+# Start a filesystem server
+npx -y @modelcontextprotocol/server-filesystem ~/projects
+
+# Start a git server
+npx -y @modelcontextprotocol/server-git
+```
+
+Then configure Wemux to connect to these local servers.
+
+## Security Considerations
+
+| Concern | Mitigation |
+|---------|-----------|
+| Filesystem access | Limit to project directories only |
+| Git operations | Use dedicated token with minimal scope |
+| External APIs | Store tokens in environment variables |
+
+## Troubleshooting MCP
+
+| Issue | Solution |
+|-------|----------|
+| Server not responding | Check if server process is running |
+| Permission denied | Verify token has required scopes |
+| Timeout errors | Increase `MCP_TIMEOUT` setting |
+
+## Next Steps
+
+- [OpenCode Setup](/docs/configuration/opencode) - Configure the AI agent
+- [Model Selection](/docs/configuration/models) - Choose the right model

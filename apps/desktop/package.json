@@ -1,0 +1,22 @@
+{
+  "name": "@wemux/desktop",
+  "version": "0.0.0",
+  "description": "Wemux Electron desktop client",
+  "author": "Wemux",
+  "private": true,
+  "type": "module",
+  "main": "src/main.mjs",
+  "scripts": {
+    "dev": "node src/dev.mjs",
+    "start": "electron .",
+    "build": "pnpm --dir ../.. build:meeting-runtime && pnpm --dir ../.. build:native:web-static && electron-builder --config electron-builder.config.cjs",
+    "pack": "pnpm --dir ../.. build:meeting-runtime && pnpm --dir ../.. build:native:web-static && electron-builder --dir --config electron-builder.config.cjs"
+  },
+  "dependencies": {
+    "electron-updater": "^6.8.9"
+  },
+  "devDependencies": {
+    "electron": "^44.0.0",
+    "electron-builder": "^26.15.3"
+  }
+}

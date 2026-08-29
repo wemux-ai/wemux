@@ -1,0 +1,15 @@
+#!/bin/sh
+set -eu
+
+branch="$(git branch --show-current)"
+case "$branch" in
+  main)
+    node scripts/open-core/public-boundary.mjs --staged
+    ;;
+  cloud|dev|preview|master|'')
+    # Full-tree branches and feature branches may contain enterprise code.
+    ;;
+  *)
+    echo "[open-core] commit on feature branch '$branch'; push restrictions still apply." >&2
+    ;;
+esac

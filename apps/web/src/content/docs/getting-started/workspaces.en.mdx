@@ -1,0 +1,47 @@
+---
+title: Understanding Workspaces
+description: Learn how workspaces enable team collaboration in wemux.
+---
+
+# Understanding Workspaces
+
+Workspaces in Wemux enable real-time collaboration between humans and AI agents.
+
+## What is a Workspace?
+
+A workspace is a **shared coding environment** where:
+
+- Team members can collaborate on tasks
+- AI agents execute code in isolated worktrees
+- Changes are tracked through branches and commits
+
+## Key Concepts
+
+### Workspace Sessions
+
+Each workspace can have multiple **sessions** - individual coding sessions that track:
+
+- Branch name and commit history
+- Execution logs
+- Agent activities
+
+### Worktree Isolation
+
+Wemux uses Git worktrees to create isolated branches for each task, ensuring:
+
+- **No conflicts** - Each task works on its own branch
+- **Clean state** - Fresh environment for every task
+- **Easy cleanup** - Worktrees are automatically cleaned after task completion
+
+## Collaboration Flow
+
+1. Create a task in the workspace
+2. Worker picks up the task and creates a worktree
+3. AI agent executes the coding task
+4. Changes are committed to a dedicated branch
+5. You review and merge the changes
+
+## Next Steps
+
+- [Installation Guide](/docs/getting-started/installation) - Set up your environment
+- [Create Your First Task](/docs/getting-started/first-task) - Start coding

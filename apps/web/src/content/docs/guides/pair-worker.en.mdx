@@ -1,0 +1,102 @@
+---
+title: Pair a Worker
+description: Connect your machine as a worker executor in wemux.
+---
+
+# Pair a Worker
+
+Pairing connects your machine to Wemux so it can receive and execute tasks.
+
+## Prerequisites
+
+- Wemux worker daemon installed
+- Access to the Wemux web interface
+- The machine needs network access to the control plane
+
+## Step 1: Install the Worker
+
+```bash
+npm install -g wemux-worker
+```
+
+Or with pnpm:
+
+```bash
+pnpm add -g wemux-worker
+```
+
+## Step 2: Start the Daemon
+
+```bash
+Wemux worker daemon
+```
+
+The worker console will start at `http://127.0.0.1:48121`.
+
+## Step 3: Generate Pairing Code
+
+1. Open the Wemux web interface
+2. Navigate to your **Project** → **Workers** tab
+3. Click **"Add Worker"**
+4. A pairing code will be displayed (e.g., `VMX-A3F7-9X2K`)
+
+## Step 4: Complete Pairing
+
+1. In the Worker Console, enter the pairing code
+2. Click **"Pair"** to connect
+3. The console will show "Connected" status
+
+## Step 5: Verify Connection
+
+Back in the web interface:
+
+1. Refresh the Workers tab
+2. Your worker should appear in the list
+3. Status should show as **"Connected"** or **"Idle"**
+
+## Configuration
+
+The worker reads configuration from environment variables:
+
+```bash
+# Control plane URL (default: http://127.0.0.1:8989)
+WEMUX_CLOUD_URL=http://127.0.0.1:8989
+
+# Working directory for tasks (default: /tmp/wemux-runtime)
+WEMUX_RUNTIME_DIR=/tmp/wemux-runtime
+
+# Worker display name (optional)
+WEMUX_WORKER_NAME=my-macbook-pro
+```
+
+## Managing Multiple Workers
+
+You can run multiple workers on different machines:
+
+1. Install the worker daemon on each machine
+2. Pair each machine using the same workflow
+3. Workers appear in the project Workers tab
+4. Route tasks to specific workers or use auto-select
+
+## Unpairing a Worker
+
+To remove a worker:
+
+1. Navigate to **Project** → **Workers**
+2. Find the worker you want to remove
+3. Click the **"..."** menu → **"Remove"**
+
+The worker daemon can continue running but will no longer receive tasks.
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Pairing code not accepted | Check that the code hasn't expired (codes expire after 5 minutes) |
+| Worker shows offline | Verify the daemon is still running; check network connectivity |
+| Tasks not received | Ensure worker is paired to the correct project |
+
+## Next Steps
+
+- [Create a Task](/docs/guides/create-task) - Start executing work
+- [Review Results](/docs/guides/review-results) - Evaluate task output

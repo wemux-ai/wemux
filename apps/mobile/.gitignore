@@ -1,0 +1,6 @@
+.expo/
+dist/
+node_modules/
+/android/
+/ios/
+/modules/meeting-listening/android/.cxx/

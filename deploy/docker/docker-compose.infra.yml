@@ -1,0 +1,68 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: vibemux-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: vibemux
+      POSTGRES_USER: vibemux
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local-dev-password}
+    ports:
+      - '5434:5432'
+    volumes:
+      - vibemux-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U vibemux -d vibemux']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  postgres-init:
+    image: postgres:16-alpine
+    container_name: vibemux-postgres-init
+    depends_on:
+      - postgres
+    restart: 'no'
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD:-local-dev-password}
+      POSTGRES_USER: vibemux
+      POSTGRES_PREVIEW_DB: vibemux_preview
+      POSTGRES_PRODUCTION_DB: vibemux_production
+    entrypoint: >-
+      /bin/sh -c
+      "until pg_isready -h postgres -U vibemux -d vibemux; do sleep 2; done;
+      psql -h postgres -U vibemux -d postgres -tc \"SELECT 1 FROM pg_database WHERE datname = 'vibemux_preview'\" | grep -q 1 || psql -h postgres -U vibemux -d postgres -c \"CREATE DATABASE \\\"vibemux_preview\\\"\";
+      psql -h postgres -U vibemux -d postgres -tc \"SELECT 1 FROM pg_database WHERE datname = 'vibemux_production'\" | grep -q 1 || psql -h postgres -U vibemux -d postgres -c \"CREATE DATABASE \\\"vibemux_production\\\"\""
+
+  rustfs:
+    image: rustfs/rustfs:latest
+    container_name: vibemux-rustfs
+    restart: unless-stopped
+    environment:
+      RUSTFS_ACCESS_KEY: vibemux
+      RUSTFS_SECRET_KEY: ${RUSTFS_SECRET_KEY:-local-dev-secret}
+      RUSTFS_CONSOLE_ENABLE: 'true'
+      RUSTFS_ADDRESS: 0.0.0.0:9000
+      RUSTFS_CONSOLE_ADDRESS: 0.0.0.0:9001
+      RUSTFS_EXTERNAL_ADDRESS: 127.0.0.1:9100
+    command: ['/data']
+    ports:
+      - '9100:9000'
+      - '9101:9001'
+    volumes:
+      - vibemux-rustfs-data:/data
+
+  rustfs-init:
+    image: minio/mc:latest
+    container_name: vibemux-rustfs-init
+    depends_on:
+      - rustfs
+    restart: 'no'
+    entrypoint: >-
+      /bin/sh -c
+      "until mc alias set local http://rustfs:9000 vibemux ${RUSTFS_SECRET_KEY:-local-dev-secret}; do sleep 2; done &&
+      mc mb --ignore-existing local/vibemux"
+
+volumes:
+  vibemux-postgres-data:
+  vibemux-rustfs-data:

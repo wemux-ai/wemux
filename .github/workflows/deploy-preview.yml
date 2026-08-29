@@ -1,0 +1,179 @@
+name: Deploy Preview
+
+on:
+  push:
+    branches:
+      - preview
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
+      - 'README.md'
+      - 'CONTRIBUTING.md'
+      - 'LICENSE'
+      - 'NOTICE'
+      - 'CODEOWNERS'
+  workflow_dispatch:
+    inputs:
+      skip_webhook:
+        description: 'Build and push image only'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+  packages: write
+  deployments: write
+
+concurrency:
+  group: deploy-preview
+  cancel-in-progress: true
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+        run: pnpm typecheck
+
+  build-image:
+    runs-on: ubuntu-latest
+    outputs:
+      worker_installer_package_version: ${{ steps.prep.outputs.worker_installer_package_version }}
+    env:
+      VITE_GA_MEASUREMENT_ID: ${{ vars.VITE_GA_MEASUREMENT_ID || 'G-KHSGWBC0DV' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Login to GHCR
+        env:
+          GHCR_USERNAME: ${{ github.actor }}
+          GHCR_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for attempt in 1 2 3; do
+            if printf '%s' "$GHCR_PASSWORD" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin; then
+              exit 0
+            fi
+
+            if [ "$attempt" -eq 3 ]; then
+              echo "GHCR login failed after ${attempt} attempts." >&2
+              exit 1
+            fi
+
+            echo "GHCR login attempt ${attempt} failed, retrying..." >&2
+            sleep $((attempt * 10))
+          done
+
+      - name: Prepare Image Metadata
+        id: prep
+        shell: bash
+        run: |
+          package_version="$(node -p "require('./package.json').version")"
+          echo "image=ghcr.io/${GITHUB_REPOSITORY,,}/control-plane" >> "$GITHUB_OUTPUT"
+          echo "sha_short=${GITHUB_SHA::12}" >> "$GITHUB_OUTPUT"
+          echo "sha_short_8=${GITHUB_SHA::8}" >> "$GITHUB_OUTPUT"
+          echo "package_version=${package_version}" >> "$GITHUB_OUTPUT"
+          echo "worker_installer_package_version=${package_version}-preview.${GITHUB_SHA::8}" >> "$GITHUB_OUTPUT"
+
+      - name: Build and Push Preview Image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ./deploy/docker/Dockerfile.control-plane
+          build-args: |
+            INCLUDE_BUNDLED_POSTGRES=false
+            WORKER_INSTALLER_CHANNEL=preview
+            WORKER_INSTALLER_PACKAGE_VERSION=${{ steps.prep.outputs.worker_installer_package_version }}
+            VITE_GA_MEASUREMENT_ID=${{ env.VITE_GA_MEASUREMENT_ID }}
+          push: true
+          tags: |
+            ${{ steps.prep.outputs.image }}:preview
+            ${{ steps.prep.outputs.image }}:preview-${{ steps.prep.outputs.sha_short }}
+          cache-from: type=gha,scope=control-plane-preview
+          cache-to: type=gha,scope=control-plane-preview,mode=max
+
+  deploy:
+    needs: [typecheck, build-image]
+    runs-on: ubuntu-latest
+    environment: preview
+    env:
+      DOKPLOY_SHARED_WEBHOOK_URL: ${{ secrets.DOKPLOY_SHARED_WEBHOOK_URL }}
+      DOKPLOY_PREVIEW_WEBHOOK_URL: ${{ secrets.DOKPLOY_PREVIEW_WEBHOOK_URL }}
+      SKIP_WEBHOOK: ${{ github.event_name == 'workflow_dispatch' && inputs.skip_webhook || 'false' }}
+      EXPECTED_WORKER_INSTALLER_VERSION: ${{ needs.build-image.outputs.worker_installer_package_version }}
+
+    steps:
+      - name: Ensure Preview Webhook Is Configured
+        if: ${{ env.SKIP_WEBHOOK != 'true' }}
+        run: |
+          if [ -z "$DOKPLOY_SHARED_WEBHOOK_URL" ] && [ -z "$DOKPLOY_PREVIEW_WEBHOOK_URL" ]; then
+            echo "Missing DOKPLOY_SHARED_WEBHOOK_URL or DOKPLOY_PREVIEW_WEBHOOK_URL secret" >&2
+            exit 1
+          fi
+
+      - name: Trigger Dokploy Preview Deployment
+        if: ${{ env.SKIP_WEBHOOK != 'true' }}
+        run: |
+          WEBHOOK_URL="${DOKPLOY_PREVIEW_WEBHOOK_URL:-$DOKPLOY_SHARED_WEBHOOK_URL}"
+          curl --retry 3 --retry-all-errors --connect-timeout 10 --max-time 60 -fsSL -X POST "$WEBHOOK_URL"
+
+      - name: Verify Preview Worker Installer Version
+        if: ${{ env.SKIP_WEBHOOK != 'true' }}
+        env:
+          PREVIEW_BASE_URL: https://wemux.xyz
+        shell: bash
+        run: |
+          max_attempts=90
+          for attempt in $(seq 1 "$max_attempts"); do
+            manifest="$(curl -fsSL "$PREVIEW_BASE_URL/install/worker/manifest.json" || true)"
+            package_version="$(python3 -c 'import json,sys; sys.stdout.write((json.loads(sys.argv[1]) or {}).get("packageVersion", "") or "")' "$manifest" 2>/dev/null || true)"
+
+            if [ "$package_version" = "$EXPECTED_WORKER_INSTALLER_VERSION" ]; then
+              echo "Preview worker installer is live: $package_version"
+              curl -fsSL "$PREVIEW_BASE_URL/install/worker.sh" | grep -F "install_nvm()" >/dev/null
+              echo "Preview worker installer contains automatic nvm bootstrap."
+              exit 0
+            fi
+
+            echo "Waiting for preview worker installer $EXPECTED_WORKER_INSTALLER_VERSION; current: ${package_version:-unavailable} (attempt $attempt/$max_attempts)"
+            sleep 5
+          done
+
+          echo "Preview worker installer did not update to $EXPECTED_WORKER_INSTALLER_VERSION." >&2
+          echo "Current manifest:" >&2
+          curl -fsSL "$PREVIEW_BASE_URL/install/worker/manifest.json" >&2 || true
+          exit 1

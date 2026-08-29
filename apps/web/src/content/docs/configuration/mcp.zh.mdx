@@ -1,0 +1,101 @@
+---
+title: MCP 服务器
+description: 配置模型上下文协议服务器以扩展 Agent 能力。
+---
+
+# MCP 服务器
+
+MCP（模型上下文协议）服务器通过外部服务提供工具和上下文来扩展 OpenCode 的能力。
+
+## 什么是 MCP 服务器？
+
+MCP 服务器提供：
+
+- **文件系统访问** - 读取和写入文件
+- **Git 操作** - 提交、分支、合并操作
+- **搜索** - 在代码库中搜索
+- **工具集成** - 连接到外部 API 和服务
+
+## 可用的 MCP 服务器
+
+| 服务器 | 能力 |
+|--------|-------------|
+| **filesystem** | 读取、写入和导航文件系统 |
+| **git** | Git 操作（提交、推送、分支） |
+| **search** | 代码搜索和 grep |
+| **terminal** | 运行 shell 命令 |
+| **github** | GitHub API 集成 |
+| **linear** | Linear 问题跟踪 |
+
+## Worker 配置
+
+在您 Worker 的环境中配置 MCP 服务器：
+
+```bash
+# 启用 MCP 服务器（空格分隔的列表）
+OPENCODE_MCP_SERVERS=filesystem git search terminal
+
+# 或使用完整的服务器命令：
+OPENCODE_MCP_CONFIG=/path/to/mcp-config.json
+```
+
+## MCP 配置文件
+
+对于高级设置，创建一个 JSON 配置：
+
+```json
+{
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-filesystem", "/path/to/allowed/directory"]
+    },
+    "git": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-git"]
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_TOKEN": "your-token-here"
+      }
+    }
+  }
+}
+```
+
+## 本地 MCP 服务器
+
+对于本地开发，您可以手动运行 MCP 服务器：
+
+```bash
+# 启动文件系统服务器
+npx -y @modelcontextprotocol/server-filesystem ~/projects
+
+# 启动 git 服务器
+npx -y @modelcontextprotocol/server-git
+```
+
+然后配置 Wemux 连接到这些本地服务器。
+
+## 安全考虑
+
+| 关注点 | 缓解措施 |
+|---------|-----------|
+| 文件系统访问 | 仅限项目目录 |
+| Git 操作 | 使用具有最小范围的专用令牌 |
+| 外部 API | 在环境变量中存储令牌 |
+
+## MCP 故障排除
+
+| 问题 | 解决方案 |
+|-------|----------|
+| 服务器无响应 | 检查服务器进程是否正在运行 |
+| 权限被拒绝 | 验证令牌具有所需的范围 |
+| 超时错误 | 增加 `MCP_TIMEOUT` 设置 |
+
+## 后续步骤
+
+- [OpenCode 设置](/docs/configuration/opencode) - 配置 AI Agent
+- [模型选择](/docs/configuration/models) - 选择正确的模型

@@ -1,0 +1,115 @@
+name: Deploy Production
+
+on:
+  push:
+    branches:
+      - master
+      - main
+    paths-ignore:
+      - 'docs/**'
+  workflow_dispatch:
+    inputs:
+      skip_webhook:
+        description: 'Build and push image only'
+        required: false
+        default: false
+        type: boolean
+
+permissions:
+  contents: read
+  packages: write
+  deployments: write
+
+concurrency:
+  group: deploy-production
+  cancel-in-progress: true
+
+jobs:
+  deploy-production:
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      DOKPLOY_SHARED_WEBHOOK_URL: ${{ secrets.DOKPLOY_SHARED_WEBHOOK_URL }}
+      DOKPLOY_PRODUCTION_WEBHOOK_URL: ${{ secrets.DOKPLOY_PRODUCTION_WEBHOOK_URL }}
+      VITE_GA_MEASUREMENT_ID: ${{ vars.VITE_GA_MEASUREMENT_ID || 'G-KHSGWBC0DV' }}
+      SKIP_WEBHOOK: ${{ github.event_name == 'workflow_dispatch' && inputs.skip_webhook || 'false' }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+        run: pnpm typecheck
+
+      - name: Ensure Production Webhook Is Configured
+        if: ${{ env.SKIP_WEBHOOK != 'true' }}
+        run: |
+          if [ -z "$DOKPLOY_SHARED_WEBHOOK_URL" ] && [ -z "$DOKPLOY_PRODUCTION_WEBHOOK_URL" ]; then
+            echo "Missing DOKPLOY_SHARED_WEBHOOK_URL or DOKPLOY_PRODUCTION_WEBHOOK_URL secret" >&2
+            exit 1
+          fi
+
+      - name: Setup Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Login to GHCR
+        env:
+          GHCR_USERNAME: ${{ github.actor }}
+          GHCR_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          for attempt in 1 2 3; do
+            if printf '%s' "$GHCR_PASSWORD" | docker login ghcr.io -u "$GHCR_USERNAME" --password-stdin; then
+              exit 0
+            fi
+
+            if [ "$attempt" -eq 3 ]; then
+              echo "GHCR login failed after ${attempt} attempts." >&2
+              exit 1
+            fi
+
+            echo "GHCR login attempt ${attempt} failed, retrying..." >&2
+            sleep $((attempt * 10))
+          done
+
+      - name: Prepare Image Metadata
+        id: prep
+        shell: bash
+        run: |
+          echo "image=ghcr.io/${GITHUB_REPOSITORY,,}/control-plane" >> "$GITHUB_OUTPUT"
+          echo "sha_short=${GITHUB_SHA::12}" >> "$GITHUB_OUTPUT"
+
+      - name: Build and Push Production Image
+        uses: docker/build-push-action@v7
+        with:
+          context: .
+          file: ./deploy/docker/Dockerfile.control-plane
+          build-args: |
+            INCLUDE_BUNDLED_POSTGRES=false
+            WORKER_INSTALLER_CHANNEL=production
+            VITE_GA_MEASUREMENT_ID=${{ env.VITE_GA_MEASUREMENT_ID }}
+          push: true
+          tags: |
+            ${{ steps.prep.outputs.image }}:latest
+            ${{ steps.prep.outputs.image }}:production
+            ${{ steps.prep.outputs.image }}:sha-${{ steps.prep.outputs.sha_short }}
+          cache-from: type=gha,scope=control-plane-production
+          cache-to: type=gha,mode=min,scope=control-plane-production
+
+      - name: Trigger Dokploy Production Deployment
+        if: ${{ env.SKIP_WEBHOOK != 'true' }}
+        run: |
+          WEBHOOK_URL="${DOKPLOY_PRODUCTION_WEBHOOK_URL:-$DOKPLOY_SHARED_WEBHOOK_URL}"
+          curl --retry 3 --retry-all-errors --connect-timeout 10 --max-time 60 -fsSL -X POST "$WEBHOOK_URL"

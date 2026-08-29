@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="wemux Small Icon">
+  <rect width="32" height="32" rx="8" fill="#09090b" />
+  <path d="M8 10.5c4.5 0 5.4 3.8 8 5.5 2.6-1.7 3.5-5.5 8-5.5" fill="none" stroke="#f5ecdd" stroke-linecap="round" stroke-width="3" />
+  <path d="M8 21.5c4.5 0 5.4-3.8 8-5.5 2.6 1.7 3.5 5.5 8 5.5" fill="none" stroke="#8fb7c9" stroke-linecap="round" stroke-width="3" />
+  <circle cx="16" cy="16" r="4.4" fill="#09090b" stroke="#f5ecdd" stroke-width="2" />
+  <circle cx="8" cy="10.5" r="2" fill="#8fb7c9" />
+  <circle cx="8" cy="21.5" r="2" fill="#8fb7c9" />
+  <circle cx="24" cy="10.5" r="2" fill="#f5ecdd" />
+  <circle cx="24" cy="21.5" r="2" fill="#f5ecdd" />
+  <circle cx="25" cy="16" r="2.4" fill="#d96f32" />
+</svg>

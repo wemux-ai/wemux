@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="wemux Mono">
+  <rect width="64" height="64" rx="16" fill="#09090b" />
+  <path d="M18 21c6 0 9 5 14 11 5-6 8-11 14-11" fill="none" stroke="#f5ecdd" stroke-linecap="round" stroke-width="4.5" />
+  <path d="M18 43c6 0 9-5 14-11 5 6 8 11 14 11" fill="none" stroke="#f5ecdd" stroke-linecap="round" stroke-width="4.5" opacity=".78" />
+  <circle cx="32" cy="32" r="7.5" fill="#09090b" stroke="#f5ecdd" stroke-width="3" />
+  <path d="M32 24c7.5 0 13 2.8 16 8-3 5.2-8.5 8-16 8-7.5 0-13-2.8-16-8 3-5.2 8.5-8 16-8Z" fill="none" opacity=".35" stroke="#f5ecdd" stroke-width="2" />
+  <circle cx="18" cy="21" r="3.5" fill="#f5ecdd" />
+  <circle cx="18" cy="43" r="3.5" fill="#f5ecdd" />
+  <circle cx="46" cy="21" r="3.5" fill="#f5ecdd" />
+  <circle cx="46" cy="43" r="3.5" fill="#f5ecdd" />
+  <circle cx="48" cy="32" r="4.5" fill="#f5ecdd" />
+</svg>

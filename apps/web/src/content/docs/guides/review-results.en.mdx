@@ -1,0 +1,100 @@
+---
+title: Review Results
+description: How to review and approve task execution output in wemux.
+---
+
+# Review Results
+
+After a task completes, you need to review the output before accepting or retrying.
+
+## Task Completion Flow
+
+When execution finishes:
+
+1. Task moves to **Review** column in the Kanban board
+2. You receive a notification
+3. Review notes are automatically generated
+4. Branch and artifacts are ready for inspection
+
+## Opening the Review
+
+1. Click on the task card in the **Review** column
+2. The task detail drawer opens
+
+## What to Review
+
+### Execution Logs
+
+View the full terminal output from the worker:
+
+- Commands executed by the AI agent
+- Compiler output and errors
+- Test results
+- Any warnings or issues
+
+### Branch Details
+
+| Item | Description |
+|------|-------------|
+| **Branch Name** | Git branch created for this task |
+| **Commits** | All commits made during execution |
+| **Files Changed** | List of modified files |
+| **Lines Added/Removed** | Change statistics |
+
+### Artifacts
+
+Download any artifacts produced:
+
+- Built binaries or packages
+- Test reports
+- Screenshots
+- Generated documentation
+
+### Review Notes
+
+AI-generated summary that includes:
+
+- What was done
+- Key changes made
+- Issues encountered
+- Recommendations
+
+## Review Actions
+
+| Action | When to Use |
+|--------|-------------|
+| **Approve** | Task meets acceptance criteria, ready to merge |
+| **Request Changes** | Task is incomplete or needs modification |
+| **Retry** | Re-execute the task with the same or updated instructions |
+| **Take Over** | Stop the task and handle manually |
+| **Cancel** | Abandon the task without completion |
+
+## Approving a Task
+
+1. Review all output sections
+2. Verify acceptance criteria are met
+3. Click **"Approve"**
+4. Optionally add comments
+5. Task moves to **Done** column
+
+## Requesting Changes
+
+1. Click **"Request Changes"**
+2. Add specific feedback for the AI
+3. Click **"Send"**
+4. Task returns to **In Progress**
+5. Worker picks up the feedback and retry
+
+## Merging the Branch
+
+After approval:
+
+1. Click **"Open Branch"** to view in your Git provider
+2. Create a pull request
+3. Review and merge as normal
+4. Worktree is automatically cleaned up
+
+## Next Steps
+
+- [Create a Task](/docs/guides/create-task) - Create more tasks
+- [Configuration](/docs/configuration/opencode) - Configure AI agent settings

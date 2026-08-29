@@ -1,0 +1,15 @@
+export {
+  advanceTask,
+  buildAssistantReply,
+  cleanupTaskWorktree,
+  createAdapters,
+  createExecutionCenter,
+  createExecutionLog,
+  createOrchestration,
+  createTaskFromRequirement,
+  createValidationChecks,
+  deriveExecutionCenter,
+  refreshAdapters,
+  retryTask,
+  startTaskAdvance,
+} from '@shared/task-orchestrator'

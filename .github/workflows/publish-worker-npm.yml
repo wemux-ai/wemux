@@ -1,0 +1,123 @@
+name: Publish Worker NPM Package
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel:
+        description: '发布通道（preview / production）'
+        type: choice
+        options:
+          - preview
+          - production
+        required: true
+        default: preview
+      package-name:
+        description: '包名覆盖（默认 wemux-worker-preview / wemux-worker；一次性迁移包可传 vibemux-worker-preview）'
+        type: string
+        required: false
+        default: ''
+
+permissions:
+  contents: read
+
+concurrency:
+  group: worker-package-manual
+  cancel-in-progress: true
+
+jobs:
+  publish-worker-npm:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+        run: pnpm typecheck
+
+      - name: Prepare npm package version and name
+        id: prep
+        shell: bash
+        run: |
+          CHANNEL="${{ inputs.channel }}"
+          BASE_VERSION=$(node -p "require('./package.json').version")
+          if [ "${CHANNEL}" = "preview" ]; then
+            PACKAGE_VERSION="${BASE_VERSION}-preview.${GITHUB_SHA::8}"
+            DEFAULT_NAME="wemux-worker-preview"
+            PACKAGE_TAG="preview"
+          else
+            PACKAGE_VERSION="${BASE_VERSION}"
+            DEFAULT_NAME="wemux-worker"
+            PACKAGE_TAG="latest"
+          fi
+          PACKAGE_NAME="${{ inputs.package-name }}"
+          if [ -z "${PACKAGE_NAME}" ]; then
+            PACKAGE_NAME="${DEFAULT_NAME}"
+          fi
+          echo "channel=${CHANNEL}" >> "$GITHUB_OUTPUT"
+          echo "package_name=${PACKAGE_NAME}" >> "$GITHUB_OUTPUT"
+          echo "package_version=${PACKAGE_VERSION}" >> "$GITHUB_OUTPUT"
+          echo "package_tag=${PACKAGE_TAG}" >> "$GITHUB_OUTPUT"
+
+      - name: Build npm worker package
+        run: pnpm run build:worker:npm -- --channel "${CHANNEL}" --package-name "${PACKAGE_NAME}" --package-version "${PACKAGE_VERSION}" --output-dir ".artifacts/worker-npm"
+        env:
+          CHANNEL: ${{ steps.prep.outputs.channel }}
+          PACKAGE_NAME: ${{ steps.prep.outputs.package_name }}
+          PACKAGE_VERSION: ${{ steps.prep.outputs.package_version }}
+
+      - name: Smoke test CLI entrypoints
+        shell: bash
+        run: |
+          PACKAGE_ROOT=".artifacts/worker-npm/${PACKAGE_NAME}"
+          VIBEMUX_WORKER_HOME="${RUNNER_TEMP}/vbx-smoke" node "${PACKAGE_ROOT}/bin/vbx.mjs" --help
+          VIBEMUX_WORKER_HOME="${RUNNER_TEMP}/vbx-smoke" node "${PACKAGE_ROOT}/bin/vibemux.mjs" --version
+          VIBEMUX_WORKER_HOME="${RUNNER_TEMP}/vbx-smoke" node "${PACKAGE_ROOT}/bin/cli.mjs" daemon --help
+        env:
+          PACKAGE_NAME: ${{ steps.prep.outputs.package_name }}
+
+      - name: Ensure npm token is configured
+        run: |
+          if [ -z "$NPM_TOKEN" ]; then
+            echo "Missing NPM_TOKEN secret" >&2
+            exit 1
+          fi
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+      - name: Publish npm worker package
+        shell: bash
+        run: |
+          if npm view "${PACKAGE_NAME}@${PACKAGE_VERSION}" version >/dev/null 2>&1; then
+            echo "${PACKAGE_NAME}@${PACKAGE_VERSION} is already published; skipping publish."
+            exit 0
+          fi
+
+          if npm publish ".artifacts/worker-npm/${PACKAGE_NAME}" --access public --tag "${PACKAGE_TAG}"; then
+            if [ "${PACKAGE_TAG}" = "preview" ]; then
+              npm dist-tag add "${PACKAGE_NAME}@${PACKAGE_VERSION}" latest
+            fi
+            exit 0
+          fi
+
+          echo "::error::Worker npm publish failed. Verify that NPM_TOKEN can publish ${PACKAGE_NAME}."
+          exit 1
+        env:
+          PACKAGE_NAME: ${{ steps.prep.outputs.package_name }}
+          PACKAGE_VERSION: ${{ steps.prep.outputs.package_version }}
+          PACKAGE_TAG: ${{ steps.prep.outputs.package_tag }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

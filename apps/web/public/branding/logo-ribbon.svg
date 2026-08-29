@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="wemux Ribbon">
+  <defs>
+    <linearGradient id="ribbon-bg" x1="8" x2="58" y1="4" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#19191d" />
+      <stop offset="1" stop-color="#09090b" />
+    </linearGradient>
+    <linearGradient id="ribbon-flow" x1="12" x2="52" y1="16" y2="48" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8fb7c9" />
+      <stop offset=".48" stop-color="#f5ecdd" />
+      <stop offset="1" stop-color="#d96f32" />
+    </linearGradient>
+  </defs>
+
+  <rect width="64" height="64" rx="16" fill="url(#ribbon-bg)" />
+  <path d="M14 22c8 0 11 4 18 10 7-6 10-10 18-10" fill="none" stroke="#f5ecdd" stroke-linecap="round" stroke-width="4.5" />
+  <path d="M14 42c8 0 11-4 18-10 7 6 10 10 18 10" fill="none" stroke="url(#ribbon-flow)" stroke-linecap="round" stroke-width="4.5" />
+  <path d="M21 22c6.5 0 8.5 4.5 11 10 2.5 5.5 4.5 10 11 10" fill="none" opacity=".35" stroke="#8fb7c9" stroke-linecap="round" stroke-width="2.5" />
+  <path d="M21 42c6.5 0 8.5-4.5 11-10 2.5-5.5 4.5-10 11-10" fill="none" opacity=".35" stroke="#d96f32" stroke-linecap="round" stroke-width="2.5" />
+  <rect x="27" y="27" width="10" height="10" rx="2.5" fill="#09090b" stroke="#f5ecdd" stroke-width="2.5" />
+  <circle cx="14" cy="22" r="3.5" fill="#8fb7c9" />
+  <circle cx="14" cy="42" r="3.5" fill="#8fb7c9" />
+  <circle cx="50" cy="22" r="3.5" fill="#f5ecdd" />
+  <circle cx="50" cy="42" r="4.5" fill="#d96f32" />
+</svg>

@@ -1,0 +1,92 @@
+---
+title: Execution Flow
+description: How tasks flow from creation to completion in wemux.
+---
+
+# Execution Flow
+
+Wemux routes tasks through a controlled execution pipeline from intake to delivery.
+
+## The Execution Pipeline
+
+```
+Task Intake → Routing → Execution → Review → Delivery
+```
+
+### 1. Task Intake
+
+Define the work with clear boundaries:
+
+- **Title** - What needs to be done
+- **Description** - Natural language requirements
+- **Acceptance Criteria** - How to verify completion
+- **Scope Boundaries** - What is and is not included
+
+### 2. Routing
+
+The system determines where and how to execute:
+
+- **Worker Selection** - Route to a machine with the right environment
+- **Agent Selection** - Choose the appropriate AI agent (OpenCode, etc.)
+- **Branch Strategy** - Create isolated worktree for the task
+
+### 3. Execution
+
+The worker performs the work:
+
+1. Creates a Git worktree with an isolated branch
+2. Clones the repository into the worktree
+3. Runs the AI agent with task instructions
+4. Executes code, runs tests, creates artifacts
+5. Commits changes to the task branch
+6. Reports logs, branch name, and artifacts back
+
+### 4. Review
+
+Human oversight before acceptance:
+
+- Review the execution logs
+- Inspect the branch and changed files
+- Verify acceptance criteria are met
+- Approve, request changes, or take over
+
+### 5. Delivery
+
+Finalize and ship:
+
+- Merge the branch (manually or automated)
+- Clean up the worktree
+- Archive the task record
+
+## Execution Modes
+
+| Mode | Description |
+|------|-------------|
+| **Auto-select** | System chooses the best available worker |
+| **指定 Executor** | Route to a specific worker machine |
+| **Hybrid** | Start locally, delegate to cloud if needed |
+
+## Human in the Loop
+
+Wemux keeps humans in charge:
+
+- **Task Creation** - Humans define requirements
+- **Worker Assignment** - Humans or system can route
+- **Execution Monitoring** - Real-time log visibility
+- **Review & Approval** - Humans decide what gets merged
+- **Takeover** - Humans can take control at any point
+
+## What Gets Returned
+
+Execution produces:
+
+- **Branch Name** - Git branch with changes
+- **Commit History** - All commits made during execution
+- **Execution Logs** - Full terminal output
+- **Artifacts** - Built files, test results, screenshots
+- **Review Notes** - AI-generated summary of changes
+
+## Next Steps
+
+- [Create Your First Task](/docs/getting-started/first-task) - Hands-on walkthrough
+- [Review Results](/docs/guides/review-results) - How to review task output

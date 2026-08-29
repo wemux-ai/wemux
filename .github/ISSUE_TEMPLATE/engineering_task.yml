@@ -1,0 +1,86 @@
+name: Engineering task
+description: Propose a clearly scoped, actionable engineering change
+title: "[task] "
+labels:
+  - enhancement
+  - type:task
+  - needs-triage
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this form for a concrete task with an observable outcome. Open-ended ideas, product direction, and use-case discussion belong in [GitHub Discussions](https://github.com/wemux-ai/wemux/discussions).
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Pre-flight checks
+      options:
+        - label: I searched existing issues and discussions and did not find a duplicate.
+          required: true
+        - label: This task is relevant to the open-source community edition.
+          required: true
+        - label: I have included acceptance criteria below.
+          required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or context
+      description: Explain why this task is needed and who benefits.
+    validations:
+      required: true
+
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Proposed outcome
+      description: Describe the desired behavior or deliverable without prescribing unnecessary implementation details.
+    validations:
+      required: true
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: List checks that allow a maintainer to determine whether the task is complete.
+      placeholder: |
+        - [ ] ...
+        - [ ] ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope and non-goals
+      description: State what is included and what should explicitly remain out of scope.
+
+  - type: textarea
+    id: implementation
+    attributes:
+      label: Implementation notes
+      description: Add likely files, API contracts, migration concerns, or a proposed approach if known.
+
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies or blockers
+      description: Link related issues, external dependencies, or decisions that must happen first.
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      options:
+        - Web console
+        - Server / control plane
+        - Worker / execution
+        - Desktop client
+        - Mobile client
+        - Shared package
+        - Documentation
+        - CI / release
+        - Other
+    validations:
+      required: true

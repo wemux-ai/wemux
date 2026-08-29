@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>wemux Logo Variants</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #09090b;
+        --panel: #121316;
+        --line: #27272a;
+        --text: #fafaf9;
+        --muted: #a1a1aa;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          radial-gradient(circle at top, rgba(143, 183, 201, 0.08), transparent 34%),
+          radial-gradient(circle at bottom right, rgba(217, 111, 50, 0.08), transparent 28%),
+          var(--bg);
+        color: var(--text);
+        font: 14px/1.5 Inter, "Segoe UI", sans-serif;
+      }
+
+      main {
+        width: min(1120px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 40px 0 56px;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: 28px;
+      }
+
+      p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 16px;
+        margin-top: 28px;
+      }
+
+      .card {
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        background: rgba(18, 19, 22, 0.9);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+      }
+
+      .swatch {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 180px;
+        border-radius: 16px;
+        background: linear-gradient(180deg, #17181d, #0c0c0f);
+      }
+
+      .swatch img {
+        width: 124px;
+        height: 124px;
+      }
+
+      h2 {
+        margin: 14px 0 6px;
+        font-size: 18px;
+      }
+
+      .tag {
+        display: inline-flex;
+        padding: 4px 10px;
+        margin-top: 10px;
+        border-radius: 999px;
+        background: rgba(245, 236, 221, 0.08);
+        color: #f5ecdd;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>wemux Logo Variants</h1>
+      <p>四个不同方向：编排、控制台、流动感、信号感。先看气质，再决定是否继续细化。</p>
+
+      <section class="grid">
+        <article class="card">
+          <div class="swatch"><img src="/branding/logo-orbit.svg" alt="Orbit" /></div>
+          <h2>Orbit</h2>
+          <p>围绕执行核心的编排轨道，比较像“任务进入系统并被调度”。</p>
+          <span class="tag">偏平台编排</span>
+        </article>
+
+        <article class="card">
+          <div class="swatch"><img src="/branding/logo-switchboard.svg" alt="Switchboard" /></div>
+          <h2>Switchboard</h2>
+          <p>像一个 mux/switch 面板，偏基础设施、控制台、工程平台气质。</p>
+          <span class="tag">偏控制平面</span>
+        </article>
+
+        <article class="card">
+          <div class="swatch"><img src="/branding/logo-ribbon.svg" alt="Ribbon" /></div>
+          <h2>Ribbon</h2>
+          <p>两条流带在中心交汇，视觉更顺滑，比较适合品牌首页和营销页。</p>
+          <span class="tag">偏品牌流动感</span>
+        </article>
+
+        <article class="card">
+          <div class="swatch"><img src="/branding/logo-beacon.svg" alt="Beacon" /></div>
+          <h2>Beacon</h2>
+          <p>更像 AI 信号塔 / 执行指令发射器，强调“入口 Agent + 执行节点”。</p>
+          <span class="tag">偏 AI 产品感</span>
+        </article>
+
+        <article class="card">
+          <div class="swatch"><img src="/branding/logo-wemux-simple.svg" alt="Simple" /></div>
+          <h2>Simple</h2>
+          <p>只保留输入、核心和输出，适合作为更稳的小图标版本。</p>
+          <span class="tag">偏极简</span>
+        </article>
+
+        <article class="card">
+          <div class="swatch"><img src="/branding/logo-wemux-simple-mono.svg" alt="Simple mono" /></div>
+          <h2>Simple Mono</h2>
+          <p>同一构图的黑白版本，用灰阶区分两条执行流。</p>
+          <span class="tag">黑白候选</span>
+        </article>
+      </section>
+    </main>
+  </body>
+</html>

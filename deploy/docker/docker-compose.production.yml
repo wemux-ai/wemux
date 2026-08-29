@@ -1,0 +1,118 @@
+# Wemux 生产部署（自托管）
+# 用法：
+#   cp .env.production.example .env.production
+#   # 编辑 .env.production 里的强密码与域名
+#   docker compose -f docker-compose.production.yml --env-file .env.production up -d
+#
+# 组成：Postgres + MinIO（S3 兼容对象存储）+ control-plane（web+server 一体镜像）
+# worker 不需要容器化：在目标机器上安装 worker 后指向本控制面即可（见 docs/SELF-HOSTING.md）
+
+name: wemux
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: wemux
+      POSTGRES_USER: ${POSTGRES_USER:-wemux}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env.production}
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER:-wemux} -d wemux']
+      interval: 5s
+      timeout: 5s
+      retries: 30
+    volumes:
+      - wemux-postgres-data:/var/lib/postgresql/data
+
+  minio:
+    image: minio/minio:latest
+    restart: unless-stopped
+    command: server /data --console-address ":9001"
+    environment:
+      MINIO_ROOT_USER: ${OBJECT_STORAGE_ACCESS_KEY_ID:-wemux}
+      MINIO_ROOT_PASSWORD: ${OBJECT_STORAGE_SECRET_ACCESS_KEY:?set OBJECT_STORAGE_SECRET_ACCESS_KEY in .env.production}
+    healthcheck:
+      test: ['CMD', 'mc', 'ready', 'local']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    volumes:
+      - wemux-minio-data:/data
+    ports:
+      - '${MINIO_CONSOLE_PORT:-9001}:9001'
+
+  minio-init:
+    image: minio/mc:latest
+    restart: 'no'
+    depends_on:
+      minio:
+        condition: service_healthy
+    entrypoint: >-
+      /bin/sh -c
+      "mc alias set local http://minio:9000 $${MINIO_ROOT_USER} $${MINIO_ROOT_PASSWORD};
+       mc mb --ignore-existing local/$${MINIO_BUCKET:-wemux}"
+
+  server:
+    build:
+      context: ../..
+      dockerfile: Dockerfile.control-plane
+      target: runtime
+    image: wemux/control-plane:${WEMUX_VERSION:-latest}
+    restart: unless-stopped
+    # 镜像内 HEALTHCHECK 已打 /api/health；autoheal 侧车负责在 unhealthy 时重启容器
+    # （裸 docker restart 策略只管进程退出，不管「活着但卡死」）
+    labels:
+      - autoheal=true
+    depends_on:
+      postgres:
+        condition: service_healthy
+      minio-init:
+        condition: service_completed_successfully
+    environment:
+      NODE_ENV: production
+      HOST: 0.0.0.0
+      PORT: 8989
+      DATABASE_URL: postgres://${POSTGRES_USER:-wemux}:${POSTGRES_PASSWORD}@postgres:5432/wemux
+      OBJECT_STORAGE_ENDPOINT: http://minio:9000
+      OBJECT_STORAGE_REGION: ${OBJECT_STORAGE_REGION:-us-east-1}
+      OBJECT_STORAGE_BUCKET: ${OBJECT_STORAGE_BUCKET:-wemux}
+      OBJECT_STORAGE_ACCESS_KEY_ID: ${OBJECT_STORAGE_ACCESS_KEY_ID:-wemux}
+      OBJECT_STORAGE_SECRET_ACCESS_KEY: ${OBJECT_STORAGE_SECRET_ACCESS_KEY}
+      WEMUX_PUBLIC_BASE_URL: ${WEMUX_PUBLIC_BASE_URL:-http://localhost:8989}
+      BETTER_AUTH_URL: ${WEMUX_PUBLIC_BASE_URL:-http://localhost:8989}
+      # 匿名使用上报（见 docs/TELEMETRY.md）：默认开启，在 .env.production 设 1 关闭
+      WEMUX_USAGE_REPORTING_DISABLED: ${WEMUX_USAGE_REPORTING_DISABLED:-}
+      BETTER_AUTH_SECRET: ${BETTER_AUTH_SECRET:?set BETTER_AUTH_SECRET in .env.production}
+      TOKEN_SECRET: ${TOKEN_SECRET:?set TOKEN_SECRET in .env.production}
+      SECRET_ENCRYPTION_KEY: ${SECRET_ENCRYPTION_KEY:?set SECRET_ENCRYPTION_KEY in .env.production}
+      TURNSTILE_SITE_KEY: ${TURNSTILE_SITE_KEY:-}
+      TURNSTILE_SECRET_KEY: ${TURNSTILE_SECRET_KEY:-}
+      # 可选功能透传（对应 .env.production.example）：邮件发送 / Google 登录 / 健康检查 token
+      EMAIL_PROVIDER: ${EMAIL_PROVIDER:-}
+      CLOUDFLARE_ACCOUNT_ID: ${CLOUDFLARE_ACCOUNT_ID:-}
+      CLOUDFLARE_API_TOKEN: ${CLOUDFLARE_API_TOKEN:-}
+      EMAIL_FROM: ${EMAIL_FROM:-}
+      GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
+      GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
+      WEMUX_HEALTH_TOKEN: ${WEMUX_HEALTH_TOKEN:-}
+    ports:
+      - '${SERVER_PORT:-8989}:8989'
+    volumes:
+      - wemux-server-runtime:/tmp/wemux-runtime
+
+  # 健康自愈：监控带 autoheal 标签的容器，unhealthy 持续超阈值即重启。
+  # 安全说明：需要 docker.sock 权限；若不接受，可删除本服务，改用外部监控（UptimeRobot）告警 + 人工/脚本重启。
+  autoheal:
+    image: willfarrell/autoheal:latest
+    container_name: wemux-autoheal
+    restart: unless-stopped
+    environment:
+      - AUTOHEAL_CONTAINER_LABEL=autoheal
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+
+volumes:
+  wemux-postgres-data:
+  wemux-minio-data:
+  wemux-server-runtime:

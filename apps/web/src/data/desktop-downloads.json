@@ -1,0 +1,48 @@
+{
+  "schemaVersion": 1,
+  "version": "0.3.115",
+  "publishedAt": null,
+  "notes": "首版 macOS 桌面客户端（Apple Silicon）：Agent 聊天 / 工作区 / 任务一体化，支持系统托盘、深链（Wemux://）、自动更新。",
+  "platforms": [
+    {
+      "id": "darwin-aarch64",
+      "os": "macos",
+      "label": "macOS (Apple Silicon)",
+      "recommended": true,
+      "file": "wemux_0.3.115_aarch64.dmg",
+      "url": null,
+      "sizeBytes": null,
+      "sha256": null
+    },
+    {
+      "id": "darwin-x86_64",
+      "os": "macos",
+      "label": "macOS (Intel)",
+      "recommended": false,
+      "file": "wemux_0.3.127_x64.dmg",
+      "url": null,
+      "sizeBytes": null,
+      "sha256": null
+    },
+    {
+      "id": "windows-x86_64",
+      "os": "windows",
+      "label": "Windows (x64)",
+      "recommended": false,
+      "file": "wemux_0.3.115_x64-setup.exe",
+      "url": null,
+      "sizeBytes": null,
+      "sha256": null
+    },
+    {
+      "id": "linux-x86_64",
+      "os": "linux",
+      "label": "Linux (AppImage)",
+      "recommended": false,
+      "file": "wemux_0.3.115_amd64.AppImage",
+      "url": null,
+      "sizeBytes": null,
+      "sha256": null
+    }
+  ]
+}

@@ -1,0 +1,80 @@
+---
+title: Workers
+description: Understand how Workers execute tasks in wemux.
+---
+
+# Workers
+
+Workers are the executor machines that run AI agents and execute tasks in real repositories.
+
+## What is a Worker?
+
+A worker is a paired machine (local Mac, Linux box, VM, or cloud instance) that:
+
+- Runs the Wemux worker daemon
+- Receives task assignments from the control plane
+- Executes AI agents in isolated Git worktrees
+- Reports execution logs, branches, and artifacts back to the system
+
+## Worker Architecture
+
+```
+┌─────────────────────────────────────────────────────┐
+│                   Control Plane                     │
+│                   (Wemux Server)                  │
+└─────────────────────┬───────────────────────────────┘
+                      │ Tasks, commands, status
+┌─────────────────────▼───────────────────────────────┐
+│                   Worker Daemon                     │
+│              (Your machine / VM)                    │
+├─────────────────────────────────────────────────────┤
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐  │
+│  │  OpenCode   │  │    MCP      │  │   Git       │  │
+│  │   Agent     │  │   Servers   │  │  Worktrees  │  │
+│  └─────────────┘  └─────────────┘  └─────────────┘  │
+└─────────────────────────────────────────────────────┘
+```
+
+## Worker States
+
+| State | Meaning |
+|-------|---------|
+| **Connected** | Daemon running and communicating with control plane |
+| **Idle** | Connected and ready to accept tasks |
+| **Busy** | Executing a task |
+| **Offline** | Daemon not running or unreachable |
+
+## Pairing a Worker
+
+1. Install the worker daemon on your machine
+2. Start the daemon with `wemux worker daemon`
+3. Open the Wemux web interface
+4. Navigate to the project **Workers** tab
+5. Click **"Add Worker"** to generate a pairing code
+6. Enter the code in the Worker Console
+7. Confirm the connection status
+
+## Capability Profiles
+
+Each worker can have a capability profile that describes:
+
+- **Available Models** - Which AI models can run on this machine
+- **MCP Servers** - Pre-configured MCP server connections
+- **Environment** - Pre-installed tools and dependencies
+- **Resource Limits** - CPU/memory constraints
+
+The system uses these profiles to route tasks to appropriate workers.
+
+## Where Workers Run
+
+Workers can run on:
+
+- **Local Macs/Linux machines** - Best for personal development
+- **Shared office machines** - For team-wide execution
+- **Cloud VMs** - For resource-intensive or GPU workloads
+- **Private servers** - For security-sensitive environments
+
+## Next Steps
+
+- [Installation Guide](/docs/getting-started/installation) - Set up your first worker
+- [Pair a Worker](/docs/guides/pair-worker) - Step-by-step pairing guide

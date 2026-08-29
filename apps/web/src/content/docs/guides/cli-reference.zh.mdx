@@ -1,0 +1,94 @@
+---
+title: Wemux CLI 参考
+description: Wemux CLI 命令参考。
+---
+
+# Wemux CLI 参考
+
+`wemux` CLI 让你在终端管理项目、任务、工作区、Agent、收件箱、云盘与渠道。它通过 MCP 协议与控制面通信，与 Agent 共用同一套鉴权工具面。
+
+`vbx` 与 `vibemux` 作为旧别名保留，供存量脚本使用。
+
+## 准备
+
+- 设置 `VIBEMUX_TOKEN`（API token），或先配对本地 worker。
+- 全局选项：`-h, --help`、`-V, --version`、`-y, --yes`、`--json`（支持的场景输出机器可读 JSON）。
+
+## Worker 生命周期
+
+| 命令 | 说明 |
+|---|---|
+| `wemux worker connect --pairing-code <code>` | 配对并启动 worker |
+| `wemux worker daemon` | 前台运行 worker |
+| `wemux worker status [--json]` | 查看 worker 与连接状态 |
+| `wemux worker doctor` | 运行诊断 |
+| `wemux worker update [--check]` | 检查 / 安装更新 |
+| `wemux worker service <install\|uninstall\|start\|stop\|restart\|status\|logs>` | 管理后台服务 |
+| `wemux worker bootstrap [--target <base\|all\|agent>]` | 安装并校验 agent runtime |
+| `wemux worker mesh <status\|install-service\|uninstall-service\|service-status>` | 查看 / 管理 worker mesh |
+
+## 项目
+
+| 命令 | 说明 |
+|---|---|
+| `wemux project list [--json]` | 列出项目 |
+| `wemux project create <name> [--git-url <url>] [--branch <branch>]` | 创建项目 |
+| `wemux project get <id>` / `update <id>` / `select <id>` / `delete <id>` | 项目管理 |
+
+## 任务
+
+| 命令 | 说明 |
+|---|---|
+| `wemux task list [--project <id>] [--status <status>] [--json]` | 列出任务 |
+| `wemux task create <project-id> <description> [--title <title>]` | 创建任务 |
+| `wemux task run <task-id> --workspace <id> [--session <id>] [--new-session] [--branch <branch>]` | 在工作区运行任务 |
+| `wemux task send <task-id> <message...> [--workspace <id>] [--session <id>]` | 向任务发消息 |
+| `wemux task chat list/get <task-id>` | 查看任务聊天会话 |
+| `wemux task execution <task-id>` / `runs <task-id>` / `cancel` / `retry` | 执行控制 |
+| `wemux task subtask create <parent-id> <description...>` | 创建子任务 |
+| `wemux task model/agent <task-id> <value>` | 设置执行模型 / agent runtime |
+
+## 工作区
+
+| 命令 | 说明 |
+|---|---|
+| `wemux workspace list <project-id>` / `get <id>` / `create` / `delete` | 管理工作区 |
+| `wemux workspace session list/get/runtime <task-id>` | 查看工作区会话 |
+
+## 收件箱
+
+| 命令 | 说明 |
+|---|---|
+| `wemux inbox list [--unread] [--limit <n>] [--workspace <id>]` | 列出收件箱条目（任务指派 / @我 / 工作区待输入） |
+| `wemux inbox groups [--section <action\|following\|snoozed\|archived\|all>]` | 按分组查看收件箱 |
+| `wemux inbox get <item-id>` / `read <item-id>` / `read-group <key>` | 查看与标已读 |
+| `wemux inbox reply <item-id> <message...>` | 以本人身份回复收件箱条目 |
+
+## 云盘
+
+| 命令 | 说明 |
+|---|---|
+| `wemux drive list [--workspace <id> \| --personal] [--parent <id>]` | 列出云盘文件（团队工作区或个人） |
+| `wemux drive get <file-id>` | 读取文本文件 |
+| `wemux drive info <file-id>` | 查看文件元数据 |
+| `wemux drive write <name> <content...> [--workspace <id> \| --personal] [--file-id <id>]` | 新建 / 覆盖文本文件 |
+
+## 会话
+
+| 命令 | 说明 |
+|---|---|
+| `wemux chat conversations [--project <id>] [--task <id>]` | 列出会话 |
+| `wemux chat get <conversation-id>` | 查看会话详情 |
+| `wemux chat channel list [--agent <id>]` | 列出 Agent 外部渠道 |
+| `wemux chat channel send <agent-id> <message...> [--channel <telegram\|feishu>]` | 通过 Agent 渠道发消息（脚本通知） |
+
+## Agent / skill / node / mcp
+
+| 命令 | 说明 |
+|---|---|
+| `wemux agent list [--type <type>]` / `agent types` | 查看 Agent |
+| `wemux skill list/get/packages/delete` | 管理技能 |
+| `wemux node list` | 列出可见执行节点 |
+| `wemux mcp list` | 列出已配置 MCP server |
+
+运行 `wemux help <resource>` 查看任意资源的完整命令树。

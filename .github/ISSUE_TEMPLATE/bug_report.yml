@@ -1,0 +1,112 @@
+name: Bug report
+description: Report a reproducible problem in the Wemux community edition
+title: "[bug] "
+labels:
+  - bug
+  - type:bug
+  - needs-triage
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve Wemux. Please remove secrets, tokens, and private repository data before submitting logs.
+        For security vulnerabilities, do not use this form; report them privately through [SECURITY.md](https://github.com/wemux-ai/wemux/blob/main/SECURITY.md).
+
+  - type: checkboxes
+    id: preflight
+    attributes:
+      label: Pre-flight checks
+      options:
+        - label: I searched existing issues and did not find a duplicate.
+          required: true
+        - label: This is not a security vulnerability or a private support request.
+          required: true
+        - label: I removed secrets and sensitive data from the report.
+          required: true
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: What happened?
+      description: Describe the problem and its user impact.
+      placeholder: Tell us what went wrong and who is affected.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      description: Provide the smallest reliable reproduction, including commands or relevant configuration.
+      placeholder: |
+        1. Start Wemux with ...
+        2. Open ...
+        3. Run ...
+        4. Observe ...
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should have happened instead?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior and logs
+      description: Include the exact error, stack trace, or sanitized logs when available.
+      render: shell
+    validations:
+      required: true
+
+  - type: input
+    id: version
+    attributes:
+      label: Wemux version or commit
+      description: Use a release version such as v0.3.130 or a full commit SHA.
+      placeholder: v0.3.130
+    validations:
+      required: true
+
+  - type: dropdown
+    id: deployment
+    attributes:
+      label: Deployment
+      options:
+        - Docker Compose
+        - Local development
+        - Production deployment
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      options:
+        - Web console
+        - Server / control plane
+        - Worker / execution
+        - Desktop client
+        - Mobile client
+        - Shared package
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: Include OS, browser, runtime, and relevant integration details.
+      placeholder: |
+        OS: macOS 15.6
+        Browser: Chrome 139
+        Agent runtime: OpenCode / Claude Code / Codex
+        Integration: none

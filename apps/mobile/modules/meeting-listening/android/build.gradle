@@ -1,0 +1,49 @@
+plugins {
+  id 'com.android.library'
+  id 'kotlin-android'
+  id 'expo-module-gradle-plugin'
+}
+
+group = 'expo.modules.meetinglistening'
+version = '1.0.0'
+
+android {
+  namespace 'expo.modules.meetinglistening'
+  defaultConfig {
+    minSdkVersion 24
+    versionCode 1
+    versionName '1.0.0'
+    ndk {
+      abiFilters 'arm64-v8a', 'x86_64'
+    }
+    externalNativeBuild {
+      cmake {
+        arguments '-DCMAKE_BUILD_TYPE=Release',
+          '-DBUILD_SHARED_LIBS=OFF',
+          '-DLLAMA_BUILD_COMMON=OFF',
+          '-DLLAMA_BUILD_TESTS=OFF',
+          '-DLLAMA_BUILD_TOOLS=OFF',
+          '-DLLAMA_BUILD_EXAMPLES=OFF',
+          '-DLLAMA_BUILD_SERVER=OFF',
+          '-DLLAMA_BUILD_APP=OFF',
+          '-DLLAMA_OPENSSL=OFF',
+          '-DLLAMA_SUBPROCESS=OFF',
+          '-DGGML_NATIVE=OFF',
+          '-DGGML_LLAMAFILE=OFF',
+          '-DGGML_OPENMP=OFF',
+          '-DGGML_VULKAN=OFF',
+          '-DGGML_CPU_REPACK=OFF'
+      }
+    }
+  }
+  externalNativeBuild {
+    cmake {
+      path 'src/main/cpp/CMakeLists.txt'
+      version '3.22.1'
+    }
+  }
+}
+
+dependencies {
+  implementation 'androidx.core:core-ktx:1.15.0'
+}

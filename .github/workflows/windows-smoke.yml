@@ -1,0 +1,38 @@
+name: Windows Smoke Test
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows-smoke:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Setup Node
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Typecheck
+        env:
+          NODE_OPTIONS: --max-old-space-size=4096
+        run: pnpm typecheck
+
+      - name: Build Worker Runtime
+        run: pnpm run build:worker:runtime
+
+      - name: Worker Doctor Smoke Test
+        shell: bash
+        run: node dist-worker/apps/worker/src/index.js doctor || true

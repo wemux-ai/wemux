@@ -1,0 +1,94 @@
+---
+title: Wemux CLI Reference
+description: Command-line reference for the Wemux CLI.
+---
+
+# Wemux CLI Reference
+
+The `wemux` CLI manages your projects, tasks, workspaces, agents, inbox, drive, and channels from the terminal. It talks to the control plane over the MCP protocol, using the same authenticated tool surface as Agents.
+
+`vbx` and `vibemux` remain available as legacy aliases for existing scripts.
+
+## Setup
+
+- Set `VIBEMUX_TOKEN` to an API token, or pair a local worker first.
+- Global options: `-h, --help`, `-V, --version`, `-y, --yes`, `--json` (machine-readable output where supported).
+
+## Worker lifecycle
+
+| Command | Description |
+|---|---|
+| `wemux worker connect --pairing-code <code>` | Pair this worker and start it |
+| `wemux worker daemon` | Run the worker in the foreground |
+| `wemux worker status [--json]` | Show worker and connection status |
+| `wemux worker doctor` | Run worker diagnostics |
+| `wemux worker update [--check]` | Check for or install updates |
+| `wemux worker service <install\|uninstall\|start\|stop\|restart\|status\|logs>` | Manage the background service |
+| `wemux worker bootstrap [--target <base\|all\|agent>]` | Install and verify agent runtimes |
+| `wemux worker mesh <status\|install-service\|uninstall-service\|service-status>` | Inspect or manage the worker mesh |
+
+## Projects
+
+| Command | Description |
+|---|---|
+| `wemux project list [--json]` | List projects |
+| `wemux project create <name> [--git-url <url>] [--branch <branch>]` | Create a project |
+| `wemux project get <id>` / `update <id>` / `select <id>` / `delete <id>` | Manage a project |
+
+## Tasks
+
+| Command | Description |
+|---|---|
+| `wemux task list [--project <id>] [--status <status>] [--json]` | List tasks |
+| `wemux task create <project-id> <description> [--title <title>]` | Create a task |
+| `wemux task run <task-id> --workspace <id> [--session <id>] [--new-session] [--branch <branch>]` | Run a task in a workspace |
+| `wemux task send <task-id> <message...> [--workspace <id>] [--session <id>]` | Send a message to a task |
+| `wemux task chat list/get <task-id>` | Inspect task chat sessions |
+| `wemux task execution <task-id>` / `runs <task-id>` / `cancel` / `retry` | Execution control |
+| `wemux task subtask create <parent-id> <description...>` | Create a subtask |
+| `wemux task model/agent <task-id> <value>` | Set execution model / agent runtime |
+
+## Workspaces
+
+| Command | Description |
+|---|---|
+| `wemux workspace list <project-id>` / `get <id>` / `create` / `delete` | Manage workspaces |
+| `wemux workspace session list/get/runtime <task-id>` | Inspect workspace sessions |
+
+## Inbox
+
+| Command | Description |
+|---|---|
+| `wemux inbox list [--unread] [--limit <n>] [--workspace <id>]` | List inbox items (assignments, mentions, workspace inputs) |
+| `wemux inbox groups [--section <action\|following\|snoozed\|archived\|all>]` | List inbox grouped by section |
+| `wemux inbox get <item-id>` / `read <item-id>` / `read-group <key>` | Inspect and acknowledge items |
+| `wemux inbox reply <item-id> <message...>` | Reply to an inbox item as yourself |
+
+## Drive
+
+| Command | Description |
+|---|---|
+| `wemux drive list [--workspace <id> \| --personal] [--parent <id>]` | List drive files (team workspace or personal) |
+| `wemux drive get <file-id>` | Read a text file |
+| `wemux drive info <file-id>` | Show file metadata |
+| `wemux drive write <name> <content...> [--workspace <id> \| --personal] [--file-id <id>]` | Create or overwrite a text file |
+
+## Chat
+
+| Command | Description |
+|---|---|
+| `wemux chat conversations [--project <id>] [--task <id>]` | List conversations |
+| `wemux chat get <conversation-id>` | Show a conversation |
+| `wemux chat channel list [--agent <id>]` | List an agent's external channels |
+| `wemux chat channel send <agent-id> <message...> [--channel <telegram\|feishu>]` | Send a message through an agent channel (scripting) |
+
+## Agents, skills, nodes, MCP
+
+| Command | Description |
+|---|---|
+| `wemux agent list [--type <type>]` / `agent types` | Inspect agents |
+| `wemux skill list/get/packages/delete` | Manage agent skills |
+| `wemux node list` | List visible executor nodes |
+| `wemux mcp list` | List configured MCP servers |
+
+Run `wemux help <resource>` for the full command tree of any resource.

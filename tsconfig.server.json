@@ -1,0 +1,27 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["ES2022", "DOM"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "outDir": "dist-server",
+    "rootDir": ".",
+    "strict": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "declaration": false,
+    "isolatedModules": true,
+    "jsx": "react-jsx",
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./apps/web/src/*"],
+      "@server/*": ["./apps/server/src/*"],
+      "@shared/*": ["./packages/shared/src/*"],
+      "@web/*": ["./apps/web/src/*"]
+    }
+  },
+  "include": ["apps/server/src/**/*.ts", "apps/worker/src/**/*.ts", "apps/web/src/**/*.ts", "apps/web/src/**/*.tsx", "packages/shared/src/**/*.ts"],
+  "exclude": ["dist", "dist-server", "node_modules"]
+}

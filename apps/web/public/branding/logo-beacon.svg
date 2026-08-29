@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="wemux Beacon">
+  <defs>
+    <linearGradient id="beacon-bg" x1="8" x2="58" y1="4" y2="60" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#17181d" />
+      <stop offset="1" stop-color="#09090b" />
+    </linearGradient>
+    <linearGradient id="beacon-signal" x1="17" x2="49" y1="18" y2="46" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8fb7c9" />
+      <stop offset=".55" stop-color="#f5ecdd" />
+      <stop offset="1" stop-color="#d96f32" />
+    </linearGradient>
+  </defs>
+
+  <rect width="64" height="64" rx="16" fill="url(#beacon-bg)" />
+  <path d="M17 43 30 20c.7-1.2 2.3-1.2 3 0l13 23" fill="none" stroke="url(#beacon-signal)" stroke-linecap="round" stroke-linejoin="round" stroke-width="5" />
+  <path d="M24 40h16" fill="none" opacity=".8" stroke="#f5ecdd" stroke-linecap="round" stroke-width="3.5" />
+  <circle cx="32" cy="29" r="5.5" fill="#09090b" stroke="#f5ecdd" stroke-width="2.5" />
+  <path d="M32 16v4" fill="none" stroke="#f5ecdd" stroke-linecap="round" stroke-width="2.5" />
+  <path d="M19 27c2-3.6 5-5.9 8.8-6.9" fill="none" opacity=".4" stroke="#8fb7c9" stroke-linecap="round" stroke-width="2.2" />
+  <path d="M45 27c-2-3.6-5-5.9-8.8-6.9" fill="none" opacity=".4" stroke="#d96f32" stroke-linecap="round" stroke-width="2.2" />
+  <circle cx="17" cy="43" r="3.5" fill="#8fb7c9" />
+  <circle cx="47" cy="43" r="4.5" fill="#d96f32" />
+</svg>

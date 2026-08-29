@@ -1,0 +1,233 @@
+---
+title: Common Issues
+description: Solutions to frequently encountered problems in wemux.
+---
+
+# Common Issues
+
+Solutions to problems you might encounter while using wemux.
+
+## Worker Issues
+
+### Worker Shows Offline
+
+**Symptoms**: Worker appears offline in the dashboard despite daemon running.
+
+**Solutions**:
+
+1. Check if the daemon is running:
+   ```bash
+   ps aux | grep wemux-worker
+   ```
+
+2. Restart the daemon:
+   ```bash
+   Wemux worker daemon
+   ```
+
+3. Check network connectivity to the control plane:
+   ```bash
+   curl http://127.0.0.1:8989/health
+   ```
+
+### Tasks Not Received by Worker
+
+**Symptoms**: Tasks stay in queue, worker remains idle.
+
+**Solutions**:
+
+1. Verify worker is paired to the correct project
+2. Check worker status shows "Connected" or "Idle"
+3. Review logs in the Worker Console
+4. Ensure worker has sufficient resources
+
+### Pairing Code Not Accepted
+
+**Symptoms**: Entering pairing code returns an error.
+
+**Solutions**:
+
+1. Codes expire after 5 minutes - generate a new one
+2. Ensure you're entering the code in the correct project
+3. Check for typos or extra spaces
+4. Try generating a fresh code
+
+## Task Execution Issues
+
+### Task Stuck in Progress
+
+**Symptoms**: Task stays in "In Progress" without completing.
+
+**Solutions**:
+
+1. Check execution logs for errors
+2. Click **"Take Over"** to stop the task
+3. Retry with updated instructions
+4. Check worker resources (CPU, memory)
+
+### Execution Failed with Error
+
+**Symptoms**: Task shows "Failed" status with error message.
+
+**Solutions**:
+
+1. Review the error in execution logs
+2. Common causes:
+   - Repository access issues
+   - Missing dependencies
+   - AI model timeout
+   - Worktree creation failure
+3. Fix the root cause
+4. Retry the task
+
+### AI Agent Not Responding
+
+**Symptoms**: Worker is busy but no activity in logs.
+
+**Solutions**:
+
+1. Check if the AI model API is responding
+2. Verify API keys are correctly set
+3. Check model rate limits
+4. Take over and run manually
+
+## Repository Issues
+
+### Clone Failed
+
+**Symptoms**: Task fails with "git clone" error.
+
+**Solutions**:
+
+1. Verify repository URL is correct
+2. Check worker has SSH key access (if using SSH)
+3. Ensure repository exists and is accessible
+4. Check for firewall blocking git ports
+
+### Worktree Creation Failed
+
+**Symptoms**: Error creating Git worktree.
+
+**Solutions**:
+
+1. Check disk space on worker
+2. Clean up old worktrees:
+   ```bash
+   wemux-worker cleanup
+   ```
+3. Check Git version is up to date
+4. Ensure no conflicting branches exist
+
+## Configuration Issues
+
+### Environment Variables Not Loading
+
+**Symptoms**: Settings changes have no effect.
+
+**Solutions**:
+
+1. Restart the worker daemon after changes
+2. Verify env file location: `~/.wemux/worker.env`
+3. Check for syntax errors in the file
+4. Use `wemux worker status` to see loaded config
+
+### Model Not Available
+
+**Symptoms**: Task fails with model-related error.
+
+**Solutions**:
+
+1. Verify API key is set and valid
+2. Check model name is correct
+3. Ensure account has access to the model
+4. Try a different model temporarily
+
+## Preview Issues
+
+### Preview Stuck on "Connecting" or Tunnel Cannot Be Established
+
+**Symptoms**: The Preview panel stays in "Connecting", or shows tunnel / websocket connection errors.
+
+**Solutions**:
+
+1. Confirm the worker is still online and the workspace is bound to the correct executor
+2. Click **"Refresh"** or reconnect Preview
+3. Verify the source app URL is still a local HTTP address such as `http://localhost:3000/`
+4. In hybrid / Docker setups, make sure the worker can actually reach the control plane instead of looping back to the container's own `localhost`
+
+### Preview Shows "Connected" but the Page Is Blank or Only Displays a Short Error
+
+**Symptoms**: Preview status says "Connected", but the iframe is blank, or only shows `fetch failed`, `ECONNREFUSED`, or another very short error.
+
+**This usually means**:
+
+- The Preview tunnel is already connected
+- But the source app itself did not respond successfully
+- The problem is no longer the Wemux tunnel, but the dev server inside the workspace
+
+**Solutions**:
+
+1. Check the terminal output at the bottom and confirm the app really started
+2. Try reaching the source app URL from inside the current worker environment, for example `http://localhost:3000/`
+3. If the terminal shows `fetch failed`, `ECONNREFUSED`, `GET / 500`, font download failures, or similar errors, fix the source app first
+4. After fixing the app, click **"Refresh"** in the Preview panel
+
+### Vite / TanStack Start Preview Not Reachable in a Container or Remote Worker
+
+**Symptoms**: The terminal says the app is "ready", but Preview still cannot reach `http://localhost:3000/`.
+
+**Common cause**:
+
+Vite may only listen on `localhost` by default. If the app is running inside a Docker container, a remote worker, or any environment where the browser and dev server are not in the same network namespace, the Preview proxy may not be able to reach it from the worker environment.
+
+**Solutions**:
+
+1. Start the dev server with an exposed host:
+   ```bash
+   npm run dev -- --host 0.0.0.0
+   ```
+
+2. If you use `pnpm`:
+   ```bash
+   pnpm dev -- --host 0.0.0.0
+   ```
+
+3. Or update the project script directly:
+   ```json
+   {
+     "scripts": {
+       "dev": "vite dev --host 0.0.0.0 --port 3000"
+     }
+   }
+   ```
+
+4. Then reconnect or refresh Preview
+
+**Applies to**:
+
+- Vite
+- TanStack Start
+- Other frontend projects backed by a Vite dev server
+
+### Next.js Preview Returns 500
+
+**Symptoms**: Preview connects, but the terminal shows `GET / 500`, or remote fonts / resources fail to load.
+
+**Common causes**:
+
+- The app depends on external resources during startup, such as `next/font/google`
+- The current worker environment cannot reach those external resources
+
+**Solutions**:
+
+1. Inspect the failed remote request URL in the terminal
+2. If Google Fonts, external APIs, or CDN assets are blocked, replace them with local assets or remove the external dependency
+3. Restart the dev server and refresh Preview
+
+## Getting Help
+
+If these solutions don't resolve your issue:
+
+1. Check the [GitHub Issues](https://github.com/your-repo/issues)
+2. Join the [Discord community](https://discord.gg/vibemux)
+3. Contact support at support@wemux.ai

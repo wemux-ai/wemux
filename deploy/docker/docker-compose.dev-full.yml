@@ -1,0 +1,184 @@
+name: ${HYBRID_PROJECT_NAME:-vibemux}
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: vibemux
+      POSTGRES_USER: vibemux
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local-dev-password}
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U vibemux -d vibemux']
+      interval: 5s
+      timeout: 5s
+      retries: 20
+    volumes:
+      - vibemux-hybrid-postgres-data:/var/lib/postgresql/data
+
+  postgres-init:
+    image: postgres:16-alpine
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: 'no'
+    environment:
+      PGPASSWORD: ${POSTGRES_PASSWORD:-local-dev-password}
+      POSTGRES_USER: vibemux
+      POSTGRES_PREVIEW_DB: vibemux_preview
+      POSTGRES_PRODUCTION_DB: vibemux_production
+    entrypoint: >-
+      /bin/sh -c
+      "psql -h postgres -U vibemux -d postgres -tc \"SELECT 1 FROM pg_database WHERE datname = 'vibemux_preview'\" | grep -q 1 || psql -h postgres -U vibemux -d postgres -c \"CREATE DATABASE \\\"vibemux_preview\\\"\";
+      psql -h postgres -U vibemux -d postgres -tc \"SELECT 1 FROM pg_database WHERE datname = 'vibemux_production'\" | grep -q 1 || psql -h postgres -U vibemux -d postgres -c \"CREATE DATABASE \\\"vibemux_production\\\"\""
+
+  server:
+    build:
+      context: ../..
+      dockerfile: Dockerfile.control-plane
+      target: deps
+      args:
+        NPM_REGISTRY: ${NPM_REGISTRY:-}
+    depends_on:
+      postgres:
+        condition: service_healthy
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    environment:
+      NODE_ENV: development
+      HOST: 0.0.0.0
+      PORT: ${HYBRID_SERVER_PORT:-18989}
+      APP_URL: ${APP_URL:-http://127.0.0.1:${HYBRID_SERVER_PORT:-18989}}
+      APP_BASE_URL: ${APP_BASE_URL:-http://app.wemux.localtest.me:${HYBRID_WEB_PORT:-15173}}
+      WEMUX_PUBLIC_BASE_URL: ${WEMUX_PUBLIC_BASE_URL:-http://app.wemux.localtest.me:${HYBRID_WEB_PORT:-15173}}
+      WEMUX_CLOUD_URL: ${WEMUX_CLOUD_URL:-http://127.0.0.1:${HYBRID_SERVER_PORT:-18989}}
+      BETTER_AUTH_URL: ${BETTER_AUTH_URL:-http://app.wemux.localtest.me:${HYBRID_SERVER_PORT:-18989}}
+      BETTER_AUTH_TRUSTED_ORIGINS: ${BETTER_AUTH_TRUSTED_ORIGINS:-http://app.wemux.localtest.me:${HYBRID_WEB_PORT:-15173},http://app.wemux.localtest.me:${HYBRID_SERVER_PORT:-18989},http://127.0.0.1:${HYBRID_WEB_PORT:-15173},http://localhost:${HYBRID_WEB_PORT:-15173},http://127.0.0.1:${HYBRID_SERVER_PORT:-18989},http://localhost:${HYBRID_SERVER_PORT:-18989}}
+      NPM_CONFIG_REGISTRY: ${NPM_REGISTRY:-}
+      WEMUX_RUNTIME_DIR: /data/vibemux-runtime
+      DATABASE_URL: postgres://vibemux:${POSTGRES_PASSWORD:-local-dev-password}@postgres:5432/vibemux
+      OBJECT_STORAGE_ENDPOINT: ${OBJECT_STORAGE_ENDPOINT:?OBJECT_STORAGE_ENDPOINT is required for dev:docker}
+      OBJECT_STORAGE_BUCKET: ${OBJECT_STORAGE_BUCKET:?OBJECT_STORAGE_BUCKET is required for dev:docker}
+      OBJECT_STORAGE_ACCESS_KEY_ID: ${OBJECT_STORAGE_ACCESS_KEY_ID:?OBJECT_STORAGE_ACCESS_KEY_ID is required for dev:docker}
+      OBJECT_STORAGE_SECRET_ACCESS_KEY: ${OBJECT_STORAGE_SECRET_ACCESS_KEY:?OBJECT_STORAGE_SECRET_ACCESS_KEY is required for dev:docker}
+      OBJECT_STORAGE_REGION: ${OBJECT_STORAGE_REGION:-auto}
+      WEMUX_WORKER_CONSOLE_URL: http://worker:${WEMUX_WORKER_PORT:-48121}
+      WEMUX_MESH_ENABLED: ${WEMUX_MESH_ENABLED:-}
+      VIBEMUX_OFFICIAL_CONNECTOR_URL: ${VIBEMUX_OFFICIAL_CONNECTOR_URL:-}
+      VIBEMUX_OFFICIAL_CONNECTOR_ADMIN_TOKEN: ${VIBEMUX_OFFICIAL_CONNECTOR_ADMIN_TOKEN:-}
+      VIBEMUX_OFFICIAL_CONNECTOR_RUNTIME_TOKEN: ${VIBEMUX_OFFICIAL_CONNECTOR_RUNTIME_TOKEN:-}
+      WEMUX_EASYTIER_NETWORK_NAME: ${WEMUX_EASYTIER_NETWORK_NAME:-}
+      WEMUX_EASYTIER_NETWORK_PREFIX: ${WEMUX_EASYTIER_NETWORK_PREFIX:-}
+      WEMUX_EASYTIER_NETWORK_SECRET: ${WEMUX_EASYTIER_NETWORK_SECRET:-}
+      WEMUX_EASYTIER_PEERS: ${WEMUX_EASYTIER_PEERS:-}
+      WEMUX_EASYTIER_IPV4_PREFIX: ${WEMUX_EASYTIER_IPV4_PREFIX:-}
+      WEMUX_EASYTIER_PREVIEW_PROXY_PORT: ${WEMUX_EASYTIER_PREVIEW_PROXY_PORT:-}
+      WEMUX_EASYTIER_TERMINAL_PROXY_PORT: ${WEMUX_EASYTIER_TERMINAL_PROXY_PORT:-}
+      WEMUX_EASYTIER_SERVER_IPV4: ${WEMUX_EASYTIER_SERVER_IPV4:-}
+      WEMUX_EASYTIER_LISTEN_URLS: ${WEMUX_EASYTIER_LISTEN_URLS:-}
+    working_dir: /app
+    command:
+      - /bin/sh
+      - -lc
+      - node scripts/dev-ensure-deps.mjs /app && pnpm dev:server:docker
+    ports:
+      - '${HYBRID_BIND_HOST:-127.0.0.1}:${HYBRID_SERVER_PORT:-18989}:${HYBRID_SERVER_PORT:-18989}'
+      - '${HYBRID_EASYTIER_BIND_HOST:-0.0.0.0}:${WEMUX_EASYTIER_PUBLIC_PORT:-11010}:11010/tcp'
+      - '${HYBRID_EASYTIER_BIND_HOST:-0.0.0.0}:${WEMUX_EASYTIER_PUBLIC_PORT:-11010}:11010/udp'
+    volumes:
+      - ../..:/app
+      - vibemux-full-server-node-modules:/app/node_modules
+      - vibemux-hybrid-server-runtime:/data/vibemux-runtime
+
+  web:
+    build:
+      context: ../..
+      dockerfile: Dockerfile.control-plane
+      target: deps
+      args:
+        NPM_REGISTRY: ${NPM_REGISTRY:-}
+    depends_on:
+      - server
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    environment:
+      HOST: 0.0.0.0
+      PORT: ${HYBRID_WEB_PORT:-15173}
+      VITE_HMR_HOST: ${VITE_HMR_HOST:-app.wemux.localtest.me}
+      VITE_API_BASE_URL: ${VITE_API_BASE_URL:-http://app.wemux.localtest.me:${HYBRID_WEB_PORT:-15173}}
+      VITE_APP_BASE_URL: ${VITE_APP_BASE_URL:-http://app.wemux.localtest.me:${HYBRID_WEB_PORT:-15173}}
+      VITE_BETTER_AUTH_URL: ${VITE_BETTER_AUTH_URL:-http://app.wemux.localtest.me:${HYBRID_WEB_PORT:-15173}/api/identity}
+      VITE_SERVER_PROXY_TARGET: ${VITE_SERVER_PROXY_TARGET:-http://server:${HYBRID_SERVER_PORT:-18989}}
+      VITE_DOCS_PROXY_TARGET: ${VITE_DOCS_PROXY_TARGET:-http://host.docker.internal:${HYBRID_DOCS_PORT:-3001}}
+      NPM_CONFIG_REGISTRY: ${NPM_REGISTRY:-}
+      CHOKIDAR_USEPOLLING: ${CHOKIDAR_USEPOLLING:-true}
+      CHOKIDAR_INTERVAL: ${CHOKIDAR_INTERVAL:-300}
+    working_dir: /app
+    command:
+      - /bin/sh
+      - -lc
+      - node scripts/dev-ensure-deps.mjs /app && pnpm dev:client:docker
+    ports:
+      - '${HYBRID_BIND_HOST:-0.0.0.0}:${HYBRID_WEB_PORT:-15173}:${HYBRID_WEB_PORT:-15173}'
+    volumes:
+      - ../..:/app
+      - vibemux-full-web-node-modules:/app/node_modules
+
+  worker:
+    build:
+      context: ../..
+      dockerfile: Dockerfile.control-plane
+      target: worker-dev-deps
+      args:
+        NPM_REGISTRY: ${NPM_REGISTRY:-}
+    depends_on:
+      - server
+    extra_hosts:
+      - 'host.docker.internal:host-gateway'
+    cap_add:
+      - NET_ADMIN
+    devices:
+      - /dev/net/tun
+    environment:
+      NODE_ENV: development
+      DOTENV_CONFIG_PATH: .env.development.local
+      WEMUX_CLOUD_URL: http://server:${HYBRID_SERVER_PORT:-18989}
+      WEMUX_WORKER_HOST: '0.0.0.0'
+      WEMUX_WORKER_PORT: ${WEMUX_WORKER_PORT:-48121}
+      WEMUX_WORKER_HOME: /data/vibemux-worker
+      WEMUX_WORKER_AUTO_INSTALL: 'true'
+      WEMUX_WORKER_AUTO_UPDATE: '1'
+      WEMUX_WORKER_RESTART_STRATEGY: docker
+      WEMUX_WORKER_RUN_MODE: docker
+      WEMUX_WORKER_SKIP_RUNTIME_GUARD: 'true'
+      NPM_CONFIG_REGISTRY: ${NPM_REGISTRY:-}
+      WEMUX_MESH_ENABLED: ${WEMUX_MESH_ENABLED:-}
+      WEMUX_EASYTIER_VERSION: ${WEMUX_EASYTIER_VERSION:-v2.6.4}
+      WEMUX_EASYTIER_DOWNLOAD_BASE_URL: ${WEMUX_EASYTIER_DOWNLOAD_BASE_URL:-https://github.com/EasyTier/EasyTier/releases/download}
+      WEMUX_EASYTIER_NETWORK_NAME: ${WEMUX_EASYTIER_NETWORK_NAME:-}
+      WEMUX_EASYTIER_NETWORK_PREFIX: ${WEMUX_EASYTIER_NETWORK_PREFIX:-}
+      WEMUX_EASYTIER_NETWORK_SECRET: ${WEMUX_EASYTIER_NETWORK_SECRET:-}
+      WEMUX_EASYTIER_PEERS: ${WEMUX_EASYTIER_PEERS:-}
+      WEMUX_EASYTIER_IPV4_PREFIX: ${WEMUX_EASYTIER_IPV4_PREFIX:-}
+      WEMUX_EASYTIER_PREVIEW_PROXY_PORT: ${WEMUX_EASYTIER_PREVIEW_PROXY_PORT:-}
+      WEMUX_EASYTIER_TERMINAL_PROXY_PORT: ${WEMUX_EASYTIER_TERMINAL_PROXY_PORT:-}
+      WEMUX_EASYTIER_AUTO_DOWNLOAD: ${WEMUX_EASYTIER_AUTO_DOWNLOAD:-}
+    working_dir: /app
+    command:
+      - /bin/sh
+      - -lc
+      - node scripts/dev-ensure-deps.mjs /app && bash ./scripts/docker-worker-auto-pair.sh
+    ports:
+      - '${HYBRID_BIND_HOST:-127.0.0.1}:${WEMUX_WORKER_PORT:-48121}:${WEMUX_WORKER_PORT:-48121}'
+    volumes:
+      - ../..:/app
+      - vibemux-full-worker-node-modules:/app/node_modules
+      - vibemux-full-worker-home:/data/vibemux-worker
+
+volumes:
+  vibemux-hybrid-postgres-data:
+  vibemux-hybrid-server-runtime:
+  vibemux-full-server-node-modules:
+  vibemux-full-web-node-modules:
+  vibemux-full-worker-node-modules:
+  vibemux-full-worker-home:

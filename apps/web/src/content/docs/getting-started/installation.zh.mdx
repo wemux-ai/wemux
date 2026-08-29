@@ -1,0 +1,60 @@
+---
+title: 安装
+description: 安装和配置 Wemux Worker。
+---
+
+# 安装
+
+本指南将引导您完成 Wemux Worker 的安装和配置。
+
+## 前置要求
+
+安装前，请确保您拥有：
+
+- **Node.js 22+** - Worker 运行时必需
+- **Git** - 仓库操作必需
+- **OpenCode** - AI 编程代理（从 [opencode.ai](https://opencode.ai) 安装）
+
+## 安装步骤
+
+### 1. 安装 Worker
+
+```bash
+npm install -g wemux-worker
+```
+
+或使用 pnpm：
+
+```bash
+pnpm add -g wemux-worker
+```
+
+### 2. 启动 Worker
+
+```bash
+Wemux worker daemon
+```
+
+Worker 控制台将在 `http://127.0.0.1:48121` 可用。
+
+### 3. 与控制面配对
+
+1. 打开 Wemux Web 界面
+2. 导航到 `/execution`
+3. 点击"添加执行器"生成配对码
+4. 在 Worker 控制台中粘贴代码
+5. 确认执行器状态显示"已连接"
+
+## 配置
+
+Worker 从环境变量或 `.env` 文件读取配置：
+
+| 变量 | 描述 | 默认值 |
+|----------|-------------|---------|
+| `WEMUX_CLOUD_URL` | 控制面 URL | `http://127.0.0.1:8989` |
+| `WEMUX_RUNTIME_DIR` | 任务工作目录 | `/tmp/wemux-runtime` |
+
+## 后续步骤
+
+- [创建您的第一个任务](/docs/getting-started/first-task)
+- [了解工作区](/docs/getting-started/workspaces)

@@ -1,0 +1,79 @@
+---
+title: Create a Task
+description: Step-by-step guide to creating and dispatching a task in wemux.
+---
+
+# Create a Task
+
+This guide walks you through creating a task that will be executed by a worker.
+
+## Step 1: Navigate to Your Project
+
+1. Log in to Wemux at `http://app.wemux.localtest.me:15173`
+2. Select your project from the dashboard
+3. Click on the **Kanban** tab to view the task board
+
+## Step 2: Create a New Task
+
+1. Click the **"New Task"** button in the top right
+2. The task creation dialog will open
+
+## Step 3: Fill in Task Details
+
+### Basic Information
+
+| Field | Required | Description |
+|-------|----------|-------------|
+| **Title** | Yes | Brief description (e.g., "Fix login bug") |
+| **Description** | Yes | Natural language requirements |
+| **Acceptance Criteria** | No | Conditions for task completion |
+
+### Example Description
+
+```markdown
+## Requirements
+Fix the login timeout issue when users are inactive for 30 minutes.
+
+## Details
+- Session should not expire during active use
+- After 30 min inactivity, redirect to login
+- Show "Session expired" message
+
+## Context
+This bug was reported in #bug-reports channel.
+```
+
+## Step 4: Choose Execution Mode
+
+| Mode | When to Use |
+|------|-------------|
+| **Execute Task** | Ready to run immediately |
+| **New Requirement** | Add to backlog without execution |
+
+## Step 5: Select Worker
+
+| Option | Description |
+|--------|-------------|
+| **Auto-select** | System picks the best available worker |
+| **Specify Executor** | Choose a specific paired worker |
+
+## Step 6: Create the Task
+
+Click **"Create"** to submit.
+
+- For **Execute Task**: Task enters the queue and dispatches to a worker
+- For **New Requirement**: Task appears in Backlog column
+
+## Monitoring Your Task
+
+Once created, you can:
+
+- Track status in the Kanban board
+- Click the task card to open the detail drawer
+- View real-time execution logs
+- Review AI-generated review notes when complete
+
+## Next Steps
+
+- [Review Results](/docs/guides/review-results) - Evaluate task output
+- [Pair a Worker](/docs/guides/pair-worker) - Connect your first worker

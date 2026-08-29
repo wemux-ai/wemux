@@ -1,0 +1,65 @@
+---
+title: Kanban Board
+description: Visual task management with Kanban stages in wemux.
+---
+
+# Kanban Board
+
+The Kanban board provides a visual interface for tracking tasks through their lifecycle.
+
+## Board Stages
+
+| Stage | Description |
+|-------|-------------|
+| **Backlog** | Tasks queued for execution |
+| **In Progress** | Tasks currently being worked on |
+| **Review** | Completed tasks awaiting approval |
+| **Done** | Approved and archived tasks |
+
+## Using the Board
+
+### Moving Tasks
+
+Drag tasks between columns to update their status. The system validates transitions:
+
+- Backlog → In Progress: Requires worker assignment
+- In Progress → Review: Requires execution completion
+- Review → Done: Requires human approval
+
+### Filtering
+
+Filter the board by:
+
+- **Worker** - Show tasks assigned to specific workers
+- **Priority** - Highlight high-priority items
+- **Date Range** - Focus on recent or upcoming work
+- **Search** - Find tasks by title or description
+
+### Task Cards
+
+Each card displays:
+
+- Task title and brief description
+- Current status indicator
+- Assigned worker avatar
+- Priority badge
+- Execution time (when in progress)
+
+## Board Views
+
+### My Tasks
+
+Shows tasks assigned to your workers for quick oversight.
+
+### All Tasks
+
+Full project view with all tasks across all stages.
+
+### Review Queue
+
+Dedicated view of tasks awaiting human review.
+
+## Next Steps
+
+- [Tasks Overview](/docs/core-concepts/tasks) - Task lifecycle details
+- [Workers](/docs/core-concepts/workers) - Understand executor machines

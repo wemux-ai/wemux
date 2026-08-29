@@ -1,0 +1,96 @@
+---
+title: OpenCode Setup
+description: Configure OpenCode agent settings for Wemux workers.
+---
+
+# OpenCode Setup
+
+OpenCode is the default AI coding agent in wemux. This guide covers configuration options.
+
+## Installation
+
+OpenCode should already be installed on your worker machine. Verify:
+
+```bash
+opencode --version
+```
+
+If not installed, follow the guide at [opencode.ai](https://opencode.ai).
+
+## Worker Configuration
+
+Configure how OpenCode runs on your worker:
+
+```bash
+# Environment file: ~/.wemux/worker.env
+
+# OpenCode binary path (if not in PATH)
+OPENCODE_PATH=/usr/local/bin/opencode
+
+# Default model (e.g., claude-3-5-sonnet, gpt-4o)
+OPENCODE_MODEL=claude-3-5-sonnet
+
+# Max tokens for responses
+OPENCODE_MAX_TOKENS=8192
+
+# Enable verbose logging
+OPENCODE_VERBOSE=true
+```
+
+## Model Selection
+
+Wemux supports multiple AI models through OpenCode:
+
+| Model | Provider | Strengths |
+|-------|----------|----------|
+| Claude 3.5 Sonnet | Anthropic | Code reasoning, long context |
+| GPT-4o | OpenAI | Fast, good general reasoning |
+| Gemini 1.5 Pro | Google | Long context, multimodal |
+
+### Setting Default Model
+
+In your worker's environment:
+
+```bash
+OPENCODE_MODEL=claude-3-5-sonnet
+```
+
+### Per-Task Model Override
+
+When creating a task, you can specify a different model in the description:
+
+```markdown
+Use GPT-4o for this task as it requires fast turnaround.
+```
+
+## MCP Server Integration
+
+OpenCode can connect to MCP (Model Context Protocol) servers for extended capabilities:
+
+```bash
+# Configure MCP servers
+OPENCODE_MCP_SERVERS=filesystem,git,search
+```
+
+See [MCP Servers](/docs/configuration/mcp) for detailed setup.
+
+## Session Behavior
+
+| Setting | Description | Default |
+|---------|-------------|---------|
+| `OPENCODE_SESSION_TIMEOUT` | Max session duration | 30 minutes |
+| `OPENCODE_MAX_ITERATIONS` | Max agent iterations | 100 |
+| `OPENCODE_AUTO_APPROVE` | Auto-approve safe operations | false |
+
+## Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| OpenCode not found | Ensure it's in your PATH or set `OPENCODE_PATH` |
+| Model not available | Check your API credits and model access |
+| MCP connection failed | Verify MCP server is running and accessible |
+
+## Next Steps
+
+- [MCP Servers](/docs/configuration/mcp) - Extend capabilities
+- [Model Selection](/docs/configuration/models) - Compare available models

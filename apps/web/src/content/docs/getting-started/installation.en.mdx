@@ -1,0 +1,60 @@
+---
+title: Installation
+description: Install and configure the Wemux worker on your machine.
+---
+
+# Installation
+
+This guide walks you through installing and configuring the Wemux worker.
+
+## Prerequisites
+
+Before installing, ensure you have:
+
+- **Node.js 22+** - Required for the worker runtime
+- **Git** - Required for repository operations
+- **OpenCode** - The AI coding agent (install from [opencode.ai](https://opencode.ai))
+
+## Installation Steps
+
+### 1. Install the Worker
+
+```bash
+npm install -g wemux-worker
+```
+
+Or use pnpm:
+
+```bash
+pnpm add -g wemux-worker
+```
+
+### 2. Start the Worker
+
+```bash
+Wemux worker daemon
+```
+
+The worker console will be available at `http://127.0.0.1:48121`.
+
+### 3. Pair with Control Plane
+
+1. Open the Wemux web interface
+2. Navigate to `/execution`
+3. Click "Add Executor" to generate a pairing code
+4. Paste the code in the Worker Console
+5. Confirm the executor status shows "Connected"
+
+## Configuration
+
+The worker reads configuration from environment variables or `.env` files:
+
+| Variable | Description | Default |
+|----------|-------------|---------|
+| `WEMUX_CLOUD_URL` | Control plane URL | `http://127.0.0.1:8989` |
+| `WEMUX_RUNTIME_DIR` | Working directory for tasks | `/tmp/wemux-runtime` |
+
+## Next Steps
+
+- [Create your first task](/docs/getting-started/first-task)
+- [Understand workspaces](/docs/getting-started/workspaces)

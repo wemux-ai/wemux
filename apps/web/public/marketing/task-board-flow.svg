@@ -1,0 +1,113 @@
+<svg width="1440" height="940" viewBox="0 0 1440 940" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1440" y2="940" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0F172A"/>
+      <stop offset="0.5" stop-color="#05070B"/>
+      <stop offset="1" stop-color="#111827"/>
+    </linearGradient>
+    <linearGradient id="line" x1="120" y1="120" x2="1320" y2="760" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8B5CF6"/>
+      <stop offset="0.55" stop-color="#38BDF8"/>
+      <stop offset="1" stop-color="#34D399"/>
+    </linearGradient>
+    <filter id="shadow" x="44" y="38" width="1352" height="860" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="34" stdDeviation="42" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <rect width="1440" height="940" rx="44" fill="url(#bg)"/>
+  <circle cx="1112" cy="210" r="300" fill="#38BDF8" opacity="0.12"/>
+  <circle cx="246" cy="704" r="280" fill="#8B5CF6" opacity="0.12"/>
+
+  <g filter="url(#shadow)">
+    <rect x="82" y="78" width="1276" height="784" rx="34" fill="#090D15" stroke="white" stroke-opacity="0.12"/>
+    <g transform="translate(128 126)">
+      <text fill="white" font-family="ui-sans-serif, system-ui" font-size="34" font-weight="760">Task board</text>
+      <text y="36" fill="white" fill-opacity="0.48" font-family="ui-sans-serif, system-ui" font-size="15">Requirements become routed, observable, reviewable delivery work.</text>
+      <rect x="956" y="-10" width="210" height="42" rx="21" fill="#38BDF8" fill-opacity="0.12" stroke="#38BDF8" stroke-opacity="0.22"/>
+      <text x="982" y="17" fill="#7DD3FC" font-family="ui-sans-serif, system-ui" font-size="13" font-weight="700">team-shared · 4 executors</text>
+    </g>
+
+    <path d="M180 258C370 184 508 202 642 282C794 372 964 362 1188 250" stroke="url(#line)" stroke-width="5" stroke-linecap="round" opacity="0.28"/>
+
+    <g transform="translate(126 224)" font-family="ui-sans-serif, system-ui">
+      <g>
+        <rect width="284" height="568" rx="28" fill="#101827" stroke="white" stroke-opacity="0.09"/>
+        <text x="24" y="42" fill="white" fill-opacity="0.54" font-size="12" letter-spacing="2">BACKLOG</text>
+        <text x="226" y="42" fill="white" fill-opacity="0.34" font-size="13">4</text>
+        <g transform="translate(20 78)">
+          <rect width="244" height="130" rx="22" fill="white" fill-opacity="0.045"/>
+          <text x="20" y="34" fill="white" font-size="15" font-weight="700">Add Google login</text>
+          <text x="20" y="60" fill="white" fill-opacity="0.45" font-size="12">repo: app-web · acceptance ready</text>
+          <rect x="20" y="84" width="84" height="28" rx="14" fill="#8B5CF6" fill-opacity="0.16"/>
+          <text x="36" y="103" fill="#C4B5FD" font-size="11" font-weight="700">PRIMARY</text>
+        </g>
+        <g transform="translate(20 230)">
+          <rect width="244" height="118" rx="22" fill="white" fill-opacity="0.035"/>
+          <text x="20" y="34" fill="white" font-size="15" font-weight="700">Refactor Kanban</text>
+          <text x="20" y="60" fill="white" fill-opacity="0.45" font-size="12">split board components</text>
+        </g>
+      </g>
+
+      <g transform="translate(316)">
+        <rect width="284" height="568" rx="28" fill="#101827" stroke="white" stroke-opacity="0.09"/>
+        <text x="24" y="42" fill="white" fill-opacity="0.54" font-size="12" letter-spacing="2">DISPATCHING</text>
+        <text x="226" y="42" fill="white" fill-opacity="0.34" font-size="13">3</text>
+        <g transform="translate(20 78)">
+          <rect width="244" height="152" rx="22" fill="#38BDF8" fill-opacity="0.07" stroke="#38BDF8" stroke-opacity="0.16"/>
+          <text x="20" y="34" fill="white" font-size="15" font-weight="700">Browser regression</text>
+          <text x="20" y="60" fill="white" fill-opacity="0.45" font-size="12">routing to mac-mini-02</text>
+          <rect x="20" y="84" width="204" height="8" rx="4" fill="white" fill-opacity="0.08"/>
+          <rect x="20" y="84" width="146" height="8" rx="4" fill="#38BDF8"/>
+          <text x="20" y="122" fill="#7DD3FC" font-size="12" font-weight="700">slot acquired · env ready</text>
+        </g>
+        <g transform="translate(20 254)">
+          <rect width="244" height="118" rx="22" fill="white" fill-opacity="0.035"/>
+          <text x="20" y="34" fill="white" font-size="15" font-weight="700">Git identity setup</text>
+          <text x="20" y="60" fill="white" fill-opacity="0.45" font-size="12">credential scoped to task</text>
+        </g>
+      </g>
+
+      <g transform="translate(632)">
+        <rect width="284" height="568" rx="28" fill="#101827" stroke="white" stroke-opacity="0.09"/>
+        <text x="24" y="42" fill="white" fill-opacity="0.54" font-size="12" letter-spacing="2">RUNNING</text>
+        <text x="226" y="42" fill="white" fill-opacity="0.34" font-size="13">5</text>
+        <g transform="translate(20 78)">
+          <rect width="244" height="154" rx="22" fill="#8B5CF6" fill-opacity="0.08" stroke="#8B5CF6" stroke-opacity="0.16"/>
+          <text x="20" y="34" fill="white" font-size="15" font-weight="700">Auth callback API</text>
+          <text x="20" y="60" fill="white" fill-opacity="0.45" font-size="12">worktree: task/google-auth-42</text>
+          <g transform="translate(20 86)">
+            <rect width="76" height="28" rx="14" fill="#34D399" fill-opacity="0.12"/>
+            <text x="16" y="19" fill="#86EFAC" font-size="11" font-weight="700">CODING</text>
+          </g>
+          <text x="20" y="134" fill="white" fill-opacity="0.38" font-size="12">148 logs · 2 files changed</text>
+        </g>
+        <g transform="translate(20 256)">
+          <rect width="244" height="118" rx="22" fill="white" fill-opacity="0.035"/>
+          <text x="20" y="34" fill="white" font-size="15" font-weight="700">Model profile UI</text>
+          <text x="20" y="60" fill="white" fill-opacity="0.45" font-size="12">typecheck running</text>
+        </g>
+      </g>
+
+      <g transform="translate(948)">
+        <rect width="284" height="568" rx="28" fill="#101827" stroke="white" stroke-opacity="0.09"/>
+        <text x="24" y="42" fill="white" fill-opacity="0.54" font-size="12" letter-spacing="2">REVIEW</text>
+        <text x="226" y="42" fill="white" fill-opacity="0.34" font-size="13">2</text>
+        <g transform="translate(20 78)">
+          <rect width="244" height="148" rx="22" fill="#34D399" fill-opacity="0.07" stroke="#34D399" stroke-opacity="0.16"/>
+          <text x="20" y="34" fill="white" font-size="15" font-weight="700">Execution bindings</text>
+          <text x="20" y="60" fill="white" fill-opacity="0.45" font-size="12">branch returned · review ready</text>
+          <g transform="translate(20 86)">
+            <circle cx="10" cy="10" r="6" fill="#34D399"/>
+            <text x="28" y="15" fill="#86EFAC" font-size="12" font-weight="700">5 / 6 checks passed</text>
+          </g>
+        </g>
+        <g transform="translate(20 250)">
+          <rect width="244" height="118" rx="22" fill="white" fill-opacity="0.035"/>
+          <text x="20" y="34" fill="white" font-size="15" font-weight="700">Artifact upload</text>
+          <text x="20" y="60" fill="white" fill-opacity="0.45" font-size="12">waiting for approval</text>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

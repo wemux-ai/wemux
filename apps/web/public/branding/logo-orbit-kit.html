@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>wemux Orbit Kit</title>
+    <style>
+      :root {
+        color-scheme: dark;
+        --bg: #09090b;
+        --panel: #121316;
+        --line: #27272a;
+        --text: #fafaf9;
+        --muted: #a1a1aa;
+        --sand: #f5ecdd;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        background:
+          radial-gradient(circle at top left, rgba(143, 183, 201, 0.12), transparent 30%),
+          radial-gradient(circle at bottom right, rgba(217, 111, 50, 0.1), transparent 28%),
+          var(--bg);
+        color: var(--text);
+        font: 14px/1.5 Inter, "Segoe UI", sans-serif;
+      }
+
+      main {
+        width: min(1120px, calc(100% - 32px));
+        margin: 0 auto;
+        padding: 40px 0 56px;
+      }
+
+      h1 {
+        margin: 0 0 8px;
+        font-size: 28px;
+      }
+
+      p {
+        margin: 0;
+        color: var(--muted);
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        gap: 16px;
+        margin-top: 28px;
+      }
+
+      .card {
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        background: rgba(18, 19, 22, 0.9);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.28);
+      }
+
+      .swatch {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 184px;
+        border-radius: 16px;
+        background: linear-gradient(180deg, #17181d, #0c0c0f);
+      }
+
+      .swatch.light {
+        background: linear-gradient(180deg, #fffaf2, #f5ecdd);
+      }
+
+      .swatch img {
+        max-width: 82%;
+        max-height: 132px;
+      }
+
+      .swatch.icon img {
+        width: 124px;
+        height: 124px;
+      }
+
+      h2 {
+        margin: 14px 0 6px;
+        font-size: 18px;
+      }
+
+      .sizes {
+        display: flex;
+        align-items: center;
+        gap: 16px;
+        margin-top: 28px;
+        padding: 18px;
+        border: 1px solid var(--line);
+        border-radius: 20px;
+        background: rgba(18, 19, 22, 0.9);
+      }
+
+      .sizes img:nth-child(1) {
+        width: 16px;
+        height: 16px;
+      }
+
+      .sizes img:nth-child(2) {
+        width: 24px;
+        height: 24px;
+      }
+
+      .sizes img:nth-child(3) {
+        width: 32px;
+        height: 32px;
+      }
+
+      .sizes img:nth-child(4) {
+        width: 48px;
+        height: 48px;
+      }
+
+      .sizes img:nth-child(5) {
+        width: 64px;
+        height: 64px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>wemux Orbit Kit</h1>
+      <p>基于已选中的 Orbit 图标，延展出文字版、单色版、浅色版和小尺寸 favicon 版。</p>
+
+      <section class="grid">
+        <article class="card">
+          <div class="swatch"><img src="/branding/logo-orbit-wordmark.svg" alt="Wordmark" /></div>
+          <h2>Wordmark</h2>
+          <p>用于官网头部、开放图、演示文档和品牌横幅。</p>
+        </article>
+
+        <article class="card">
+          <div class="swatch icon"><img src="/branding/logo-orbit-mono.svg" alt="Mono" /></div>
+          <h2>Mono</h2>
+          <p>用于水印、打印、低色彩环境和第三方集成图标。</p>
+        </article>
+
+        <article class="card">
+          <div class="swatch light icon"><img src="/branding/logo-orbit-light.svg" alt="Light" /></div>
+          <h2>Light</h2>
+          <p>用于浅色背景，避免黑色底牌太重。</p>
+        </article>
+
+        <article class="card">
+          <div class="swatch icon"><img src="/branding/favicon-orbit-small.svg" alt="Small favicon" /></div>
+          <h2>Small Favicon</h2>
+          <p>减少细节，更适合 16px/32px 浏览器标签页。</p>
+        </article>
+      </section>
+
+      <section class="sizes" aria-label="Small size preview">
+        <img src="/branding/favicon-orbit-small.svg" alt="" />
+        <img src="/branding/favicon-orbit-small.svg" alt="" />
+        <img src="/branding/favicon-orbit-small.svg" alt="" />
+        <img src="/branding/favicon-orbit-small.svg" alt="" />
+        <img src="/branding/favicon-orbit-small.svg" alt="" />
+        <p>小尺寸预览：16 / 24 / 32 / 48 / 64</p>
+      </section>
+    </main>
+  </body>
+</html>

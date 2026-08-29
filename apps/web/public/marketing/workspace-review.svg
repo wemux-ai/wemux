@@ -1,0 +1,109 @@
+<svg width="1440" height="940" viewBox="0 0 1440 940" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1440" y2="940" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#111827"/>
+      <stop offset="0.52" stop-color="#05070B"/>
+      <stop offset="1" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="184" y1="118" x2="1248" y2="822" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8B5CF6"/>
+      <stop offset="0.54" stop-color="#38BDF8"/>
+      <stop offset="1" stop-color="#34D399"/>
+    </linearGradient>
+    <filter id="shadow" x="48" y="36" width="1344" height="868" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="34" stdDeviation="42" flood-color="#000000" flood-opacity="0.46"/>
+    </filter>
+  </defs>
+
+  <rect width="1440" height="940" rx="44" fill="url(#bg)"/>
+  <circle cx="220" cy="182" r="300" fill="#8B5CF6" opacity="0.12"/>
+  <circle cx="1170" cy="730" r="320" fill="#38BDF8" opacity="0.12"/>
+
+  <g filter="url(#shadow)">
+    <rect x="82" y="74" width="1276" height="792" rx="34" fill="#090D15" stroke="white" stroke-opacity="0.12"/>
+    <g transform="translate(128 122)">
+      <text fill="white" font-family="ui-sans-serif, system-ui" font-size="34" font-weight="760">Workspace review</text>
+      <text y="36" fill="white" fill-opacity="0.48" font-family="ui-sans-serif, system-ui" font-size="15">Returned branch, diff, terminal logs, and review summary in one place.</text>
+      <rect x="882" y="-10" width="286" height="42" rx="21" fill="#34D399" fill-opacity="0.1" stroke="#34D399" stroke-opacity="0.22"/>
+      <text x="908" y="17" fill="#86EFAC" font-family="ui-sans-serif, system-ui" font-size="13" font-weight="700">task/google-auth-42 · ready to review</text>
+    </g>
+
+    <g transform="translate(128 214)" font-family="ui-sans-serif, system-ui">
+      <rect width="356" height="586" rx="28" fill="#101827" stroke="white" stroke-opacity="0.09"/>
+      <text x="28" y="42" fill="white" font-size="19" font-weight="720">Return package</text>
+      <text x="28" y="70" fill="white" fill-opacity="0.42" font-size="13">Everything needed to decide the next step.</text>
+
+      <g transform="translate(28 112)">
+        <rect width="300" height="82" rx="20" fill="white" fill-opacity="0.045"/>
+        <text x="20" y="32" fill="#7DD3FC" font-size="12" font-weight="700">BRANCH</text>
+        <text x="20" y="58" fill="white" font-size="15">task/google-auth-42</text>
+      </g>
+      <g transform="translate(28 214)">
+        <rect width="300" height="82" rx="20" fill="white" fill-opacity="0.045"/>
+        <text x="20" y="32" fill="#C4B5FD" font-size="12" font-weight="700">COMMIT</text>
+        <text x="20" y="58" fill="white" font-size="15">feat(auth): google login</text>
+      </g>
+      <g transform="translate(28 316)">
+        <rect width="300" height="148" rx="20" fill="#34D399" fill-opacity="0.06" stroke="#34D399" stroke-opacity="0.14"/>
+        <text x="20" y="34" fill="#86EFAC" font-size="12" font-weight="700">AUTO REVIEW</text>
+        <text x="20" y="66" fill="white" font-size="22" font-weight="760">5 / 6 checks passed</text>
+        <rect x="20" y="92" width="236" height="8" rx="4" fill="white" fill-opacity="0.1"/>
+        <rect x="20" y="92" width="198" height="8" rx="4" fill="url(#accent)"/>
+        <text x="20" y="126" fill="white" fill-opacity="0.48" font-size="12">Needs one config edge-case review.</text>
+      </g>
+    </g>
+
+    <g transform="translate(512 214)" font-family="ui-sans-serif, system-ui">
+      <rect width="470" height="586" rx="28" fill="#101827" stroke="white" stroke-opacity="0.09"/>
+      <text x="28" y="42" fill="white" font-size="19" font-weight="720">Diff preview</text>
+      <text x="28" y="70" fill="white" fill-opacity="0.42" font-size="13">Files changed by the agent in the isolated worktree.</text>
+
+      <g transform="translate(28 108)" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13">
+        <rect width="414" height="414" rx="20" fill="#05070B"/>
+        <text x="24" y="38" fill="#94A3B8">apps/server/src/routes/auth-routes.ts</text>
+        <rect x="20" y="62" width="374" height="28" rx="8" fill="#34D399" fill-opacity="0.12"/>
+        <text x="32" y="82" fill="#86EFAC">+ app.get('/auth/google/callback', async c =&gt; {</text>
+        <rect x="20" y="100" width="330" height="28" rx="8" fill="#34D399" fill-opacity="0.09"/>
+        <text x="32" y="120" fill="#86EFAC">+   const session = await exchangeGoogleCode(c)</text>
+        <rect x="20" y="138" width="352" height="28" rx="8" fill="#34D399" fill-opacity="0.09"/>
+        <text x="32" y="158" fill="#86EFAC">+   return c.redirect('/dashboard')</text>
+        <text x="32" y="206" fill="#CBD5E1">  })</text>
+        <text x="24" y="260" fill="#94A3B8">apps/web/src/lib/better-auth-client.ts</text>
+        <rect x="20" y="284" width="358" height="28" rx="8" fill="#38BDF8" fill-opacity="0.1"/>
+        <text x="32" y="304" fill="#7DD3FC">~ export const authClient = createAuthClient(...)</text>
+        <rect x="20" y="322" width="240" height="28" rx="8" fill="#EF4444" fill-opacity="0.1"/>
+        <text x="32" y="342" fill="#FCA5A5">- provider: 'github'</text>
+      </g>
+    </g>
+
+    <g transform="translate(1010 214)" font-family="ui-sans-serif, system-ui">
+      <rect width="300" height="586" rx="28" fill="#101827" stroke="white" stroke-opacity="0.09"/>
+      <text x="28" y="42" fill="white" font-size="19" font-weight="720">Execution log</text>
+      <text x="28" y="70" fill="white" fill-opacity="0.42" font-size="13">Agent timeline and risk signals.</text>
+
+      <g transform="translate(28 112)">
+        <path d="M12 0V350" stroke="white" stroke-opacity="0.12"/>
+        <g>
+          <circle cx="12" cy="16" r="7" fill="#34D399"/>
+          <text x="34" y="12" fill="white" font-size="14" font-weight="700">Requirement parsed</text>
+          <text x="34" y="34" fill="white" fill-opacity="0.42" font-size="12">stack and acceptance detected</text>
+        </g>
+        <g transform="translate(0 86)">
+          <circle cx="12" cy="16" r="7" fill="#38BDF8"/>
+          <text x="34" y="12" fill="white" font-size="14" font-weight="700">Worktree ready</text>
+          <text x="34" y="34" fill="white" fill-opacity="0.42" font-size="12">task branch checked out</text>
+        </g>
+        <g transform="translate(0 172)">
+          <circle cx="12" cy="16" r="7" fill="#8B5CF6"/>
+          <text x="34" y="12" fill="white" font-size="14" font-weight="700">Agent implemented</text>
+          <text x="34" y="34" fill="white" fill-opacity="0.42" font-size="12">3 files changed · 148 logs</text>
+        </g>
+        <g transform="translate(0 258)">
+          <circle cx="12" cy="16" r="7" fill="#F59E0B"/>
+          <text x="34" y="12" fill="white" font-size="14" font-weight="700">Review requested</text>
+          <text x="34" y="34" fill="white" fill-opacity="0.42" font-size="12">one env config warning</text>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

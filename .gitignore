@@ -1,0 +1,88 @@
+# Dependencies and package managers
+node_modules/
+.pnpm-store
+# 本仓库使用 pnpm（packageManager: pnpm），npm lockfile 不应提交
+package-lock.json
+
+# Build outputs and caches
+dist/
+dist-server
+dist-worker
+build/
+.next/
+.vite
+.cache/
+.output
+.vinxi
+coverage/
+tmp/
+vite.config.timestamp_*.js
+vite.config.d.ts
+tsconfig.tsbuildinfo
+*.tsbuildinfo
+
+# Local environment and secrets
+.env
+.env.local
+.env.*
+!.env.example
+!.env.*.example
+.dev.vars*
+!.dev.vars.example
+deploy/host/.env.dokploy.preview
+deploy/host/.env.dokploy.production
+docs/deploy/GOOGLE-AUTH-INVITE-CODES.local.md
+
+# Local tool state
+.worktrees
+.wrangler
+.turbo/preferences/tui.json
+.artifacts
+.gsd
+.gsd-id
+.bg-shell/
+.idea/
+.vscode/
+*.code-workspace
+.claude/settings.local.json
+
+# Ad-hoc scripts and scratch files
+*.tmp.mjs
+*.scratch.*
+
+# OS and editor noise
+*.log
+.DS_Store
+
+# Optional local extension checkout used by composed deployments.
+/apps/enterprise
+Thumbs.db
+*.swp
+*.swo
+*~
+# WEMUX_WORKER_HOME 传入未展开 ~ 时在 cwd 生成的错误目录
+/~
+
+# Other ecosystem outputs
+__pycache__/
+*.pyc
+.venv/
+venv/
+target/
+vendor/
+
+# 数据库/worker 配置备份（含敏感数据，禁止提交）
+.db-backups/
+
+# 临时 shadcn 脚手架（用于生成 ui-admin 组件集，勿提交）
+temp-shadcn/
+node_modules
+logs/
+apps/web/.output
+apps/web/native-static
+apps/web/public/agents/videos/review/
+
+dist-public/
+
+# moi 构建产物
+.moi/

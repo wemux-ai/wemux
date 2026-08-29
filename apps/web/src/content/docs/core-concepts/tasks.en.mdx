@@ -1,0 +1,60 @@
+---
+title: Tasks
+description: Learn how Tasks represent work items in wemux.
+---
+
+# Tasks
+
+Tasks are the fundamental work unit in wemux. A task represents a coding job that gets dispatched to a worker for execution.
+
+## Task Properties
+
+| Property | Description |
+|----------|-------------|
+| Title | Brief description of the work |
+| Description | Natural language requirements and context |
+| Acceptance Criteria | Conditions that define task completion |
+| Status | Current position in the workflow |
+| Assigned Worker | Executor machine handling the task |
+| Priority | Relative importance (affects queue ordering) |
+
+## Task Modes
+
+When creating a task, you choose its execution mode:
+
+### Execute Task
+Immediately dispatches to an available worker. The task enters the execution queue and begins when a worker is paired.
+
+### New Requirement
+Adds to the backlog without immediate execution. Useful for planning and prioritization.
+
+## Task Status Flow
+
+```
+Backlog → In Progress → Review → Done
+              ↓
+          Cancelled
+```
+
+| Status | Meaning |
+|--------|---------|
+| **Backlog** | Queued, waiting for execution |
+| **In Progress** | Worker is actively executing |
+| **Review** | Execution complete, awaiting human review |
+| **Done** | Approved and closed |
+| **Cancelled** | Task terminated without completion |
+
+## Task Execution
+
+When a task executes, Wemux:
+
+1. Creates a Git worktree on the assigned worker
+2. Clones the repository into the worktree
+3. Creates a dedicated branch for the task
+4. Runs the AI agent with task instructions
+5. Commits results and reports back
+
+## Next Steps
+
+- [Kanban Board](/docs/core-concepts/kanban) - Visual task management
+- [Create Your First Task](/docs/getting-started/first-task) - Hands-on guide

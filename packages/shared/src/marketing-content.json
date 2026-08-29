@@ -1,0 +1,716 @@
+[
+  {
+    "collection": "blog",
+    "slug": "why-ai-coding-needs-real-workstations",
+    "path": "/blog/why-ai-coding-needs-real-workstations",
+    "title": "Why AI Coding Needs Real Workstations",
+    "description": "A founder-style point of view on why AI coding breaks at the last mile when it never reaches the real repository, runtime, workstation, and review path.",
+    "imageAlt": "wemux workspaces poster showing AI agents working on real device nodes.",
+    "imagePath": "/marketing/articles/wemux-workspaces-poster.webp",
+    "eyebrow": "Founder Note",
+    "featured": false,
+    "heroTitle": "Why AI coding needs real workstations, not just better chat demos.",
+    "heroDescription": "This is the founder argument in plain terms: AI coding does not fail because the model is weak. It fails because delivery gets abstracted away.",
+    "order": 20,
+    "status": "published",
+    "topicSlugs": [
+      "ai-coding-delivery",
+      "real-workstations"
+    ],
+    "publishedAt": "2026-04-26",
+    "updatedAt": "2026-04-26",
+    "relatedPaths": [
+      "/use-cases/ai-coding-delivery",
+      "/docs/worker-install",
+      "/compare/ai-chat-vs-ai-delivery"
+    ],
+    "author": "wemux Founding Team",
+    "authorUrl": "https://zijiekyro.com/about",
+    "pointOfView": "AI coding only becomes useful at scale when it reaches the real machine, repository, and review path.",
+    "keyClaim": "Real workstations matter more than prettier chat demos once AI coding touches real delivery."
+  },
+  {
+    "collection": "blog",
+    "slug": "codex-handoff-and-persistent-ai-coding",
+    "path": "/blog/codex-handoff-and-persistent-ai-coding",
+    "title": "Codex Handoff Signals the Future of Persistent AI Coding",
+    "description": "Codex Handoff highlights a bigger shift in AI coding: tasks should continue across devices and hosts. wemux turns that idea into one-click transfer for real AI work.",
+    "imageAlt": "English poster about Codex Handoff and persistent AI coding across devices.",
+    "imagePath": "/marketing/articles/codex-handoff-poster.webp",
+    "eyebrow": "Founder Note",
+    "featured": true,
+    "heroTitle": "Codex Handoff signals the future of persistent AI coding.",
+    "heroDescription": "Codex Handoff is a strong signal that AI coding tasks should survive device changes. wemux takes that idea further with one-click transfer across laptops, cloud servers, and remote hosts.",
+    "order": 10,
+    "status": "published",
+    "topicSlugs": [
+      "persistent-ai-coding",
+      "remote-handoff"
+    ],
+    "publishedAt": "2026-07-06",
+    "updatedAt": "2026-07-06",
+    "relatedPaths": [
+      "/use-cases/ai-coding-delivery",
+      "/use-cases/manage-multiple-ai-coding-agents",
+      "/compare/ai-chat-vs-ai-delivery"
+    ],
+    "author": "wemux Founding Team",
+    "authorUrl": "https://zijiekyro.com/about",
+    "pointOfView": "Persistent AI coding should survive device changes and continue across machines instead of dying with one laptop session.",
+    "keyClaim": "Codex Handoff validates that AI coding work needs continuity across hosts, not just better chat memory."
+  },
+  {
+    "collection": "blog",
+    "slug": "ai-coding-needs-work-that-survives-sleep",
+    "path": "/blog/ai-coding-needs-work-that-survives-sleep",
+    "title": "AI Coding Needs Work That Survives Sleep",
+    "description": "Persistent AI coding matters because real engineering work should survive laptop sleep, device changes, and long-running execution across machines.",
+    "imageAlt": "wemux workspaces poster showing AI agents working on real device nodes.",
+    "imagePath": "/marketing/articles/wemux-workspaces-poster.webp",
+    "eyebrow": "Founder Note",
+    "featured": false,
+    "heroTitle": "AI coding needs work that survives sleep, not just a live chat tab.",
+    "heroDescription": "If an AI coding task dies when the laptop closes, it is still operating like a demo. Persistent work needs continuity across time, devices, and real execution surfaces.",
+    "order": 30,
+    "status": "published",
+    "topicSlugs": [
+      "persistent-ai-coding",
+      "real-workstations"
+    ],
+    "publishedAt": "2026-07-07",
+    "updatedAt": "2026-07-07",
+    "relatedPaths": [
+      "/blog/codex-handoff-and-persistent-ai-coding",
+      "/use-cases/ai-coding-delivery",
+      "/docs/worker-install"
+    ],
+    "author": "wemux Founding Team",
+    "authorUrl": "https://zijiekyro.com/about",
+    "pointOfView": "AI work should behave like durable delivery work, not like a temporary browser interaction.",
+    "keyClaim": "If the task dies when the laptop sleeps, the workflow is still demo-grade rather than delivery-grade."
+  },
+  {
+    "collection": "blog",
+    "slug": "from-ai-demo-to-ai-delivery-stack",
+    "path": "/blog/from-ai-demo-to-ai-delivery-stack",
+    "title": "From AI Coding Demo to Real AI Delivery Stack",
+    "description": "Teams moving beyond AI coding demos need a real delivery stack with routing, execution, logs, review, and worker continuity across environments.",
+    "imageAlt": "wemux one-click transfer product poster for moving AI coding sessions between nodes.",
+    "imagePath": "/marketing/articles/wemux-one-click-transfer.webp",
+    "eyebrow": "Founder Note",
+    "featured": false,
+    "heroTitle": "The market is moving from AI coding demos to real AI delivery stacks.",
+    "heroDescription": "Once teams need routing, execution, logs, branch outputs, and review, a chat demo is no longer enough. They need delivery infrastructure.",
+    "order": 40,
+    "status": "published",
+    "topicSlugs": [
+      "ai-coding-delivery",
+      "multi-agent-orchestration"
+    ],
+    "publishedAt": "2026-07-07",
+    "updatedAt": "2026-07-07",
+    "relatedPaths": [
+      "/compare/ai-chat-vs-ai-delivery",
+      "/use-cases/manage-multiple-ai-coding-agents",
+      "/use-cases/ai-coding-delivery"
+    ],
+    "author": "wemux Founding Team",
+    "authorUrl": "https://zijiekyro.com/about",
+    "pointOfView": "The strategic shift in AI coding is from impressive generation demos toward accountable execution and delivery stacks.",
+    "keyClaim": "Teams moving beyond experimentation need a delivery stack, not just a smarter AI demo surface."
+  },
+  {
+    "collection": "blog",
+    "slug": "why-remote-handoff-will-matter-for-ai-agents",
+    "path": "/blog/why-remote-handoff-will-matter-for-ai-agents",
+    "title": "Why Remote Handoff Will Matter for AI Agents",
+    "description": "Remote handoff will become a core AI agent primitive because useful work needs to continue across devices, hosts, and long-running workflows.",
+    "imageAlt": "English poster about Codex Handoff and persistent AI coding across devices.",
+    "imagePath": "/marketing/articles/codex-handoff-poster.webp",
+    "eyebrow": "Founder Note",
+    "featured": false,
+    "heroTitle": "Remote handoff will matter because useful AI work outlives the original device.",
+    "heroDescription": "As agents take on longer tasks, teams will expect continuity across machines. Remote handoff is a workload-mobility feature, not just a remote desktop convenience.",
+    "order": 50,
+    "status": "published",
+    "topicSlugs": [
+      "remote-handoff",
+      "persistent-ai-coding"
+    ],
+    "publishedAt": "2026-07-07",
+    "updatedAt": "2026-07-07",
+    "relatedPaths": [
+      "/blog/codex-handoff-and-persistent-ai-coding",
+      "/use-cases/manage-multiple-ai-coding-agents",
+      "/docs/worker-install"
+    ],
+    "author": "wemux Founding Team",
+    "authorUrl": "https://zijiekyro.com/about",
+    "pointOfView": "Remote handoff is a workload-continuity primitive, not just a convenience feature for remote access.",
+    "keyClaim": "Useful AI agents will need remote handoff because the work often outlives the original device."
+  },
+  {
+    "collection": "compare",
+    "slug": "ai-chat-vs-ai-delivery",
+    "path": "/compare/ai-chat-vs-ai-delivery",
+    "title": "AI Chat vs AI Delivery: Why wemux Focuses on Real Work",
+    "description": "A practical comparison for teams using AI coding in real repositories: chat interfaces are useful, but delivery needs routing, execution, logs, and reviewable outputs.",
+    "imageAlt": "wemux one-click transfer product poster for moving AI coding sessions between nodes.",
+    "imagePath": "/marketing/articles/wemux-one-click-transfer.webp",
+    "eyebrow": "Comparison",
+    "featured": true,
+    "heroTitle": "AI chat can generate output. AI delivery has to survive the real world.",
+    "heroDescription": "Chat interfaces are useful. The problem starts when a team needs AI work to survive routing, execution, approval, and delivery inside a real engineering environment.",
+    "order": 10,
+    "status": "published",
+    "topicSlugs": [
+      "ai-coding-delivery",
+      "multi-agent-orchestration"
+    ],
+    "publishedAt": "2026-05-14",
+    "updatedAt": "2026-05-14",
+    "relatedPaths": [
+      "/use-cases/ai-coding-delivery",
+      "/use-cases/manage-multiple-ai-coding-agents",
+      "/docs/worker-install"
+    ],
+    "author": "wemux Editorial Team",
+    "pointOfView": "AI chat and AI delivery solve different layers of the workflow, and teams eventually need both separated clearly.",
+    "keyClaim": "Chat can generate output, but delivery must route, execute, and preserve reviewable results."
+  },
+  {
+    "collection": "compare",
+    "slug": "wemux-vs-orca",
+    "path": "/compare/wemux-vs-orca",
+    "title": "wemux vs Orca for AI Coding Delivery",
+    "description": "Compare wemux vs Orca for AI coding delivery, worktree execution, team workflows, routed workers, and persistent multi-machine development.",
+    "imageAlt": "wemux one-click transfer product poster for moving AI coding sessions between nodes.",
+    "imagePath": "/marketing/articles/wemux-one-click-transfer.webp",
+    "eyebrow": "Comparison",
+    "featured": true,
+    "heroTitle": "wemux vs Orca: desktop AI workbench or routed delivery control plane?",
+    "heroDescription": "Orca is strong as a polished desktop AI coding workbench. wemux is stronger when the real problem is routed execution, team delivery, and persistent work across machines.",
+    "order": 20,
+    "status": "published",
+    "topicSlugs": [
+      "ai-coding-delivery",
+      "persistent-ai-coding",
+      "remote-handoff"
+    ],
+    "publishedAt": "2026-07-07",
+    "updatedAt": "2026-07-07",
+    "relatedPaths": [
+      "/blog/codex-handoff-and-persistent-ai-coding",
+      "/use-cases/ai-coding-delivery",
+      "/use-cases/manage-multiple-ai-coding-agents"
+    ],
+    "author": "wemux Editorial Team",
+    "pointOfView": "Desktop AI workbenches and worker-routed delivery platforms overlap, but they optimize for different operational constraints.",
+    "keyClaim": "Orca is stronger as a polished workbench, while wemux is stronger as a routed delivery control layer."
+  },
+  {
+    "collection": "compare",
+    "slug": "wemux-vs-openhands",
+    "path": "/compare/wemux-vs-openhands",
+    "title": "wemux vs OpenHands for Real AI Coding Workflows",
+    "description": "Compare wemux vs OpenHands for real AI coding workflows, focusing on platform breadth, worker routing, delivery visibility, and reviewable execution.",
+    "imageAlt": "wemux workspaces poster showing AI agents working on real device nodes.",
+    "imagePath": "/marketing/articles/wemux-workspaces-poster.webp",
+    "eyebrow": "Comparison",
+    "featured": false,
+    "heroTitle": "wemux vs OpenHands: broad agent platform or focused delivery control?",
+    "heroDescription": "OpenHands is broader as an AI development platform. wemux is more focused on the execution and delivery layer around real repositories, workers, and human review.",
+    "order": 30,
+    "status": "published",
+    "topicSlugs": [
+      "ai-coding-delivery",
+      "multi-agent-orchestration"
+    ],
+    "publishedAt": "2026-07-07",
+    "updatedAt": "2026-07-07",
+    "relatedPaths": [
+      "/compare/ai-chat-vs-ai-delivery",
+      "/use-cases/ai-coding-delivery",
+      "/docs/worker-install"
+    ],
+    "author": "wemux Editorial Team",
+    "pointOfView": "A broad AI development platform and a focused delivery control plane should not be evaluated as if they solve the same problem.",
+    "keyClaim": "OpenHands is broader, but wemux is more aligned with execution ownership and delivery visibility."
+  },
+  {
+    "collection": "compare",
+    "slug": "wemux-vs-cline-kanban",
+    "path": "/compare/wemux-vs-cline-kanban",
+    "title": "wemux vs Cline Kanban for Local-First AI Delivery",
+    "description": "Compare wemux vs Cline Kanban for local-first AI delivery, worktree automation, worker routing, execution continuity, and multi-machine AI workflows.",
+    "imageAlt": "wemux workspaces poster showing AI agents working on real device nodes.",
+    "imagePath": "/marketing/articles/wemux-workspaces-poster.webp",
+    "eyebrow": "Comparison",
+    "featured": false,
+    "heroTitle": "wemux vs Cline Kanban: local task-board automation or worker-routed delivery?",
+    "heroDescription": "Cline Kanban is sharp for local-first AI task execution. wemux is stronger when the workflow must keep moving across machines, workers, and persistent delivery surfaces.",
+    "order": 40,
+    "status": "published",
+    "topicSlugs": [
+      "ai-coding-delivery",
+      "multi-agent-orchestration",
+      "real-workstations"
+    ],
+    "publishedAt": "2026-07-07",
+    "updatedAt": "2026-07-07",
+    "relatedPaths": [
+      "/use-cases/manage-multiple-ai-coding-agents",
+      "/use-cases/ai-coding-delivery",
+      "/blog/ai-coding-needs-work-that-survives-sleep"
+    ],
+    "author": "wemux Editorial Team",
+    "pointOfView": "Local-first task automation and worker-routed execution create very different scaling behavior for team workflows.",
+    "keyClaim": "Cline Kanban is strong for local task automation, while wemux fits multi-machine delivery continuity better."
+  },
+  {
+    "collection": "compare",
+    "slug": "wemux-vs-cursor",
+    "path": "/compare/wemux-vs-cursor",
+    "title": "wemux vs Cursor for AI Coding Workflows",
+    "description": "Compare wemux vs Cursor for AI coding workflows, focusing on editor speed, worker routing, execution ownership, and multi-machine delivery continuity.",
+    "imageAlt": "wemux one-click transfer product poster for moving AI coding sessions between nodes.",
+    "imagePath": "/marketing/articles/wemux-one-click-transfer.webp",
+    "eyebrow": "Comparison",
+    "featured": true,
+    "heroTitle": "wemux vs Cursor: editor AI or routed execution and delivery?",
+    "heroDescription": "Cursor is strong at the editor layer. wemux becomes more relevant when AI coding work must run on the right machine, stay visible, and survive real delivery constraints.",
+    "order": 50,
+    "status": "published",
+    "topicSlugs": [
+      "ai-coding-delivery",
+      "real-workstations",
+      "persistent-ai-coding"
+    ],
+    "publishedAt": "2026-07-07",
+    "updatedAt": "2026-07-07",
+    "relatedPaths": [
+      "/compare/ai-chat-vs-ai-delivery",
+      "/use-cases/ai-coding-delivery",
+      "/blog/ai-coding-needs-work-that-survives-sleep"
+    ],
+    "author": "wemux Editorial Team",
+    "pointOfView": "Editor-native AI and delivery infrastructure belong to different decision layers in a team workflow.",
+    "keyClaim": "Cursor helps inside the editor, while wemux helps when AI work must survive real execution constraints."
+  },
+  {
+    "collection": "compare",
+    "slug": "wemux-vs-claude-code",
+    "path": "/compare/wemux-vs-claude-code",
+    "title": "wemux vs Claude Code for Real Team Delivery",
+    "description": "Compare wemux vs Claude Code for real team delivery, focusing on coding-runtime strength, worker routing, execution visibility, and persistent AI workflows.",
+    "imageAlt": "wemux workspaces poster showing AI agents working on real device nodes.",
+    "imagePath": "/marketing/articles/wemux-workspaces-poster.webp",
+    "eyebrow": "Comparison",
+    "featured": false,
+    "heroTitle": "wemux vs Claude Code: coding runtime or delivery control layer?",
+    "heroDescription": "Claude Code is strong as a coding runtime. wemux is stronger when the real challenge is coordinating how AI work gets routed, resumed, and reviewed across machines.",
+    "order": 60,
+    "status": "published",
+    "topicSlugs": [
+      "ai-coding-delivery",
+      "multi-agent-orchestration",
+      "persistent-ai-coding"
+    ],
+    "publishedAt": "2026-07-07",
+    "updatedAt": "2026-07-07",
+    "relatedPaths": [
+      "/compare/wemux-vs-openhands",
+      "/use-cases/manage-multiple-ai-coding-agents",
+      "/docs/worker-install"
+    ],
+    "author": "wemux Editorial Team",
+    "pointOfView": "Coding runtimes are not the same thing as the systems that coordinate their execution across teams and machines.",
+    "keyClaim": "Claude Code can be the engine, but wemux is the delivery layer around the engine."
+  },
+  {
+    "collection": "compare",
+    "slug": "wemux-vs-devin",
+    "path": "/compare/wemux-vs-devin",
+    "title": "wemux vs Devin for AI Software Delivery",
+    "description": "Compare wemux vs Devin for AI software delivery, focusing on autonomous-agent positioning, worker-routed execution, human control, and reviewable delivery workflows.",
+    "imageAlt": "English poster about Codex Handoff and persistent AI coding across devices.",
+    "imagePath": "/marketing/articles/codex-handoff-poster.webp",
+    "eyebrow": "Comparison",
+    "featured": false,
+    "heroTitle": "wemux vs Devin: autonomous software agent or durable delivery control?",
+    "heroDescription": "Devin is compelling as an autonomous software-engineering narrative. wemux is more compelling when teams want routed execution, visible delivery, and stronger human control.",
+    "order": 70,
+    "status": "published",
+    "topicSlugs": [
+      "ai-coding-delivery",
+      "persistent-ai-coding",
+      "multi-agent-orchestration"
+    ],
+    "publishedAt": "2026-07-07",
+    "updatedAt": "2026-07-07",
+    "relatedPaths": [
+      "/compare/wemux-vs-cursor",
+      "/use-cases/ai-coding-delivery",
+      "/blog/from-ai-demo-to-ai-delivery-stack"
+    ],
+    "author": "wemux Editorial Team",
+    "pointOfView": "Autonomy narratives and delivery-control narratives attract different buyers and solve different trust problems.",
+    "keyClaim": "Devin sells delegated autonomy, while wemux sells durable, reviewable delivery control."
+  },
+  {
+    "collection": "compare",
+    "slug": "wemux-vs-codex",
+    "path": "/compare/wemux-vs-codex",
+    "title": "wemux vs Codex for Persistent AI Coding Work",
+    "description": "Compare wemux vs Codex for persistent AI coding work, focusing on coding-runtime strength, worker routing, execution continuity, and multi-machine delivery.",
+    "imageAlt": "English poster about Codex Handoff and persistent AI coding across devices.",
+    "imagePath": "/marketing/articles/codex-handoff-poster.webp",
+    "eyebrow": "Comparison",
+    "featured": true,
+    "heroTitle": "wemux vs Codex: coding runtime or persistent delivery layer?",
+    "heroDescription": "Codex is strong as a coding runtime. wemux is stronger when the task must keep moving across workers, environments, and device changes.",
+    "order": 80,
+    "status": "published",
+    "topicSlugs": [
+      "persistent-ai-coding",
+      "remote-handoff",
+      "ai-coding-delivery"
+    ],
+    "publishedAt": "2026-07-07",
+    "updatedAt": "2026-07-07",
+    "relatedPaths": [
+      "/blog/codex-handoff-and-persistent-ai-coding",
+      "/compare/wemux-vs-claude-code",
+      "/docs/worker-install"
+    ],
+    "author": "wemux Editorial Team",
+    "pointOfView": "Strong coding runtimes still need an execution and delivery layer when tasks span machines and sessions.",
+    "keyClaim": "Codex is a strong runtime, while wemux makes the work persistent across workers and device changes."
+  },
+  {
+    "collection": "compare",
+    "slug": "wemux-vs-github-copilot",
+    "path": "/compare/wemux-vs-github-copilot",
+    "title": "wemux vs GitHub Copilot for AI Development Workflows",
+    "description": "Compare wemux vs GitHub Copilot for AI development workflows, focusing on editor assistance, worker routing, long-running execution, and delivery visibility.",
+    "imageAlt": "wemux one-click transfer product poster for moving AI coding sessions between nodes.",
+    "imagePath": "/marketing/articles/wemux-one-click-transfer.webp",
+    "eyebrow": "Comparison",
+    "featured": false,
+    "heroTitle": "wemux vs GitHub Copilot: local AI help or execution infrastructure?",
+    "heroDescription": "GitHub Copilot accelerates coding inside the editor. wemux becomes more relevant when AI work must be routed, executed, inspected, and continued across real machines.",
+    "order": 90,
+    "status": "published",
+    "topicSlugs": [
+      "ai-coding-delivery",
+      "real-workstations"
+    ],
+    "publishedAt": "2026-07-07",
+    "updatedAt": "2026-07-07",
+    "relatedPaths": [
+      "/compare/wemux-vs-cursor",
+      "/compare/ai-chat-vs-ai-delivery",
+      "/use-cases/ai-coding-delivery"
+    ],
+    "author": "wemux Editorial Team",
+    "pointOfView": "Local coding assistance and routed AI delivery become separate needs as engineering workflows get more operational.",
+    "keyClaim": "GitHub Copilot improves local productivity, while wemux turns AI work into a visible delivery system."
+  },
+  {
+    "collection": "compare",
+    "slug": "wemux-vs-replit",
+    "path": "/compare/wemux-vs-replit",
+    "title": "wemux vs Replit for AI-Powered Software Delivery",
+    "description": "Compare wemux vs Replit for AI-powered software delivery, focusing on cloud convenience, worker routing, execution ownership, and hybrid machine workflows.",
+    "imageAlt": "wemux workspaces poster showing AI agents working on real device nodes.",
+    "imagePath": "/marketing/articles/wemux-workspaces-poster.webp",
+    "eyebrow": "Comparison",
+    "featured": false,
+    "heroTitle": "wemux vs Replit: cloud sandbox convenience or worker-routed delivery?",
+    "heroDescription": "Replit is great for fast cloud-based development. wemux is stronger when AI work must run in the right real environment across local, private, and cloud machines.",
+    "order": 100,
+    "status": "published",
+    "topicSlugs": [
+      "ai-coding-delivery",
+      "real-workstations",
+      "small-engineering-teams"
+    ],
+    "publishedAt": "2026-07-07",
+    "updatedAt": "2026-07-07",
+    "relatedPaths": [
+      "/compare/wemux-vs-cursor",
+      "/use-cases/small-engineering-teams",
+      "/blog/why-ai-coding-needs-real-workstations"
+    ],
+    "author": "wemux Editorial Team",
+    "pointOfView": "Cloud convenience and real-environment execution are both valuable, but they optimize for different realities.",
+    "keyClaim": "Replit is strong for cloud convenience, while wemux is stronger when the correct machine already exists elsewhere."
+  },
+  {
+    "collection": "compare",
+    "slug": "best-ai-coding-platform-for-teams",
+    "path": "/compare/best-ai-coding-platform-for-teams",
+    "title": "Best AI Coding Platform for Software Teams",
+    "description": "Find the best AI coding platform for teams by comparing task visibility, worker routing, execution ownership, reviewable output, and delivery continuity.",
+    "imageAlt": "wemux workspaces poster showing AI agents working on real device nodes.",
+    "imagePath": "/marketing/articles/wemux-workspaces-poster.webp",
+    "eyebrow": "Comparison",
+    "featured": true,
+    "heroTitle": "The best AI coding platform for teams is the one that survives real delivery work.",
+    "heroDescription": "Teams usually need more than an assistant in an editor. They need routed execution, reviewable outputs, and continuity across people, machines, and sessions.",
+    "order": 110,
+    "status": "published",
+    "topicSlugs": [
+      "ai-coding-delivery",
+      "multi-agent-orchestration",
+      "small-engineering-teams"
+    ],
+    "publishedAt": "2026-07-07",
+    "updatedAt": "2026-07-07",
+    "relatedPaths": [
+      "/compare/wemux-vs-cursor",
+      "/use-cases/manage-multiple-ai-coding-agents",
+      "/use-cases/small-engineering-teams"
+    ],
+    "author": "wemux Editorial Team",
+    "pointOfView": "The team buying decision should center on execution continuity, not just AI editing quality.",
+    "keyClaim": "The best AI coding platform for teams is the one that survives real delivery work."
+  },
+  {
+    "collection": "compare",
+    "slug": "best-cursor-alternative-for-teams",
+    "path": "/compare/best-cursor-alternative-for-teams",
+    "title": "Best Cursor Alternative for Software Teams",
+    "description": "Explore the best Cursor alternative for teams by comparing editor-first AI with worker routing, persistent execution, and delivery visibility across machines.",
+    "imageAlt": "wemux one-click transfer product poster for moving AI coding sessions between nodes.",
+    "imagePath": "/marketing/articles/wemux-one-click-transfer.webp",
+    "eyebrow": "Comparison",
+    "featured": true,
+    "heroTitle": "The best Cursor alternative for teams may be a delivery platform, not another editor.",
+    "heroDescription": "Teams often outgrow editor-first AI when the real bottleneck becomes execution ownership, reviewable delivery, and continuity across machines.",
+    "order": 120,
+    "status": "published",
+    "topicSlugs": [
+      "ai-coding-delivery",
+      "persistent-ai-coding",
+      "small-engineering-teams"
+    ],
+    "publishedAt": "2026-07-07",
+    "updatedAt": "2026-07-07",
+    "relatedPaths": [
+      "/compare/wemux-vs-cursor",
+      "/compare/best-ai-coding-platform-for-teams",
+      "/blog/how-to-move-ai-coding-beyond-chat"
+    ],
+    "author": "wemux Editorial Team",
+    "pointOfView": "Teams outgrow editor-first AI when operational delivery becomes the real bottleneck.",
+    "keyClaim": "The best Cursor alternative for teams may be a delivery platform rather than another editor."
+  },
+  {
+    "collection": "compare",
+    "slug": "codex-handoff-alternative",
+    "path": "/compare/codex-handoff-alternative",
+    "title": "Best Codex Handoff Alternative for Persistent AI Coding",
+    "description": "Compare the best Codex Handoff alternative for teams that need AI coding work to continue across devices, workers, and real repository environments.",
+    "imageAlt": "English poster about Codex Handoff and persistent AI coding across devices.",
+    "imagePath": "/marketing/articles/codex-handoff-poster.webp",
+    "eyebrow": "Comparison",
+    "featured": true,
+    "heroTitle": "The best Codex Handoff alternative is the one that moves work, not just sessions.",
+    "heroDescription": "Teams looking beyond one runtime need more than a handoff mechanic. They need task continuity, repository continuity, worker continuity, and review continuity.",
+    "order": 130,
+    "status": "published",
+    "topicSlugs": [
+      "remote-handoff",
+      "persistent-ai-coding",
+      "ai-coding-delivery"
+    ],
+    "publishedAt": "2026-07-07",
+    "updatedAt": "2026-07-07",
+    "relatedPaths": [
+      "/compare/wemux-vs-codex",
+      "/blog/codex-handoff-and-persistent-ai-coding",
+      "/use-cases/ai-coding-workflow-for-remote-teams"
+    ],
+    "author": "wemux Editorial Team",
+    "pointOfView": "A real alternative to Codex Handoff must preserve execution continuity across workers and environments, not only move one thread.",
+    "keyClaim": "The best Codex Handoff alternative is the system that keeps the task moving after the original machine disappears."
+  },
+  {
+    "collection": "blog",
+    "slug": "how-to-move-ai-coding-beyond-chat",
+    "path": "/blog/how-to-move-ai-coding-beyond-chat",
+    "title": "How To Move AI Coding Beyond Chat Tools",
+    "description": "Learn how to move AI coding beyond chat by turning prompts into routed tasks with real execution, reviewable outputs, and persistent delivery workflows.",
+    "imageAlt": "wemux one-click transfer product poster for moving AI coding sessions between nodes.",
+    "imagePath": "/marketing/articles/wemux-one-click-transfer.webp",
+    "eyebrow": "Founder Note",
+    "featured": false,
+    "heroTitle": "AI coding moves beyond chat when work becomes routed, reviewable, and persistent.",
+    "heroDescription": "A good answer is not the same thing as a delivered result. The shift beyond chat starts when prompts become tasks with execution ownership and review context.",
+    "order": 60,
+    "status": "published",
+    "topicSlugs": [
+      "ai-coding-delivery",
+      "persistent-ai-coding"
+    ],
+    "publishedAt": "2026-07-07",
+    "updatedAt": "2026-07-07",
+    "relatedPaths": [
+      "/compare/ai-chat-vs-ai-delivery",
+      "/compare/best-ai-coding-platform-for-teams",
+      "/use-cases/ai-coding-delivery"
+    ],
+    "author": "wemux Founding Team",
+    "authorUrl": "https://zijiekyro.com/about",
+    "pointOfView": "Chat should remain a useful interface, but AI coding becomes operational only when prompts become routed tasks.",
+    "keyClaim": "The move beyond chat starts when AI work gets execution ownership, review evidence, and continuity."
+  },
+  {
+    "collection": "use-cases",
+    "slug": "ai-coding-workflow-for-remote-teams",
+    "path": "/use-cases/ai-coding-workflow-for-remote-teams",
+    "title": "AI Coding Workflow for Remote Teams",
+    "description": "See what an AI coding workflow for remote teams should look like when tasks, execution, review, and machine ownership are distributed.",
+    "imageAlt": "English poster about Codex Handoff and persistent AI coding across devices.",
+    "imagePath": "/marketing/articles/codex-handoff-poster.webp",
+    "eyebrow": "Use Case",
+    "featured": true,
+    "heroTitle": "Remote teams need an AI coding workflow built for distributed execution and handoff.",
+    "heroDescription": "When people, machines, and review cycles are distributed, AI work needs visibility, routed execution, and continuity across time zones and devices.",
+    "order": 40,
+    "status": "published",
+    "topicSlugs": [
+      "small-engineering-teams",
+      "remote-handoff",
+      "ai-coding-delivery"
+    ],
+    "publishedAt": "2026-07-07",
+    "updatedAt": "2026-07-07",
+    "relatedPaths": [
+      "/use-cases/small-engineering-teams",
+      "/blog/codex-handoff-and-persistent-ai-coding",
+      "/compare/best-ai-coding-platform-for-teams"
+    ],
+    "author": "wemux Editorial Team",
+    "pointOfView": "Remote teams need AI workflows designed for distributed ownership and asynchronous continuation.",
+    "keyClaim": "Remote teams need routed execution and continuity because local-only AI workflows break down fast."
+  },
+  {
+    "collection": "use-cases",
+    "slug": "manage-multiple-ai-coding-agents",
+    "path": "/use-cases/manage-multiple-ai-coding-agents",
+    "title": "Manage Multiple AI Coding Agents Without Losing Delivery Control",
+    "description": "How teams can manage multiple AI coding agents with clear routing, worker ownership, logs, branches, and human review instead of scattered chat threads.",
+    "imageAlt": "wemux one-click transfer product poster for moving AI coding sessions between nodes.",
+    "imagePath": "/marketing/articles/wemux-one-click-transfer.webp",
+    "eyebrow": "Use Case",
+    "featured": true,
+    "heroTitle": "Manage multiple AI coding agents without losing the thread of real delivery.",
+    "heroDescription": "This page is for teams that want multiple AI coding agents to help, but do not want execution, logs, and review to disappear into chaos.",
+    "order": 20,
+    "status": "published",
+    "topicSlugs": [
+      "multi-agent-orchestration",
+      "ai-coding-delivery"
+    ],
+    "publishedAt": "2026-05-14",
+    "updatedAt": "2026-05-14",
+    "relatedPaths": [
+      "/compare/ai-chat-vs-ai-delivery",
+      "/use-cases/ai-coding-delivery",
+      "/docs/worker-install"
+    ],
+    "author": "wemux Editorial Team",
+    "pointOfView": "Multiple AI coding agents only help when their work remains routed, reviewable, and under human control.",
+    "keyClaim": "Multi-agent coding becomes useful when teams can keep ownership of execution and review."
+  },
+  {
+    "collection": "use-cases",
+    "slug": "ai-coding-delivery",
+    "path": "/use-cases/ai-coding-delivery",
+    "title": "AI Coding Delivery for Real Repositories",
+    "description": "A wemux use case page for teams already shipping code in real repositories and needing routing, execution, logs, branches, and reviewable AI delivery.",
+    "imageAlt": "wemux workspaces poster showing AI agents working on real device nodes.",
+    "imagePath": "/marketing/articles/wemux-workspaces-poster.webp",
+    "eyebrow": "Use Case",
+    "featured": true,
+    "heroTitle": "Move AI coding from prompt output to real repository delivery.",
+    "heroDescription": "This page is for teams that already use AI coding in real repositories and want a cleaner delivery path than chat tabs and ad hoc local runs.",
+    "order": 10,
+    "status": "published",
+    "topicSlugs": [
+      "ai-coding-delivery",
+      "real-workstations"
+    ],
+    "publishedAt": "2026-05-14",
+    "updatedAt": "2026-05-14",
+    "relatedPaths": [
+      "/docs/worker-install",
+      "/compare/ai-chat-vs-ai-delivery",
+      "/use-cases/small-engineering-teams"
+    ],
+    "author": "wemux Editorial Team",
+    "pointOfView": "The last mile of AI coding is delivery, not raw generation.",
+    "keyClaim": "Teams need routed execution and reviewable outputs to turn AI coding into real repository delivery."
+  },
+  {
+    "collection": "use-cases",
+    "slug": "small-engineering-teams",
+    "path": "/use-cases/small-engineering-teams",
+    "title": "AI Coding Workflow for Small Engineering Teams",
+    "description": "How small engineering teams can use wemux to keep AI coding work visible, routed, reviewable, and under human control across a limited number of people and machines.",
+    "imageAlt": "wemux workspaces poster showing AI agents working on real device nodes.",
+    "imagePath": "/marketing/articles/wemux-workspaces-poster.webp",
+    "eyebrow": "Use Case",
+    "featured": false,
+    "heroTitle": "Give a small engineering team an AI workflow without creating delivery chaos.",
+    "heroDescription": "This page is for small teams that want AI coding leverage without losing control of priorities, machine access, or review quality.",
+    "order": 30,
+    "status": "published",
+    "topicSlugs": [
+      "small-engineering-teams",
+      "ai-coding-delivery"
+    ],
+    "publishedAt": "2026-05-14",
+    "updatedAt": "2026-05-14",
+    "relatedPaths": [
+      "/use-cases/ai-coding-delivery",
+      "/use-cases/manage-multiple-ai-coding-agents",
+      "/docs/worker-install"
+    ],
+    "author": "wemux Editorial Team",
+    "pointOfView": "Small teams feel AI workflow chaos faster because every hidden task and wrong machine assignment hurts more.",
+    "keyClaim": "Small engineering teams need AI workflows with visibility and routing, not more hidden execution."
+  },
+  {
+    "collection": "use-cases",
+    "slug": "continue-ai-coding-work-on-another-machine",
+    "path": "/use-cases/continue-ai-coding-work-on-another-machine",
+    "title": "How To Continue AI Coding Work on Another Machine",
+    "description": "Learn how to continue AI coding work on another machine without losing repository state, task context, execution history, or review continuity.",
+    "imageAlt": "wemux one-click transfer product poster for moving AI coding sessions between nodes.",
+    "imagePath": "/marketing/articles/wemux-one-click-transfer.webp",
+    "eyebrow": "Use Case",
+    "featured": true,
+    "heroTitle": "Continuing AI coding work on another machine should be a workflow, not a manual recovery project.",
+    "heroDescription": "When the original laptop disappears, the task should continue with the right code state, the right worker, and enough context to keep going safely.",
+    "order": 50,
+    "status": "published",
+    "topicSlugs": [
+      "remote-handoff",
+      "persistent-ai-coding",
+      "real-workstations"
+    ],
+    "publishedAt": "2026-07-07",
+    "updatedAt": "2026-07-07",
+    "relatedPaths": [
+      "/blog/codex-handoff-and-persistent-ai-coding",
+      "/compare/codex-handoff-alternative",
+      "/docs/worker-install"
+    ],
+    "author": "wemux Editorial Team",
+    "pointOfView": "Cross-machine AI coding should be treated as an operational continuity problem rather than an ad hoc remote access workaround.",
+    "keyClaim": "The clean way to continue AI coding on another machine is to move the task with code state and execution context, not to restart from scratch."
+  }
+]

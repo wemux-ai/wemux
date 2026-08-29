@@ -1,0 +1,98 @@
+---
+title: Model Selection
+description: Choose and configure AI models for Wemux tasks.
+---
+
+# Model Selection
+
+Wemux supports multiple AI models through OpenCode. Choose the right model based on your task requirements.
+
+## Supported Models
+
+| Model | Provider | Context Window | Best For |
+|-------|----------|---------------|----------|
+| Claude 3.5 Sonnet | Anthropic | 200K tokens | Complex reasoning, code generation |
+| Claude 3 Opus | Anthropic | 200K tokens | Highest quality, slower |
+| GPT-4o | OpenAI | 128K tokens | Fast, balanced |
+| GPT-4o Mini | OpenAI | 128K tokens | Simple tasks, lower cost |
+| Gemini 1.5 Pro | Google | 1M tokens | Very long context |
+
+## Selecting a Model
+
+### Default Model
+
+Set in your worker's environment:
+
+```bash
+OPENCODE_MODEL=claude-3-5-sonnet
+```
+
+### Per-Task Selection
+
+Include in your task description:
+
+```markdown
+Use Gemini 1.5 Pro for this task as it involves a very large codebase.
+```
+
+### Project-Level Default
+
+Set in **Project** → **Settings** → **Default Model**
+
+## Model Comparison
+
+### Speed vs Quality
+
+| Model | Speed | Quality | Cost |
+|-------|-------|---------|------|
+| GPT-4o Mini | Fastest | Good | Lowest |
+| GPT-4o | Fast | Very Good | Medium |
+| Claude 3.5 Sonnet | Medium | Excellent | Medium |
+| Claude 3 Opus | Slow | Highest | High |
+| Gemini 1.5 Pro | Medium | Excellent | Medium |
+
+### Task Recommendations
+
+| Task Type | Recommended Model |
+|-----------|------------------|
+| Quick fixes | GPT-4o Mini |
+| Feature development | Claude 3.5 Sonnet or GPT-4o |
+| Complex refactoring | Claude 3 Opus |
+| Code review | GPT-4o or Claude 3.5 Sonnet |
+| Large codebase changes | Gemini 1.5 Pro (long context) |
+| Documentation | GPT-4o Mini |
+
+## API Keys
+
+Each model requires API credentials:
+
+### Anthropic (Claude)
+
+```bash
+ANTHROPIC_API_KEY=sk-ant-...
+```
+
+### OpenAI (GPT-4o)
+
+```bash
+OPENAI_API_KEY=sk-...
+```
+
+### Google (Gemini)
+
+```bash
+GOOGLE_API_KEY=AIza...
+```
+
+## Cost Management
+
+| Strategy | How |
+|----------|-----|
+| Use mini models for simple tasks | Specify in task description |
+| Set project spending limits | Configure in project settings |
+| Monitor usage | Check project dashboard |
+
+## Next Steps
+
+- [OpenCode Setup](/docs/configuration/opencode) - Configure agent behavior
+- [MCP Servers](/docs/configuration/mcp) - Extend capabilities

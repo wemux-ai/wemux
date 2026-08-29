@@ -1,0 +1,5 @@
+# Default owners for everything in the repo.
+# The public main branch contains the community edition. Optional extension
+# paths require maintainer review as well (see CONTRIBUTING.md).
+
+* @wemux-ai/maintainers

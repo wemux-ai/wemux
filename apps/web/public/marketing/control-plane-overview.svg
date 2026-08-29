@@ -1,0 +1,134 @@
+<svg width="1440" height="940" viewBox="0 0 1440 940" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1440" y2="940" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#111827"/>
+      <stop offset="0.48" stop-color="#070B12"/>
+      <stop offset="1" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="244" y1="121" x2="1186" y2="801" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#8B5CF6"/>
+      <stop offset="0.52" stop-color="#38BDF8"/>
+      <stop offset="1" stop-color="#22D3EE"/>
+    </linearGradient>
+    <filter id="shadow" x="42" y="34" width="1356" height="872" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feDropShadow dx="0" dy="34" stdDeviation="42" flood-color="#000000" flood-opacity="0.45"/>
+    </filter>
+  </defs>
+
+  <rect width="1440" height="940" rx="44" fill="url(#bg)"/>
+  <circle cx="1160" cy="102" r="310" fill="#38BDF8" opacity="0.12"/>
+  <circle cx="196" cy="816" r="260" fill="#8B5CF6" opacity="0.12"/>
+  <path d="M0 168H1440M0 336H1440M0 504H1440M0 672H1440M0 840H1440M180 0V940M360 0V940M540 0V940M720 0V940M900 0V940M1080 0V940M1260 0V940" stroke="white" stroke-opacity="0.04"/>
+
+  <g filter="url(#shadow)">
+    <rect x="78" y="68" width="1284" height="804" rx="34" fill="#090D15" stroke="white" stroke-opacity="0.12"/>
+    <rect x="78" y="68" width="246" height="804" rx="34" fill="#0D1320"/>
+    <path d="M324 68V872" stroke="white" stroke-opacity="0.1"/>
+
+    <g transform="translate(116 112)">
+      <rect width="46" height="46" rx="16" fill="url(#accent)"/>
+      <path d="M18 15L31 23L18 31V15Z" fill="white"/>
+      <text x="62" y="20" fill="white" font-family="ui-sans-serif, system-ui" font-size="18" font-weight="700">wemux</text>
+      <text x="62" y="41" fill="white" fill-opacity="0.4" font-family="ui-sans-serif, system-ui" font-size="11" letter-spacing="2">CONTROL PLANE</text>
+    </g>
+
+    <g transform="translate(116 218)" font-family="ui-sans-serif, system-ui" font-size="15">
+      <rect width="170" height="44" rx="14" fill="white" fill-opacity="0.08"/>
+      <circle cx="22" cy="22" r="5" fill="#38BDF8"/>
+      <text x="42" y="27" fill="white">Dashboard</text>
+      <text x="42" y="88" fill="white" fill-opacity="0.48">Projects</text>
+      <text x="42" y="140" fill="white" fill-opacity="0.48">Executors</text>
+      <text x="42" y="192" fill="white" fill-opacity="0.48">Workspaces</text>
+      <text x="42" y="244" fill="white" fill-opacity="0.48">Settings</text>
+    </g>
+
+    <g transform="translate(116 732)">
+      <rect width="170" height="82" rx="22" fill="#101827" stroke="white" stroke-opacity="0.08"/>
+      <circle cx="34" cy="41" r="16" fill="#38BDF8" fill-opacity="0.18"/>
+      <circle cx="34" cy="41" r="6" fill="#38BDF8"/>
+      <text x="62" y="36" fill="white" font-family="ui-sans-serif, system-ui" font-size="13">Mac mini 02</text>
+      <text x="62" y="57" fill="#34D399" font-family="ui-sans-serif, system-ui" font-size="12">online · 3 slots</text>
+    </g>
+
+    <g transform="translate(372 114)">
+      <text fill="white" font-family="ui-sans-serif, system-ui" font-size="34" font-weight="760">AI delivery cockpit</text>
+      <text y="36" fill="white" fill-opacity="0.48" font-family="ui-sans-serif, system-ui" font-size="15">Dispatch requirements to real executors, watch branches, logs, and reviews return.</text>
+      <rect x="826" y="-12" width="118" height="40" rx="20" fill="#38BDF8" fill-opacity="0.12" stroke="#38BDF8" stroke-opacity="0.22"/>
+      <circle cx="850" cy="8" r="5" fill="#38BDF8"/>
+      <text x="866" y="13" fill="#7DD3FC" font-family="ui-sans-serif, system-ui" font-size="12" font-weight="700">LIVE</text>
+    </g>
+
+    <g transform="translate(372 204)">
+      <rect width="266" height="138" rx="26" fill="#101827" stroke="white" stroke-opacity="0.09"/>
+      <text x="28" y="40" fill="white" fill-opacity="0.44" font-family="ui-sans-serif, system-ui" font-size="12" letter-spacing="2">RUNNING TASKS</text>
+      <text x="28" y="91" fill="white" font-family="ui-sans-serif, system-ui" font-size="44" font-weight="760">18</text>
+      <path d="M158 98C178 52 208 50 238 70" stroke="#38BDF8" stroke-width="6" stroke-linecap="round"/>
+      <text x="28" y="118" fill="#34D399" font-family="ui-sans-serif, system-ui" font-size="13">+6 this hour</text>
+    </g>
+
+    <g transform="translate(664 204)">
+      <rect width="266" height="138" rx="26" fill="#101827" stroke="white" stroke-opacity="0.09"/>
+      <text x="28" y="40" fill="white" fill-opacity="0.44" font-family="ui-sans-serif, system-ui" font-size="12" letter-spacing="2">EXECUTOR HEALTH</text>
+      <text x="28" y="91" fill="white" font-family="ui-sans-serif, system-ui" font-size="44" font-weight="760">92%</text>
+      <rect x="28" y="112" width="194" height="9" rx="5" fill="white" fill-opacity="0.08"/>
+      <rect x="28" y="112" width="168" height="9" rx="5" fill="url(#accent)"/>
+    </g>
+
+    <g transform="translate(956 204)">
+      <rect width="334" height="138" rx="26" fill="#101827" stroke="white" stroke-opacity="0.09"/>
+      <text x="28" y="40" fill="white" fill-opacity="0.44" font-family="ui-sans-serif, system-ui" font-size="12" letter-spacing="2">RETURNED ARTIFACTS</text>
+      <text x="28" y="91" fill="white" font-family="ui-sans-serif, system-ui" font-size="44" font-weight="760">47</text>
+      <g transform="translate(156 46)">
+        <rect width="132" height="42" rx="21" fill="#8B5CF6" fill-opacity="0.14"/>
+        <text x="24" y="27" fill="#C4B5FD" font-family="ui-sans-serif, system-ui" font-size="13" font-weight="700">branch + review</text>
+      </g>
+    </g>
+
+    <g transform="translate(372 384)">
+      <rect width="570" height="390" rx="28" fill="#101827" stroke="white" stroke-opacity="0.09"/>
+      <text x="28" y="42" fill="white" font-family="ui-sans-serif, system-ui" font-size="19" font-weight="720">Active delivery queue</text>
+      <text x="28" y="68" fill="white" fill-opacity="0.42" font-family="ui-sans-serif, system-ui" font-size="13">Real repositories, isolated worktrees, traceable task branches.</text>
+
+      <g font-family="ui-sans-serif, system-ui" font-size="14">
+        <g transform="translate(28 112)">
+          <rect width="514" height="66" rx="18" fill="white" fill-opacity="0.045"/>
+          <circle cx="28" cy="33" r="10" fill="#34D399"/>
+          <text x="56" y="28" fill="white" font-weight="700">workspace/google-auth-42</text>
+          <text x="56" y="49" fill="white" fill-opacity="0.42">team-shared/mac-mini · branch ready</text>
+          <text x="392" y="39" fill="#34D399" font-size="12" font-weight="700">DONE</text>
+        </g>
+        <g transform="translate(28 194)">
+          <rect width="514" height="66" rx="18" fill="white" fill-opacity="0.045"/>
+          <circle cx="28" cy="33" r="10" fill="#38BDF8"/>
+          <text x="56" y="28" fill="white" font-weight="700">workspace/browser-test-18</text>
+          <text x="56" y="49" fill="white" fill-opacity="0.42">private/m2 · running checks</text>
+          <text x="378" y="39" fill="#7DD3FC" font-size="12" font-weight="700">RUNNING</text>
+        </g>
+        <g transform="translate(28 276)">
+          <rect width="514" height="66" rx="18" fill="white" fill-opacity="0.045"/>
+          <circle cx="28" cy="33" r="10" fill="#F59E0B"/>
+          <text x="56" y="28" fill="white" font-weight="700">workspace/refactor-kanban-09</text>
+          <text x="56" y="49" fill="white" fill-opacity="0.42">team-shared/mac-mini · retrying</text>
+          <text x="388" y="39" fill="#FCD34D" font-size="12" font-weight="700">RETRY</text>
+        </g>
+      </g>
+    </g>
+
+    <g transform="translate(972 384)">
+      <rect width="318" height="390" rx="28" fill="#101827" stroke="white" stroke-opacity="0.09"/>
+      <text x="28" y="42" fill="white" font-family="ui-sans-serif, system-ui" font-size="19" font-weight="720">Return package</text>
+      <text x="28" y="68" fill="white" fill-opacity="0.42" font-family="ui-sans-serif, system-ui" font-size="13">Every result comes back with proof.</text>
+      <g transform="translate(28 106)" font-family="ui-monospace, SFMono-Regular, Menlo, monospace" font-size="13">
+        <rect width="262" height="226" rx="18" fill="#05070B"/>
+        <text x="22" y="38" fill="#7DD3FC">branch:</text>
+        <text x="92" y="38" fill="white" fill-opacity="0.72">task/google-auth-42</text>
+        <text x="22" y="78" fill="#A78BFA">commit:</text>
+        <text x="92" y="78" fill="white" fill-opacity="0.72">feat(auth): google login</text>
+        <text x="22" y="118" fill="#34D399">review:</text>
+        <text x="92" y="118" fill="white" fill-opacity="0.72">passed 5 / 6</text>
+        <text x="22" y="158" fill="#FBBF24">logs:</text>
+        <text x="92" y="158" fill="white" fill-opacity="0.72">148 events</text>
+      </g>
+    </g>
+  </g>
+</svg>

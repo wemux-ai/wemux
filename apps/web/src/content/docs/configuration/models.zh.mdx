@@ -1,0 +1,98 @@
+---
+title: 模型选择
+description: 为 Wemux 任务选择和配置 AI 模型。
+---
+
+# 模型选择
+
+Wemux 通过 OpenCode 支持多种 AI 模型。根据任务要求选择正确的模型。
+
+## 支持的模型
+
+| 模型 | 提供商 | 上下文窗口 | 最适合 |
+|-------|----------|---------------|----------|
+| Claude 3.5 Sonnet | Anthropic | 200K tokens | 复杂推理、代码生成 |
+| Claude 3 Opus | Anthropic | 200K tokens | 最高质量、较慢 |
+| GPT-4o | OpenAI | 128K tokens | 快速、平衡 |
+| GPT-4o Mini | OpenAI | 128K tokens | 简单任务、更低成本 |
+| Gemini 1.5 Pro | Google | 1M tokens | 超长上下文 |
+
+## 选择模型
+
+### 默认模型
+
+在您 Worker 的环境中设置：
+
+```bash
+OPENCODE_MODEL=claude-3-5-sonnet
+```
+
+### 每任务选择
+
+在您的任务描述中包含：
+
+```markdown
+为此任务使用 Gemini 1.5 Pro，因为它涉及非常大的代码库。
+```
+
+### 项目级默认
+
+在 **项目** → **设置** → **默认模型** 中设置
+
+## 模型比较
+
+### 速度与质量
+
+| 模型 | 速度 | 质量 | 成本 |
+|-------|-------|---------|------|
+| GPT-4o Mini | 最快 | 良好 | 最低 |
+| GPT-4o | 快速 | 非常好 | 中等 |
+| Claude 3.5 Sonnet | 中等 | 优秀 | 中等 |
+| Claude 3 Opus | 慢 | 最高 | 高 |
+| Gemini 1.5 Pro | 中等 | 优秀 | 中等 |
+
+### 任务建议
+
+| 任务类型 | 推荐模型 |
+|-----------|------------------|
+| 快速修复 | GPT-4o Mini |
+| 功能开发 | Claude 3.5 Sonnet 或 GPT-4o |
+| 复杂重构 | Claude 3 Opus |
+| 代码审核 | GPT-4o 或 Claude 3.5 Sonnet |
+| 大型代码库变更 | Gemini 1.5 Pro（长上下文） |
+| 文档 | GPT-4o Mini |
+
+## API 密钥
+
+每个模型都需要凭据：
+
+### Anthropic (Claude)
+
+```bash
+ANTHROPIC_API_KEY=sk-ant-...
+```
+
+### OpenAI (GPT-4o)
+
+```bash
+OPENAI_API_KEY=sk-...
+```
+
+### Google (Gemini)
+
+```bash
+GOOGLE_API_KEY=AIza...
+```
+
+## 成本管理
+
+| 策略 | 方法 |
+|----------|-----|
+| 对简单任务使用迷你模型 | 在任务描述中指定 |
+| 设置项目消费限制 | 在项目设置中配置 |
+| 监控使用量 | 检查项目仪表板 |
+
+## 后续步骤
+
+- [OpenCode 设置](/docs/configuration/opencode) - 配置 Agent 行为
+- [MCP 服务器](/docs/configuration/mcp) - 扩展能力

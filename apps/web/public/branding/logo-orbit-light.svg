@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="wemux Light">
+  <defs>
+    <linearGradient id="light-flow" x1="14" x2="50" y1="15" y2="49" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#436850" />
+      <stop offset=".5" stop-color="#334155" />
+      <stop offset="1" stop-color="#d96f32" />
+    </linearGradient>
+  </defs>
+
+  <rect width="64" height="64" rx="16" fill="#f5ecdd" />
+  <path d="M18 21c6 0 9 5 14 11 5-6 8-11 14-11" fill="none" stroke="#131313" stroke-linecap="round" stroke-width="4.5" />
+  <path d="M18 43c6 0 9-5 14-11 5 6 8 11 14 11" fill="none" stroke="url(#light-flow)" stroke-linecap="round" stroke-width="4.5" />
+  <circle cx="32" cy="32" r="7.5" fill="#f5ecdd" stroke="#131313" stroke-width="3" />
+  <path d="M32 24c7.5 0 13 2.8 16 8-3 5.2-8.5 8-16 8-7.5 0-13-2.8-16-8 3-5.2 8.5-8 16-8Z" fill="none" opacity=".32" stroke="#436850" stroke-width="2" />
+  <circle cx="18" cy="21" r="3.5" fill="#436850" />
+  <circle cx="18" cy="43" r="3.5" fill="#436850" />
+  <circle cx="46" cy="21" r="3.5" fill="#131313" />
+  <circle cx="46" cy="43" r="3.5" fill="#131313" />
+  <circle cx="48" cy="32" r="4.5" fill="#d96f32" />
+</svg>

@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body,
+  #root {
+    min-height: 100%;
+  }
+
+  body {
+    margin: 0;
+    background:
+      radial-gradient(circle at top, rgba(255, 255, 255, 0.05), transparent 38%),
+      linear-gradient(180deg, #090b0f 0%, #0c0f14 100%);
+    color: #f3f4f6;
+    font-family: "SF Pro Text", "Segoe UI", sans-serif;
+  }
+
+  button,
+  input,
+  textarea {
+    font: inherit;
+  }
+}
+
+@layer components {
+  .console-shell {
+    @apply min-h-screen;
+  }
+
+  .console-card {
+    @apply rounded-[14px] border border-white/10 bg-zinc-950/80 shadow-[0_10px_24px_rgba(0,0,0,0.18)] backdrop-blur-sm;
+  }
+
+  .console-card-muted {
+    @apply rounded-[12px] border border-white/10 bg-white/[0.02];
+  }
+
+  .console-pill {
+    @apply inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.03] px-2.5 py-1 text-[11px] font-medium tracking-[0.08em] text-zinc-300 uppercase;
+  }
+
+  .console-kv {
+    @apply rounded-[12px] border border-white/10 bg-black/20 p-3;
+  }
+
+  .console-kv-label {
+    @apply text-[11px] uppercase tracking-[0.1em] text-zinc-400;
+  }
+
+  .console-kv-value {
+    @apply mt-1.5 text-sm font-medium text-zinc-100;
+  }
+
+  .console-empty {
+    @apply flex min-h-24 items-center justify-center rounded-[12px] border border-dashed border-white/10 bg-black/20 px-4 py-5 text-center text-sm leading-6 text-zinc-400;
+  }
+
+  .console-danger-zone {
+    @apply rounded-[12px] border border-rose-500/30 bg-rose-950/35 p-4;
+  }
+
+  .console-input {
+    @apply w-full rounded-[10px] border border-white/10 bg-black/20 px-3 py-2 text-sm text-zinc-100 outline-none transition focus:border-zinc-500 focus:ring-2 focus:ring-zinc-500/40;
+  }
+
+  .console-textarea {
+    @apply console-input min-h-24 resize-y;
+  }
+
+  .console-button {
+    @apply inline-flex items-center justify-center rounded-[10px] border border-zinc-200 bg-zinc-100 px-3 py-2 text-sm font-semibold text-zinc-950 transition hover:border-zinc-300 hover:bg-zinc-200 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .console-button-secondary {
+    @apply console-button border-white/10 bg-white/[0.04] text-zinc-100 hover:bg-white/[0.08];
+  }
+
+  .console-button-danger {
+    @apply console-button border-rose-500/30 bg-rose-950/40 text-rose-100 hover:bg-rose-950/60;
+  }
+
+  .console-section-title {
+    @apply text-lg font-semibold text-white;
+  }
+
+  .console-section-body {
+    @apply text-sm leading-6 text-zinc-400;
+  }
+
+  .console-meta-list {
+    @apply flex flex-wrap gap-x-5 gap-y-2 text-sm text-zinc-400;
+  }
+
+  .console-meta-item {
+    @apply flex items-center gap-2;
+  }
+
+  .console-meta-label {
+    @apply text-[11px] uppercase tracking-[0.12em] text-zinc-500;
+  }
+
+  .console-tab {
+    @apply border-b-2 border-transparent px-1 py-3 text-sm font-medium text-zinc-400 transition hover:text-zinc-100;
+  }
+
+  .console-tab-active {
+    @apply border-zinc-100 text-zinc-100;
+  }
+}

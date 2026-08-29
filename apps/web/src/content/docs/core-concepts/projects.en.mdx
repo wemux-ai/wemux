@@ -1,0 +1,43 @@
+---
+title: Projects
+description: Understand how Projects organize your work in wemux.
+---
+
+# Projects
+
+A Project is the top-level organizational unit in wemux. It represents a codebase or repository that your team works on.
+
+## What is a Project?
+
+A Project contains:
+
+- **Kanban Board** - Visual task management with stages
+- **Tasks** - Individual work items with execution tracking
+- **Workers** - Paired executor machines with capability profiles
+- **Team Members** - Collaborators who can review and approve work
+
+## Creating a Project
+
+1. Navigate to the main dashboard
+2. Click **"New Project"**
+3. Fill in the project details:
+   - **Name** - Project identifier
+   - **Repository URL** - Git repository to work against
+   - **Description** - What the project does
+4. Click **"Create"** to set up the project
+
+## Project Settings
+
+Within a project, you can configure:
+
+| Setting | Description |
+|---------|-------------|
+| Repository | Git remote URL for cloning and branching |
+| Default Branch | Branch workers create worktrees from |
+| Auto-cleanup | Automatically remove worktrees after task completion |
+| Approval Required | Require human review before task completion |
+
+## Next Steps
+
+- [Tasks Overview](/docs/core-concepts/tasks) - Create and manage work items
+- [Workers](/docs/core-concepts/workers) - Connect executor machines

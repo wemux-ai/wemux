@@ -1,0 +1,117 @@
+name: ci
+
+on:
+  pull_request:
+    branches: [main, dev]
+  push:
+    branches: [main, dev]
+    # 只源码/workflow 变更才跑全量校验，
+    # 纯文档/README 提交不触发（PR 门禁保持全量，不受此限制）。
+    paths:
+      - 'apps/**'
+      - 'packages/**'
+      - 'scripts/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - 'tsconfig*.json'
+      - 'vite.config.ts'
+      - '.github/workflows/ci.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  dco:
+    # DCO：外部 PR 的每个 commit 都需 Signed-off-by（git commit -s）。
+    # 只查 pull_request：维护者 sync 直推 main 的合并提交不拦。
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: DCO check（PR commits 必须包含 Signed-off-by）
+        run: |
+          set -e
+          base="${{ github.event.pull_request.base.sha }}"
+          head="${{ github.event.pull_request.head.sha }}"
+          bad=0
+          for sha in $(git rev-list --no-merges "$base..$head"); do
+            if ! git log -1 --format='%B' "$sha" | grep -qi '^Signed-off-by: .*<.*>$'; then
+              echo "❌ commit $sha 缺少 Signed-off-by（提交时用 git commit -s 自动添加）"
+              bad=1
+            fi
+          done
+          if [ "$bad" -ne 0 ]; then exit 1; fi
+          echo "✓ 全部 commit 已签名"
+
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: wemux_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        # 测试文件并发开连接，默认 100 会触发 53300 too_many_connections
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 5s --health-timeout 5s --health-retries 10
+        command: "postgres -c max_connections=300"
+    env:
+      DATABASE_URL: postgres://postgres:postgres@localhost:5432/wemux_test
+      # 测试会加密敏感凭证（project env 同步等）；CI 用固定测试值即可
+      SECRET_ENCRYPTION_KEY: 0123456789abcdef0123456789abcdef0123456789abcdef0123456789abcdef
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10.24.0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile --prefer-offline
+
+      - name: Apply Drizzle migrations (CI Postgres)
+        run: pnpm exec tsx scripts/run-migrations.ts
+
+      - name: Typecheck (web + server + worker + shared)
+        env:
+          NODE_OPTIONS: --max-old-space-size=8192
+        run: |
+          find . -maxdepth 1 -name '*.tsbuildinfo' -delete
+          pnpm typecheck
+
+      - name: Unit tests (shared)
+        run: |
+          find packages/shared/src -name '*.test.ts' -o -name '*.test.tsx' | xargs pnpm exec tsx --test
+
+      - name: Unit tests (server, Postgres-backed cases run against CI DB)
+        # 分批（每批 25 文件）避免全量并行偶发 hang；--test-force-exit 兜底 pending handle 阻止退出
+        run: |
+          find apps/server/src -name '*.test.ts' -o -name '*.test.tsx' | sort | xargs -n 25 pnpm exec tsx --test --test-force-exit
+
+      - name: Unit tests (web)
+        run: |
+          find apps/web/src -name '*.test.ts' -o -name '*.test.tsx' | xargs pnpm exec tsx --test
+
+      - name: Public source boundary（受限实现和材料不得进入公开仓）
+        if: github.repository == 'wemux-ai/wemux'
+        run: |
+          set -e
+          node scripts/open-core/public-boundary.mjs --tree HEAD
+
+      - name: Build (web + server)
+        run: pnpm build

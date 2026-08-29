@@ -1,0 +1,96 @@
+---
+title: OpenCode 设置
+description: 为 Wemux Worker 配置 OpenCode Agent 设置。
+---
+
+# OpenCode 设置
+
+OpenCode 是 Wemux 中的默认 AI 编程 Agent。本指南介绍配置选项。
+
+## 安装
+
+OpenCode 应该已经安装在您的 Worker 机器上。验证：
+
+```bash
+opencode --version
+```
+
+如果未安装，请按照 [opencode.ai](https://opencode.ai) 的指南进行安装。
+
+## Worker 配置
+
+配置 OpenCode 在您的 Worker 上的运行方式：
+
+```bash
+# 环境文件：~/.wemux/worker.env
+
+# OpenCode 二进制路径（如果不在 PATH 中）
+OPENCODE_PATH=/usr/local/bin/opencode
+
+# 默认模型（例如：claude-3-5-sonnet, gpt-4o）
+OPENCODE_MODEL=claude-3-5-sonnet
+
+# 响应最大 token 数
+OPENCODE_MAX_TOKENS=8192
+
+# 启用详细日志
+OPENCODE_VERBOSE=true
+```
+
+## 模型选择
+
+Wemux 通过 OpenCode 支持多种 AI 模型：
+
+| 模型 | 提供商 | 优势 |
+|-------|----------|----------|
+| Claude 3.5 Sonnet | Anthropic | 代码推理、长上下文 |
+| GPT-4o | OpenAI | 快速、良好的通用推理 |
+| Gemini 1.5 Pro | Google | 长上下文、多模态 |
+
+### 设置默认模型
+
+在您 Worker 的环境中：
+
+```bash
+OPENCODE_MODEL=claude-3-5-sonnet
+```
+
+### 每任务模型覆盖
+
+创建任务时，您可以在描述中指定不同的模型：
+
+```markdown
+为此任务使用 GPT-4o，因为它需要快速周转。
+```
+
+## MCP 服务器集成
+
+OpenCode 可以连接到 MCP（模型上下文协议）服务器以扩展能力：
+
+```bash
+# 配置 MCP 服务器
+OPENCODE_MCP_SERVERS=filesystem,git,search
+```
+
+请参阅 [MCP 服务器](/docs/configuration/mcp) 了解详细设置。
+
+## 会话行为
+
+| 设置 | 描述 | 默认值 |
+|---------|-------------|---------|
+| `OPENCODE_SESSION_TIMEOUT` | 最大会话持续时间 | 30 分钟 |
+| `OPENCODE_MAX_ITERATIONS` | 最大 Agent 迭代次数 | 100 |
+| `OPENCODE_AUTO_APPROVE` | 自动批准安全操作 | false |
+
+## 故障排除
+
+| 问题 | 解决方案 |
+|-------|----------|
+| 未找到 OpenCode | 确保它在您的 PATH 中或设置 `OPENCODE_PATH` |
+| 模型不可用 | 检查您的 API 额度和对模型的访问权限 |
+| MCP 连接失败 | 验证 MCP 服务器正在运行且可访问 |
+
+## 后续步骤
+
+- [MCP 服务器](/docs/configuration/mcp) - 扩展能力
+- [模型选择](/docs/configuration/models) - 比较可用模型

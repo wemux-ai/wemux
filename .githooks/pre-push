@@ -1,0 +1,52 @@
+#!/bin/sh
+set -eu
+
+remote="${1:-}"
+url="${2:-}"
+
+case "$remote" in
+  public)
+    expected_url='wemux-ai/wemux'
+    expected_branch='main'
+    expected_remote_branch='main'
+    ;;
+  *)
+    echo "[open-core] Unknown remote '$remote'; refusing push. This checkout only allows the public remote." >&2
+    exit 1
+    ;;
+esac
+
+case "$url" in
+  *"$expected_url"*) ;;
+  *)
+    echo "[open-core] Remote '$remote' URL is not $expected_url; refusing push." >&2
+    exit 1
+    ;;
+esac
+
+bad=0
+while read -r local_ref local_sha remote_ref remote_sha; do
+  [ -n "$local_ref" ] || continue
+  if [ "$local_ref" != "refs/heads/$expected_branch" ]; then
+    echo "[open-core] $remote accepts only local $expected_branch, got $local_ref." >&2
+    bad=1
+    continue
+  fi
+  if [ "$remote_ref" != "refs/heads/$expected_remote_branch" ]; then
+    echo "[open-core] $remote accepts only remote $expected_remote_branch, got $remote_ref." >&2
+    bad=1
+    continue
+  fi
+  zero_sha='0000000000000000000000000000000000000000'
+  if [ "$remote_sha" != "$zero_sha" ] && ! git merge-base --is-ancestor "$remote_sha" "$local_sha"; then
+    echo "[open-core] non-fast-forward push is disabled; refusing force-push." >&2
+    bad=1
+    continue
+  fi
+  node scripts/open-core/public-boundary.mjs --tree "$local_sha" || bad=1
+done
+
+if [ "$bad" -ne 0 ]; then
+  echo "[open-core] push blocked by branch/remote boundary." >&2
+  exit 1
+fi

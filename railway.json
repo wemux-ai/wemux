@@ -1,0 +1,14 @@
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "build": {
+    "builder": "RAILPACK",
+    "buildCommand": "pnpm build:client && pnpm build:server && pnpm build:worker:preview-installer"
+  },
+  "deploy": {
+    "startCommand": "NODE_ENV=production node dist-server/apps/server/src/control-plane-entry.js",
+    "healthcheckPath": "/api/ready",
+    "healthcheckTimeout": 100,
+    "restartPolicyType": "ON_FAILURE",
+    "restartPolicyMaxRetries": 10
+  }
+}

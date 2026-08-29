@@ -1,0 +1,38 @@
+# OpenConnector 官方连接器 runtime —— 正式部署参考（Phase 3）
+#
+# 用法：
+#   cp .env.connector.example .env.connector
+#   # 编辑 .env.connector 填入强随机值
+#   docker compose -f docker-compose.connector.yml --env-file .env.connector up -d
+#
+# 关键点：
+#   - 锁定镜像 tag（v1.3.5），不追 latest/tip；升级走受控流程
+#   - OOMOL_CONNECT_ENCRYPTION_KEY：凭据/连接/OAuth client 加密，必须设置
+#   - OOMOL_CONNECT_ADMIN_TOKEN：保护 /api/*（Wemux server 代理用它访问）
+#   - OOMOL_CONNECT_RUNTIME_TOKEN：保护 /v1/actions 与 /mcp（Wemux worker 物化 MCP 时带它）
+#   - 若部署机处于 fake-ip / corporate VPN 网络，按需加 OOMOL_CONNECT_EGRESS_TRUSTED_HOSTS
+
+name: vibemux-connector
+
+services:
+  connector:
+    image: ghcr.io/oomol-lab/open-connector:v1.3.5
+    restart: unless-stopped
+    ports:
+      - '${CONNECTOR_PORT:-13000}:3000'
+    volumes:
+      - connector-data:/app/data
+    environment:
+      PORT: '3000'
+      OOMOL_CONNECT_DATA_DIR: /app/data
+      OOMOL_CONNECT_ORIGIN: ${CONNECTOR_ORIGIN:-http://localhost:13000}
+      OOMOL_CONNECT_ENCRYPTION_KEY: ${OOMOL_CONNECT_ENCRYPTION_KEY:?required}
+      OOMOL_CONNECT_ADMIN_TOKEN: ${OOMOL_CONNECT_ADMIN_TOKEN:?required}
+      OOMOL_CONNECT_RUNTIME_TOKEN: ${OOMOL_CONNECT_RUNTIME_TOKEN:-}
+      OOMOL_CONNECT_EGRESS_TRUSTED_HOSTS: ${OOMOL_CONNECT_EGRESS_TRUSTED_HOSTS:-}
+      # 默认拒绝私网目标；自托管内部服务（n8n/GitLab/Home Assistant 等）按需打开
+      OOMOL_CONNECT_ALLOW_PRIVATE_NETWORK: ${OOMOL_CONNECT_ALLOW_PRIVATE_NETWORK:-false}
+      OOMOL_CONNECT_LOG_LEVEL: ${OOMOL_CONNECT_LOG_LEVEL:-info}
+
+volumes:
+  connector-data:
