@@ -78,7 +78,7 @@ export const aggregateCommunityUsage = async (): Promise<AdminCommunityUsageSumm
   const db = getDrizzleDb()
 
   const latestResult = await db.execute(sql`
-    WITH latest AS (${queryLatestPerInstall}),
+    WITH latest AS (${queryLatestPerInstall()}),
     first_seen AS (
       SELECT install_id, MIN(received_at) AS first_seen_at, COUNT(*)::int AS reports
       FROM community_usage_reports GROUP BY install_id
