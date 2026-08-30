@@ -28,12 +28,37 @@
 
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.com/deploy/wemux-community)
 
-#### 1. 创建服务
+#### 1. 创建项目与服务
 
 - **从模板部署**：模板会尝试创建 control-plane、Postgres 与对象存储 Bucket，并预置变量引用；仍需逐项确认引用和值有效。
-- **直接从 GitHub 部署**：在 Railway 选择 **New Project → Deploy from GitHub repo → `wemux-ai/wemux`**。仓库的 `railway.json` 只定义应用构建、启动和健康检查，不会创建 Postgres 或对象存储；需要在项目内自行添加 Railway Postgres，并连接 Railway Bucket、Cloudflare R2 或其他 S3 兼容服务。
+- **用 IaC 部署（CLI，推荐新项目）**：仓库内置 `.railway/railway.ts`（Railway Infrastructure as Code），
+  一条命令即可创建 Postgres、对象存储 Bucket，以及配置好构建/启动/健康检查的 control-plane 服务：
 
-`railway.json` 使用 RAILPACK，无需 Dockerfile，实际执行：
+  ```bash
+  git clone https://github.com/wemux-ai/wemux.git && cd wemux
+  pnpm install          # 安装依赖（含 .railway/railway.ts 所需的 railway SDK）
+  railway login
+  railway init          # 新建项目；或用 railway link 关联已有项目
+  railway config apply  # 创建 Postgres + Bucket + control-plane（自动连接 DATABASE_URL）
+  railway up            # 部署当前代码
+  ```
+
+  桶的 region 在 `.railway/railway.ts` 中修改（创建后不可更改）。
+  `.railway/railway.ts` 是该环境的唯一事实来源：从文件中移除的资源会在下次 apply 时被删除。
+- **直接从 GitHub 部署（不推荐）**：Railway 已弃用 Config as Code（`railway.json`），
+  **新服务不再自动读取该文件**。直接 "Deploy from GitHub repo" 而不手工设置服务命令时，
+  Railpack 会把本仓库误判为 TanStack Start 应用，构建成功但启动崩溃（`srvx: command not found`）。
+  若坚持此方式，请在服务 **Settings** 手工设置：
+
+  ```text
+  Build Command:  pnpm build:client && pnpm build:server && pnpm build:worker:preview-installer
+  Start Command:  NODE_ENV=production node dist-server/apps/server/src/control-plane-entry.js
+  Healthcheck Path: /api/ready
+  ```
+
+  仓库根目录的 `railway.json` 仅供 2026-12-01 前的既有（legacy）服务继续使用，请勿新增配置。
+
+control-plane 服务的实际执行命令（与 `.railway/railway.ts` 一致）：
 
 ```text
 build: pnpm build:client && pnpm build:server && pnpm build:worker:preview-installer
@@ -64,7 +89,7 @@ healthcheck: /api/ready
 
 三个 secret 必须分别生成，并在后续升级中保持不变，否则现有登录会话、签名 token 或已加密凭据会失效。
 
-对象存储用于头像、图片和 Drive。使用 Railway 模板时，打开 Bucket 的 Credentials 页面，把其 endpoint、bucket、access key 和 secret key 引用到 control-plane；使用 R2 时先创建 bucket 和 API Token，再填入同名变量。对象存储变量不完整时相关上传功能会失败。
+对象存储用于头像、图片和 Drive。使用 Railway Bucket 时，用 `railway bucket credentials -b <bucket名>`（或打开 Bucket 的 Credentials 页面）获取 endpoint、bucket、access key 和 secret key，填入 control-plane 的同名变量；使用 R2 时先创建 bucket 和 API Token，再填入同名变量。对象存储变量不完整时相关上传功能会失败。
 
 #### 3. 配置域名并验证
 

@@ -148,16 +148,28 @@ For production-style deployment see [docs/SELF-HOSTING.md](docs/SELF-HOSTING.md)
 
 ## Deploy on Railway
 
-Deploy your own instance without managing a VPS. The repository includes `railway.json`; Railway uses RAILPACK to run:
+Deploy your own instance without managing a VPS. The repository ships `.railway/railway.ts` (Railway Infrastructure as Code) that provisions the control plane, Postgres, and an object-storage Bucket with build/start/healthcheck preconfigured:
+
+```bash
+git clone https://github.com/wemux-ai/wemux.git && cd wemux
+pnpm install
+railway login
+railway init          # or `railway link` for an existing project
+railway config apply  # creates Postgres + Bucket + control-plane (wires DATABASE_URL)
+railway up            # deploy the current checkout
+```
+
+It runs:
 
 ```text
 pnpm build:client && pnpm build:server && pnpm build:worker:preview-installer
 NODE_ENV=production node dist-server/apps/server/src/control-plane-entry.js
+healthcheck: /api/ready
 ```
 
 [![Deploy on Railway](https://railway.app/button.svg)](https://railway.com/deploy/wemux-community)
 
-The Railway template is intended to provision the control plane, Postgres, and an object-storage Bucket. If you deploy directly with **New Project → Deploy from GitHub repo**, `railway.json` only configures build/start/healthcheck; add Postgres and an S3-compatible object-storage service yourself.
+> **Heads-up:** Railway deprecated Config-as-Code (`railway.json`) — new services no longer read it. A bare **New Project → Deploy from GitHub repo** misdetects this repository as a TanStack Start app and crashes at start (`srvx: command not found`). Use the IaC flow above, the official template, or set the build/start/healthcheck commands on the service manually. The root `railway.json` only keeps serving pre-existing (legacy) services until 2026-12-01.
 
 Set these variables on the control-plane service before deploying:
 
@@ -176,7 +188,7 @@ Set these variables on the control-plane service before deploying:
 | `BETTER_AUTH_URL` | Set to the same public origin; required for reliable login/OAuth callbacks. |
 | `HOST` | Optional; defaults to `0.0.0.0`. |
 | `PORT` | Do not pin it. Railway injects `PORT`; the application fallback is `8989`. |
-| `NODE_ENV` | Already set to `production` by `railway.json`. |
+| `NODE_ENV` | Already set to `production` by the start command. |
 
 After the deploy, generate a Railway domain under **Settings → Networking**, set both public URL variables to that HTTPS origin, and redeploy. Verify `https://<domain>/api/ready`, then open `/execution`, choose **Add Executor**, and run the generated install command on the worker machine.
 
