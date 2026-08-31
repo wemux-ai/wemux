@@ -298,7 +298,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 
-- Added a required Vibemux Agent collaboration protocol covering task events, workspace ownership, delegated execution, waiting/resume, and atomic delivery.
+- Added a required Wemux Agent collaboration protocol covering task events, workspace ownership, delegated execution, waiting/resume, and atomic delivery.
 - Added a unified Task Timeline for create, assign, comment/Mention, Agent run lifecycle, waits, workspace creation, and file changes.
 - Added server-side Attention notifications when workspace sessions complete, fail, or need attention, with precise task/workspace/session wait matching.
 - Added a canonical GitHub resource model for Pull Requests, Issues, and Workflow Runs, plus multi-project membership and execution-context bindings.
@@ -368,7 +368,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 ### Added
 
 - Added taskless workspace-session runtime adapters and lifecycle rules, including a Drizzle migration that removes the retired workspace-session binding column.
-- Added Pi MCP bridge visibility so Vibemux project, task, and workspace tools are available to Pi Agent Chat sessions as callable custom tools.
+- Added Pi MCP bridge visibility so Wemux project, task, and workspace tools are available to Pi Agent Chat sessions as callable custom tools.
 
 ### Changed
 
@@ -377,7 +377,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 
-- Fixed Pi Agent Chat incorrectly reporting that Vibemux MCP tools were unavailable despite being mounted at runtime.
+- Fixed Pi Agent Chat incorrectly reporting that Wemux MCP tools were unavailable despite being mounted at runtime.
 - Stabilized workspace session persistence, terminal recovery, preview routing, and task/runtime synchronization.
 
 ## [0.3.105 Preview] - 2026-07-15
@@ -401,7 +401,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 ### Added
 
 - Added retained workspace panels so switching among workspace views preserves local UI state while keeping only the most recent sixteen panel instances.
-- Added shared read-only metadata for Vibemux MCP query tools and safe headless Codex elicitation handling for trusted built-in read operations.
+- Added shared read-only metadata for Wemux MCP query tools and safe headless Codex elicitation handling for trusted built-in read operations.
 
 ### Changed
 
@@ -488,7 +488,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ### 🚀 New
 
-- **Tauri 原生桌面客户端** — Vibemux 开始支持脱离浏览器运行，新增 Tauri Shell 工作区和原生客户端检测，为桌面/移动端原生体验奠定基础。
+- **Tauri 原生桌面客户端** — Wemux 开始支持脱离浏览器运行，新增 Tauri Shell 工作区和原生客户端检测，为桌面/移动端原生体验奠定基础。
 - **AI 工作区会话自动命名** — 发送首条消息后，AI 自动生成有意义的会话标题，告别手动命名。
 - **Coding Agent 可用性检测** — 配置模型前先检测 Codex、Claude Code、OpenCode、Pi 是否真正可用，支持逐 Agent 通过/失败详情面板，不再盲配。
 - **公共终端网关** — 工作区终端支持远程访问，随时随地连接你的开发环境。
@@ -561,11 +561,11 @@ and this project follows [Semantic Versioning](https://semver.org/).
 ## [0.3.95] - 2026-07-08
 
 ### Added
-- Added an initial `apps/native` Tauri shell workspace, root native dev/build scripts, and native-client detection so Vibemux can start running in a native shell without the web service worker path.
+- Added an initial `apps/native` Tauri shell workspace, root native dev/build scripts, and native-client detection so Wemux can start running in a native shell without the web service worker path.
 - Added workspace-directory preview summaries and list-side preview address resolution so `/workspaces` can show the active remote preview domain for each generated preview port.
 
 ### Fixed
-- Fixed local hybrid canonical host handling so login and local preview flows can converge on `app.vibemux.localtest.me:15173` instead of drifting back to loopback-only browser origins.
+- Fixed local hybrid canonical host handling so login and local preview flows can converge on `app.wemux.localtest.me:15173` instead of drifting back to loopback-only browser origins.
 - Fixed workspace preview port switching so each generated preview port reloads with its own preview domain/bootstrap URL instead of keeping the iframe pinned to the previously selected port.
 
 ## [0.3.94] - 2026-07-07
@@ -622,9 +622,9 @@ and this project follows [Semantic Versioning](https://semver.org/).
 ## [0.3.89] - 2026-07-06
 
 ### Fixed
-- Fixed Win11 Codex sessions still failing on `mcp_servers.mcp_vibemux` by materializing the built-in Vibemux MCP server as a worker-managed stdio bridge instead of a remote HTTP Codex MCP table.
+- Fixed Win11 Codex sessions still failing on `mcp_servers.mcp_wemux` by materializing the built-in Wemux MCP server as a worker-managed stdio bridge instead of a remote HTTP Codex MCP table.
 - Added a `mcp-stdio` worker bridge command that forwards Codex MCP JSON-RPC over executor-authenticated `/mcp/executor` requests while keeping stdout protocol-clean.
-- Hardened Codex MCP config rewriting so stale `mcp-vibemux`, `mcp_vibemux`, and nested env tables are removed before the managed stdio config is written.
+- Hardened Codex MCP config rewriting so stale `mcp-wemux`, `mcp_wemux`, and nested env tables are removed before the managed stdio config is written.
 
 ## [0.3.88] - 2026-07-06
 
@@ -648,14 +648,14 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 - Fixed Windows current-user Mesh still attempting to create a TUN adapter after enabling `--use-smoltcp`; Windows workers now also pass `--no-tun` and skip the assigned `-i` address by default.
-- Added `VIBEMUX_EASYTIER_NO_TUN` as an operator override for forcing or disabling no-TUN EasyTier startup.
+- Added `WEMUX_EASYTIER_NO_TUN` as an operator override for forcing or disabling no-TUN EasyTier startup.
 
 ## [0.3.86] - 2026-07-05
 
 ### Fixed
 - Fixed Windows current-user Mesh startup failing with `tun device error Failed to create adapter` by enabling EasyTier's `--use-smoltcp` userspace stack by default on Windows workers.
-- Added `VIBEMUX_EASYTIER_USE_SMOLTCP` as an override for operators who explicitly want to force or disable the userspace EasyTier stack.
-- Fixed preview worker update checks getting stuck when npm registry metadata is unavailable or missing a dist-tag by falling back to the installer manifest served by the Vibemux install endpoint.
+- Added `WEMUX_EASYTIER_USE_SMOLTCP` as an override for operators who explicitly want to force or disable the userspace EasyTier stack.
+- Fixed preview worker update checks getting stuck when npm registry metadata is unavailable or missing a dist-tag by falling back to the installer manifest served by the Wemux install endpoint.
 
 ## [0.3.85] - 2026-07-05
 
@@ -725,13 +725,13 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 - Improved Windows worker service diagnostics by rotating stale service logs before each startup attempt, writing supervisor lifecycle events to `supervisor.log`, and including recent service log tails directly in startup failure errors.
-- Fixed npm worker self-update prefix detection to prefer the explicit `VIBEMUX_WORKER_INSTALL_PREFIX` set by the service environment, instead of relying only on executable-path inference.
+- Fixed npm worker self-update prefix detection to prefer the explicit `WEMUX_WORKER_INSTALL_PREFIX` set by the service environment, instead of relying only on executable-path inference.
 
 ## [0.3.74] - 2026-07-05
 
 ### Fixed
 - Fixed Windows worker service startup by running `node.exe <worker-package>/bin/cli.mjs daemon` directly instead of launching the npm-generated `.cmd` shim from the service supervisor.
-- Kept `VIBEMUX_WORKER_EXECUTABLE_PATH` pointed at the installed worker shim so updater and install-prefix detection continue to work while the service process uses the direct Node entrypoint.
+- Kept `WEMUX_WORKER_EXECUTABLE_PATH` pointed at the installed worker shim so updater and install-prefix detection continue to work while the service process uses the direct Node entrypoint.
 
 ## [0.3.73] - 2026-07-05
 
@@ -748,7 +748,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 ## [0.3.71] - 2026-07-05
 
 ### Fixed
-- Fixed Windows preview workers paired from a local hybrid control plane being redirected to `https://vibemux.xyz`, which caused `executor token 无效` and kept the node offline.
+- Fixed Windows preview workers paired from a local hybrid control plane being redirected to `https://wemux.xyz`, which caused `executor token 无效` and kept the node offline.
 - Fixed Windows Startup fallback service installs so non-admin worker installs start the supervisor immediately and report/control the fallback process through `service status/start/stop`.
 
 ## [0.3.70] - 2026-07-04
@@ -770,7 +770,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 ## [0.3.67] - 2026-07-04
 
 ### Fixed
-- Fixed GA detection on `www.vibemux.com` by injecting the Google tag directly into exported Cloudflare static HTML immediately after `<head>`, while keeping SPA route-change page views in the client bundle.
+- Fixed GA detection on `www.wemux.com` by injecting the Google tag directly into exported Cloudflare static HTML immediately after `<head>`, while keeping SPA route-change page views in the client bundle.
 
 ## [0.3.66] - 2026-07-04
 
@@ -780,12 +780,12 @@ and this project follows [Semantic Versioning](https://semver.org/).
 ## [0.3.65] - 2026-07-04
 
 ### Fixed
-- Fixed GA release builds by passing `VITE_GA_MEASUREMENT_ID` into both Cloudflare Pages and Docker control-plane build environments, ensuring deployed `www.vibemux.com` HTML includes the Google tag.
+- Fixed GA release builds by passing `VITE_GA_MEASUREMENT_ID` into both Cloudflare Pages and Docker control-plane build environments, ensuring deployed `www.wemux.com` HTML includes the Google tag.
 
 ## [0.3.64] - 2026-07-04
 
 ### Added
-- Added Google Analytics 4 tracking for the Vibemux web app using `VITE_GA_MEASUREMENT_ID=G-KHSGWBC0DV`, with root-level Google tag injection and SPA route-change page views.
+- Added Google Analytics 4 tracking for the Wemux web app using `VITE_GA_MEASUREMENT_ID=G-KHSGWBC0DV`, with root-level Google tag injection and SPA route-change page views.
 
 ### Changed
 - Documented the GA measurement ID in local, hybrid, Cloudflare Pages, and production environment configuration examples.
@@ -850,7 +850,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 ### Added
 - Added Docker full-stack dev environment with `docker-compose.dev-full.yml` for one-command local development.
 - Added dev-only auto-pair endpoint (`POST /api/control-plane/executors/auto-pair`) so Docker workers connect automatically on startup.
-- Added `VIBEMUX_WORKER_SKIP_RUNTIME_GUARD` environment variable to skip runtime checks in Docker dev containers.
+- Added `WEMUX_WORKER_SKIP_RUNTIME_GUARD` environment variable to skip runtime checks in Docker dev containers.
 - Added paired executor count display in sidebar navigation with amber indicator.
 
 ### Fixed
@@ -875,8 +875,8 @@ and this project follows [Semantic Versioning](https://semver.org/).
 ## [0.3.56] - 2026-06-29
 
 ### Changed
-- Changed Preview domains to use short stable six-character hashes, reducing generated hostnames such as `test-preview--0cd54989-1394-4fbe-aaab-f1416d7d01f2.vibemux.xyz` to compact names like `test-preview--6g3ove.vibemux.xyz`.
-- Split workspace Preview transports into explicit `公网 IP 直连`, `Public Access`, `Mesh Bridge`, and `Tunnel` choices so public nodes expose both direct IP access and Vibemux-domain public ingress clearly.
+- Changed Preview domains to use short stable six-character hashes, reducing generated hostnames such as `test-preview--0cd54989-1394-4fbe-aaab-f1416d7d01f2.wemux.xyz` to compact names like `test-preview--6g3ove.wemux.xyz`.
+- Split workspace Preview transports into explicit `公网 IP 直连`, `Public Access`, `Mesh Bridge`, and `Tunnel` choices so public nodes expose both direct IP access and Wemux-domain public ingress clearly.
 
 ### Fixed
 - Fixed public-ingress executors so opening Preview replaces stale Tunnel sessions with Public Access sessions instead of continuing to reuse the old tunnel path.
@@ -992,7 +992,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 ## [0.3.39] - 2026-06-27
 
 ### Fixed
-- Fixed manual `vibemux-worker-preview update` from an interactive shell so npm-installed workers can infer their install prefix from the installed package layout instead of requiring service-only environment variables.
+- Fixed manual `wemux-worker-preview update` from an interactive shell so npm-installed workers can infer their install prefix from the installed package layout instead of requiring service-only environment variables.
 - Fixed manual worker updates to restart the configured system service after applying the staged package, so the running process switches to the updated worker version.
 - Changed the Unix installer wrapper to export the worker executable path and install prefix, giving future CLI commands the same install context as the service process.
 
@@ -1023,7 +1023,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ### Changed
 - Changed executor Mesh error displays to show actionable remediation guidance for missing `unzip`, including a copyable Linux package-manager command and the advanced EasyTier binary environment-variable fallback.
-- Changed Linux worker runtime bootstrap to treat `unzip` as a base dependency, so fresh Linux workers can install it before Vibemux Mesh attempts automatic EasyTier downloads.
+- Changed Linux worker runtime bootstrap to treat `unzip` as a base dependency, so fresh Linux workers can install it before Wemux Mesh attempts automatic EasyTier downloads.
 
 ## [0.3.33] - 2026-06-27
 
@@ -1076,7 +1076,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 - Fixed executor switching and environment startup paths so target-node worktree preparation is visible and reused before running workspace commands.
 - Fixed workspace preview refresh behavior that could repeatedly reload tunnel previews after transport metadata changed.
 - Fixed old or incomplete tool-call rows so interrupted workspace replies no longer remain displayed as actively running.
-- Fixed project/workspace settings sync so `.vibemux.yml` and workspace runtime environment files can be re-imported from the active workspace directory.
+- Fixed project/workspace settings sync so `.wemux.yml` and workspace runtime environment files can be re-imported from the active workspace directory.
 
 ## [0.3.27] - 2026-06-21
 
@@ -1105,10 +1105,10 @@ and this project follows [Semantic Versioning](https://semver.org/).
 - Changed project and workspace settings shells to use a compact full-height drawer layout on constrained screens while preserving the desktop split-panel dialog layout.
 - Changed `/workspaces` drag-and-drop ordering so project and workspace drop preview slots accept direct drops and merge partial workspace reorder payloads back into the full project ordering safely.
 - Changed workspace session feeds to interleave system logs and transcript turns by timestamp while keeping the active running turn pinned after newer preparation logs.
-- Changed workspace session defaults to enable the built-in Vibemux MCP server automatically when a new workspace session is created.
+- Changed workspace session defaults to enable the built-in Wemux MCP server automatically when a new workspace session is created.
 
 ### Fixed
-- Fixed `.vibemux.yml` reimport so Vibemux can import service-based templates that define runtime commands under `services.*.command`, `services.*.port`, and `services.*.healthCheck.path`, instead of only recognizing the older `environment:` schema.
+- Fixed `.wemux.yml` reimport so Wemux can import service-based templates that define runtime commands under `services.*.command`, `services.*.port`, and `services.*.healthCheck.path`, instead of only recognizing the older `environment:` schema.
 - Fixed workspace auto-title generation so AI naming only runs for system-titled workspace creation flows, carries image context through the API, and falls back with a visible notice when OpenRouter naming is unavailable.
 - Fixed `/workspaces` list rows and chat helpers so project identity dots, Skill Mention helper copy, and default MCP selection stay aligned with the current workspace session behavior.
 
@@ -1169,16 +1169,16 @@ and this project follows [Semantic Versioning](https://semver.org/).
 ## [0.3.17] - 2026-06-17
 
 ### Added
-- Added a new pure black-and-white Vibemux logo and favicon set, plus simplified branding variants for comparing small-size icon readability.
+- Added a new pure black-and-white Wemux logo and favicon set, plus simplified branding variants for comparing small-size icon readability.
 
 ## [0.3.16] - 2026-06-17
 
 ### Added
-- Added template-driven additional preview ports through `.vibemux.yml` `environment.ports`, allowing API, docs, Storybook, and other local services to receive separate Preview/Public Networking domains without authoring localhost URLs.
+- Added template-driven additional preview ports through `.wemux.yml` `environment.ports`, allowing API, docs, Storybook, and other local services to receive separate Preview/Public Networking domains without authoring localhost URLs.
 
 ### Changed
 - Changed environment templates to use `start`, `stop`, `logs`, `appPort`, and `healthPath` as the primary project runtime model, with `healthPath` resolved on the primary app port.
-- Updated project and workspace environment template editors, MCP input, server normalization, and the built-in Vibemux YML authoring guidance around the new port-oriented model.
+- Updated project and workspace environment template editors, MCP input, server normalization, and the built-in Wemux YML authoring guidance around the new port-oriented model.
 - Removed the separate workspace terminal `dev` quick command so start/stop/logs use one consistent environment control path.
 - Simplified the project clone status badge loading indicator to use the standard spinner styling.
 
@@ -1261,7 +1261,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 ## [0.3.7] - 2026-06-15
 
 ### Added
-- Added `{{environment.slug}}` as a stable command-safe environment template variable for naming external runtime resources such as Docker Compose projects without making Vibemux own Docker-specific behavior.
+- Added `{{environment.slug}}` as a stable command-safe environment template variable for naming external runtime resources such as Docker Compose projects without making Wemux own Docker-specific behavior.
 - Added a transport architecture state document covering Local Direct, Mesh Direct/Relayed, Public Gateway, Tunnel, Control-plane WS, terminal routing, preview routing, AI realtime, and Desktop Sandbox boundaries.
 
 ### Changed
@@ -1319,7 +1319,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 ## [0.3.0] - 2026-06-15
 
 ### Changed
-- Refined the node-management Mesh UI so topology lines stay connected on wide layouts, implementation details are hidden behind Vibemux Mesh wording, and remediation prompts give clearer terminal-command guidance.
+- Refined the node-management Mesh UI so topology lines stay connected on wide layouts, implementation details are hidden behind Wemux Mesh wording, and remediation prompts give clearer terminal-command guidance.
 
 ## [0.2.82] - 2026-06-15
 
@@ -1346,7 +1346,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 - Fixed the embedded and sidecar EasyTier public node startup so preview and production relays run as shared public nodes without worker network credentials, matching EasyTier's public-node model and allowing per-user worker meshes to connect through the relay.
-- Updated EasyTier deployment docs to clarify that `VIBEMUX_EASYTIER_NETWORK_PREFIX` and `VIBEMUX_EASYTIER_NETWORK_SECRET` are used for worker enrollment, not for placing the shared relay into a user network.
+- Updated EasyTier deployment docs to clarify that `WEMUX_EASYTIER_NETWORK_PREFIX` and `WEMUX_EASYTIER_NETWORK_SECRET` are used for worker enrollment, not for placing the shared relay into a user network.
 
 ## [0.2.78] - 2026-06-15
 
@@ -1468,7 +1468,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ### Added
 - Added experimental local-direct workspace preview transport that prefers `127.0.0.1` when the hosted page is talking to the same machine as the active workspace worker.
-- Added worker-local read-only CORS support for `/health`, `/api/health`, and `/api/status` so Vibemux preview and diagnostics pages can safely read local worker status from allowed origins.
+- Added worker-local read-only CORS support for `/health`, `/api/health`, and `/api/status` so Wemux preview and diagnostics pages can safely read local worker status from allowed origins.
 
 ### Changed
 - Changed workspace preview transport selection to verify local worker `executorId` ownership before using localhost direct preview, while preserving the existing Gateway / Tunnel path as fallback.
@@ -1498,7 +1498,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 - Changed `/settings?section=localNetworkAccess` routing to use a pure route-search helper so the new settings section can be validated without loading the full app runtime.
 
 ### Fixed
-- Fixed the denied Local Network Access guidance so users are told when Chrome requires a full Vibemux page reload after changing site permissions manually.
+- Fixed the denied Local Network Access guidance so users are told when Chrome requires a full Wemux page reload after changing site permissions manually.
 
 ## [0.2.62] - 2026-06-11
 
@@ -1719,7 +1719,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 ## [0.2.41] - 2026-06-05
 
 ### Changed
-- Standardized the public-facing support contact across the landing, marketing layout, and legal pages to `support@vibemux.com`.
+- Standardized the public-facing support contact across the landing, marketing layout, and legal pages to `support@wemux.com`.
 
 ## [0.2.40] - 2026-06-05
 
@@ -1774,7 +1774,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 ## [0.2.32] - 2026-06-03
 
 ### Changed
-- Clarified the top-level console version label in both English and Chinese so the UI now shows the Vibemux product name alongside the version number instead of a bare `vX.Y.Z`.
+- Clarified the top-level console version label in both English and Chinese so the UI now shows the Wemux product name alongside the version number instead of a bare `vX.Y.Z`.
 
 ## [0.2.31] - 2026-06-02
 
@@ -1799,15 +1799,15 @@ and this project follows [Semantic Versioning](https://semver.org/).
 
 ### Fixed
 - Fixed GitHub App installation callbacks so the signed callback state can complete installation sync after the GitHub redirect even when the browser no longer sends a bearer token, while still rejecting mismatched authenticated users.
-- Fixed project deletion so Vibemux only attempts directory removal for managed workspace-owned paths, preserving user-owned original directories while still removing the project record and reporting partial deletion warnings clearly.
-- Fixed managed workspace path detection across shared, server, and web runtime helpers so custom workspace roots, legacy `.vibemux-*` paths, and home-expanded managed directories resolve consistently during deletion and runtime path remapping.
+- Fixed project deletion so Wemux only attempts directory removal for managed workspace-owned paths, preserving user-owned original directories while still removing the project record and reporting partial deletion warnings clearly.
+- Fixed managed workspace path detection across shared, server, and web runtime helpers so custom workspace roots, legacy `.wemux-*` paths, and home-expanded managed directories resolve consistently during deletion and runtime path remapping.
 - Fixed workspace-session history hydration to enrich collaborator timeline authors from the latest conversation snapshot instead of a stale closure during refresh.
 
 ## [0.2.28] - 2026-06-02
 
 ### Added
 - Added a Model Center runtime panel that manages default models and runtime settings for OpenCode, Codex, Claude Code, and Pi, with direct worker config import support.
-- Added a built-in `Vibemux YML` system skill that is auto-seeded into the primary agent and the skill catalog for repo-root `.vibemux.yml` authoring.
+- Added a built-in `Wemux YML` system skill that is auto-seeded into the primary agent and the skill catalog for repo-root `.wemux.yml` authoring.
 
 ### Changed
 - Moved runtime default configuration out of `/settings` and into the Model Center, and simplified workspace open-behavior copy.
@@ -1897,7 +1897,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 - Added workspace archive and restore actions on `/workspaces`, plus delete-time options to remove managed local and remote branches when cleaning up a workspace.
 
 ### Changed
-- Extended workspace cleanup orchestration so worker-owned worktree teardown can also prune managed `vibemux/*` branches without moving Git execution back into the control plane.
+- Extended workspace cleanup orchestration so worker-owned worktree teardown can also prune managed `wemux/*` branches without moving Git execution back into the control plane.
 - Enabled the desktop sandbox integration for preview workspace debugging.
 
 ## [0.2.21] - 2026-05-31
@@ -2090,14 +2090,14 @@ and this project follows [Semantic Versioning](https://semver.org/).
 ## [0.2.7] - 2026-05-19
 
 ### Added
-- Added an in-app `/changelog` page so users can review release history inside Vibemux.
+- Added an in-app `/changelog` page so users can review release history inside Wemux.
 - Added persistent workspace and executor terminal sessions with reconnectable snapshots and session management APIs.
 - Added release workflow guidance for release notes, changelog updates, and annotated tag management.
 
 ### Changed
 - Expanded executor control-plane telemetry, worker doctor, and terminal session plumbing so workspace surfaces can inspect live node state without falling back to host-level access.
 - Added bilingual Preview troubleshooting guidance for common tunnel, dev server binding, and upstream app failure modes.
-- Standardized the Vibemux release skill around a single `CHANGELOG.md` source of truth for user-facing release history.
+- Standardized the Wemux release skill around a single `CHANGELOG.md` source of truth for user-facing release history.
 
 ### Fixed
 - Fixed Preview gateway upstream failures so plain-text tunnel errors render as readable HTML fallback pages with the source app URL and failure detail.

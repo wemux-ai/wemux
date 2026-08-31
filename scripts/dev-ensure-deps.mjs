@@ -6,7 +6,7 @@ import path from 'node:path'
 const appDir = process.argv[2] || '/app'
 process.chdir(appDir)
 
-const markerPath = path.join('node_modules', '.vibemux-deps-hash')
+const markerPath = path.join('node_modules', '.wemux-deps-hash')
 const currentHash = createHash('sha256')
 
 for (const file of ['package.json', 'pnpm-lock.yaml']) {

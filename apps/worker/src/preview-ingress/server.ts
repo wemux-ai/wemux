@@ -188,7 +188,7 @@ const normalizeWebSocketHeaders = (headers: Array<[string, string]>, upstreamUrl
   let hasOrigin = false
   for (const [name, value] of headers) {
     const lower = name.toLowerCase()
-    if (lower === 'authorization' || lower.startsWith('x-vibemux-preview-')) {
+    if (lower === 'authorization' || lower.startsWith('x-wemux-preview-')) {
       continue
     }
     if (lower === 'origin') {
@@ -235,8 +235,8 @@ const proxyWebSocketRequest = (params: {
   pathWithQuery: string
 }) => {
   params.webSocketServer.handleUpgrade(params.request, params.socket, params.head, (clientSocket) => {
-    const relayHeaders = parseEncodedJsonHeader<Array<[string, string]>>(params.request.headers['x-vibemux-preview-relay-headers']) ?? []
-    const relaySubprotocols = parseEncodedJsonHeader<string[]>(params.request.headers['x-vibemux-preview-relay-subprotocols']) ?? []
+    const relayHeaders = parseEncodedJsonHeader<Array<[string, string]>>(params.request.headers['x-wemux-preview-relay-headers']) ?? []
+    const relaySubprotocols = parseEncodedJsonHeader<string[]>(params.request.headers['x-wemux-preview-relay-subprotocols']) ?? []
     const upstreamUrl = normalizeWebSocketUrl(params.targetUrl, params.pathWithQuery)
     const upstreamSocket = new NodeWebSocket(
       upstreamUrl,
@@ -627,11 +627,11 @@ export const startPreviewIngressServer = (params: {
       }
 
       const previewId = getPreviewIdFromPath(url.pathname, PREVIEW_HTTP_PREFIX)
-      const pathWithQuery = request.headers['x-vibemux-preview-path']
+      const pathWithQuery = request.headers['x-wemux-preview-path']
       const targetUrl = resolveTargetUrl(
         previewId,
-        typeof request.headers['x-vibemux-preview-target-url'] === 'string'
-          ? request.headers['x-vibemux-preview-target-url']
+        typeof request.headers['x-wemux-preview-target-url'] === 'string'
+          ? request.headers['x-wemux-preview-target-url']
           : undefined,
       )
       if (!previewId) {

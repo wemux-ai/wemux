@@ -81,14 +81,14 @@ export const DEFAULT_MANAGED_CLOUD_CONFIG: ManagedCloudConfig = {
   dockerNetwork: 'bridge',
   dockerCpus: '2',
   dockerMemory: '4g',
-  dockerWorkerHomeInContainer: '/var/lib/vibemux-worker',
+  dockerWorkerHomeInContainer: '/var/lib/vibemux-worker', // 存量沿用：托管容器挂载点路径保持旧值，避免升级后卷失配
   dockerPool: [],
   boxliteUrl: '',
   boxliteHome: '',
   boxliteImage: '',
   boxliteCpus: '2',
   boxliteMemory: '4096',
-  boxliteWorkerHomeInContainer: '/var/lib/vibemux-worker',
+  boxliteWorkerHomeInContainer: '/var/lib/vibemux-worker', // 存量沿用
   boxlitePool: [],
   asciiBoxApiKey: '',
   asciiBoxBaseUrl: 'https://ascii.dev/api/box/v1',
@@ -98,7 +98,7 @@ export const DEFAULT_MANAGED_CLOUD_CONFIG: ManagedCloudConfig = {
     gatewayUrl: '',
     apiKey: '',
     instanceType: 'standard-1',
-    workspaceHome: '/var/lib/vibemux-worker',
+    workspaceHome: '/var/lib/vibemux-worker', // 存量沿用
     keepAliveSeconds: '900',
     mountDrive: false,
     driveMountPath: '/drive',

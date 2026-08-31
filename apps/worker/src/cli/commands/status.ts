@@ -1,3 +1,4 @@
+import { getEnv } from '@shared/env'
 /**
  * [INPUT]: Persisted worker pairing config and matching local daemon APIs.
  * [OUTPUT]: Current worker and daemon status for terminal or JSON consumers.
@@ -40,7 +41,7 @@ export const getLiveWorkerStatus = async (
   options: LocalWorkerStatusOptions = {},
 ): Promise<LocalWorkerStatus> => {
   const environment = options.portEnvironment ?? resolveWorkerConsolePortEnvironment({
-    explicitEnvironment: process.env.VIBEMUX_WORKER_PORT_PROFILE,
+    explicitEnvironment: getEnv('WEMUX_WORKER_PORT_PROFILE'),
     nodeEnv: process.env.NODE_ENV,
     releaseChannel: getWorkerReleaseChannel(),
     cloudUrl: config.cloudUrl,

@@ -157,7 +157,7 @@ function AppShell() {
   }
 
   if (isAdminPage) {
-    // Admin 深浅主题由 AdminLayout 内部自管（vibemux-admin-dark/light，默认深色），
+    // Admin 深浅主题由 AdminLayout 内部自管（wemux-admin-dark/light，默认深色），
     // 与全局 ThemeProvider 解耦，避免 documentElement 的 .dark 串扰。
     return <Outlet />
   }

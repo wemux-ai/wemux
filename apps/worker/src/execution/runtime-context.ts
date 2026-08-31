@@ -18,7 +18,7 @@ import { loadWorkerRuntimeConfig } from '../core/runtime-cloud-url'
 import { buildAgentRuntimeWorkerCommandEnvironment } from './agent-runtime-env'
 import { ensureCodexProviderEnvKeyInConfig, ensureCodexProviderNameInConfig, hasCodexAuthDotJsonContent, hasLegacyCodexAccessTokenContent, parseCodexCredentialEnvironment, resolveCodexProviderConfig } from './codex-models'
 
-const MANAGED_SKILL_INDEX = '.vibemux-managed.json'
+const MANAGED_SKILL_INDEX = '.wemux-managed.json'
 const TASK_RUNTIME_MARKER = 'vibemux-task-runtime-'
 const CLAUDE_CREDENTIAL_FILES = ['.credentials.json']
 const VIBEMUX_MCP_EXECUTOR_TOKEN_ENV = 'VIBEMUX_MCP_EXECUTOR_TOKEN'
@@ -501,9 +501,9 @@ const buildCodexMcpConfig = (config: WorkerConfig, existingConfigContent = '', a
       continue
     }
 
-    const isManagedVibemuxServer = server.target === VIBEMUX_MCP_TARGET
+    const isManagedWemuxServer = server.target === VIBEMUX_MCP_TARGET
     const isOfficialConnectorServer = server.id === OFFICIAL_CONNECTOR_MCP_SERVER_ID
-    if (isManagedVibemuxServer || isOfficialConnectorServer) {
+    if (isManagedWemuxServer || isOfficialConnectorServer) {
       const oldKey = legacyRuntimeConfigKey(server.id || server.name)
       baseConfig = removeTomlTable(baseConfig, ['mcp_servers', key])
       baseConfig = removeTomlTable(baseConfig, ['mcp_servers', key, 'env'])
@@ -531,15 +531,15 @@ const buildCodexMcpConfig = (config: WorkerConfig, existingConfigContent = '', a
       continue
     }
 
-    if (isManagedVibemuxServer) {
+    if (isManagedWemuxServer) {
       if (!config.executorToken?.trim()) {
         continue
       }
 
-      const shell = workerCommandEnv.VIBEMUX_WORKER_LAUNCHER
-        ? { command: workerCommandEnv.VIBEMUX_WORKER_LAUNCHER, args: ['mcp-stdio'] }
-        : workerCommandEnv.VIBEMUX_WORKER_RUNNER && workerCommandEnv.VIBEMUX_WORKER_ENTRY
-          ? { command: workerCommandEnv.VIBEMUX_WORKER_RUNNER, args: [workerCommandEnv.VIBEMUX_WORKER_ENTRY, 'mcp-stdio'] }
+      const shell = workerCommandEnv.WEMUX_WORKER_LAUNCHER
+        ? { command: workerCommandEnv.WEMUX_WORKER_LAUNCHER, args: ['mcp-stdio'] }
+        : workerCommandEnv.WEMUX_WORKER_RUNNER && workerCommandEnv.WEMUX_WORKER_ENTRY
+          ? { command: workerCommandEnv.WEMUX_WORKER_RUNNER, args: [workerCommandEnv.WEMUX_WORKER_ENTRY, 'mcp-stdio'] }
           : null
 
       if (!shell) {
@@ -578,10 +578,10 @@ const buildCodexMcpConfig = (config: WorkerConfig, existingConfigContent = '', a
         continue
       }
 
-      const shell = workerCommandEnv.VIBEMUX_WORKER_LAUNCHER
-        ? { command: workerCommandEnv.VIBEMUX_WORKER_LAUNCHER, args: ['mcp-connector-stdio'] }
-        : workerCommandEnv.VIBEMUX_WORKER_RUNNER && workerCommandEnv.VIBEMUX_WORKER_ENTRY
-          ? { command: workerCommandEnv.VIBEMUX_WORKER_RUNNER, args: [workerCommandEnv.VIBEMUX_WORKER_ENTRY, 'mcp-connector-stdio'] }
+      const shell = workerCommandEnv.WEMUX_WORKER_LAUNCHER
+        ? { command: workerCommandEnv.WEMUX_WORKER_LAUNCHER, args: ['mcp-connector-stdio'] }
+        : workerCommandEnv.WEMUX_WORKER_RUNNER && workerCommandEnv.WEMUX_WORKER_ENTRY
+          ? { command: workerCommandEnv.WEMUX_WORKER_RUNNER, args: [workerCommandEnv.WEMUX_WORKER_ENTRY, 'mcp-connector-stdio'] }
           : null
 
       if (!shell) {

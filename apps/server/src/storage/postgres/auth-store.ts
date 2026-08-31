@@ -332,7 +332,7 @@ export const refreshAuthStore = async () => {
     revokedTokenHashes.add(row.tokenHash)
   }
   // 只在确实存在已过期 token 时才执行清理 DELETE。
-  // 无条件发 DELETE（即使匹配 0 行）也会触发 vibemux_storage_change 语句级触发器，
+  // 无条件发 DELETE（即使匹配 0 行）也会触发 wemux_storage_change 语句级触发器，
   // 产生 storage_change_events + pg_notify → storage-change listener 再次 refreshAuthStore
   // → 再次 DELETE → 自反馈死循环（曾导致 storage_change_events 膨胀到数十 GB）。
   const hasExpiredTokens = revokedTokenRows.some((row) => row.expiresAt < now)

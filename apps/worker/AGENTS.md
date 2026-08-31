@@ -37,7 +37,7 @@
 
 ## 本地存储（重要）
 
-- 分层：`~/.vibemux-dev/node`（节点级）、`users/<userId>`（用户私有，含凭据 runtime）、`workspaces/<workspaceId>`（workspace 共享）。
+- 分层：`~/.wemux-dev/node`（节点级）、`users/<userId>`（用户私有，含凭据 runtime）、`workspaces/<workspaceId>`（workspace 共享）。
 - 路径只用真实 `workspaceId`；`workspaceSessionId` 不能进目录层级；`unknown` 仅作迁移信号。
 - 路径 helper 统一在 `packages/shared/src/workspace-paths.ts`。
 

@@ -12,10 +12,10 @@ import { useTranslation } from '../../lib/i18n/react'
 import {
   buildPrimaryAgentConfig,
   countConfiguredChannels,
-  hasEnabledVibemuxMcp,
+  hasEnabledWemuxMcp,
   parsePrimaryAgentConfig,
-  VIBEMUX_MCP_SERVER_ID,
-  VIBEMUX_MCP_SERVER_NAME,
+  WEMUX_MCP_SERVER_ID,
+  WEMUX_MCP_SERVER_NAME,
   type McpServerPolicy,
   type PrimaryAgentDraft,
   type SkillPolicy,
@@ -86,8 +86,8 @@ export function PrimaryAgentSettingsPanel({
   const enabledSkills = config.skills.filter((item) => item.enabled).length
   const enabledMcpServers = globalMcpServers.filter((item) => item.enabled).length
   const configuredChannels = countConfiguredChannels(config)
-  const vibemuxMcp = globalMcpServers.find((item) => item.id === VIBEMUX_MCP_SERVER_ID || item.name === VIBEMUX_MCP_SERVER_NAME) ?? null
-  const vibemuxEnabled = hasEnabledVibemuxMcp({ ...config, mcpServers: globalMcpServers })
+  const wemuxMcp = globalMcpServers.find((item) => item.id === WEMUX_MCP_SERVER_ID || item.name === WEMUX_MCP_SERVER_NAME) ?? null
+  const wemuxEnabled = hasEnabledWemuxMcp({ ...config, mcpServers: globalMcpServers })
 
   const filteredSkills = useMemo(() => {
     const query = skillQuery.trim().toLowerCase()
@@ -212,10 +212,10 @@ export function PrimaryAgentSettingsPanel({
               <div className="rounded-lg border border-zinc-800 bg-zinc-950/70 p-4">
                 <div className="flex items-center justify-between gap-3">
                   <div>
-                    <p className="font-medium text-zinc-100">{t('agents.primary.vibemuxMcp.title')}</p>
-                    <p className="mt-1 text-xs text-zinc-500">{t('agents.primary.vibemuxMcp.description')}</p>
+                    <p className="font-medium text-zinc-100">{t('agents.primary.wemuxMcp.title')}</p>
+                    <p className="mt-1 text-xs text-zinc-500">{t('agents.primary.wemuxMcp.description')}</p>
                   </div>
-                  <Badge className={statusTone(Boolean(vibemuxMcp), vibemuxEnabled)}>{vibemuxEnabled ? t('agents.primary.status.enabled') : t('agents.primary.status.disabled')}</Badge>
+                  <Badge className={statusTone(Boolean(wemuxMcp), wemuxEnabled)}>{wemuxEnabled ? t('agents.primary.status.enabled') : t('agents.primary.status.disabled')}</Badge>
                 </div>
               </div>
             </section>

@@ -40,8 +40,8 @@ pnpm build:server         # 仅构建后端
 
 | 服务 | 地址 |
 |------|------|
-| 前端 | http://app.vibemux.localtest.me:15173 |
-| 后端 | http://app.vibemux.localtest.me:18989 |
+| 前端 | http://app.wemux.localtest.me:15173 |
+| 后端 | http://app.wemux.localtest.me:18989 |
 | 后端（宿主机直连） | http://127.0.0.1:18989 |
 | Worker Console | http://127.0.0.1:48121 |
 
@@ -63,8 +63,8 @@ cp .env.production.local.example .env.production.local
 | Postgres | 127.0.0.1:5434 |
 | RustFS S3 API | 127.0.0.1:9100 |
 | RustFS Console | http://127.0.0.1:9101 |
-| Bucket | vibemux |
-| Access Key | vibemux |
+| Bucket | wemux |
+| Access Key | wemux |
 | Secret Key | 仅供本地开发的临时值（请自行替换） |
 
 ## Worker 配对流程
@@ -81,13 +81,13 @@ cp .env.production.local.example .env.production.local
 |------|----------------|
 | `pnpm dev` | http://127.0.0.1:8989 |
 | `pnpm dev:hybrid:*` | http://127.0.0.1:18989 |
-| `pnpm dev:preview` | https://vibemux.xyz/ |
+| `pnpm dev:preview` | https://wemux.xyz/ |
 
 ## 常见问题
 
-**端口占用**：先执行 `docker ps -a` 检查旧容器，再执行 `docker rm -f vibemux-postgres vibemux-rustfs vibemux-rustfs-init`
+**端口占用**：先执行 `docker ps -a` 检查旧容器，再执行 `docker rm -f wemux-postgres wemux-rustfs wemux-rustfs-init`
 
-**需要重置基础设施**：执行 `pnpm dev:infra:down`，如需连数据一起重置，再执行 `docker volume rm vibemux_vibemux-postgres-data vibemux_vibemux-rustfs-data`
+**需要重置基础设施**：执行 `pnpm dev:infra:down`，如需连数据一起重置，再执行 `docker volume rm wemux_wemux-postgres-data wemux_wemux-rustfs-data`
 
 ## 相关文档
 

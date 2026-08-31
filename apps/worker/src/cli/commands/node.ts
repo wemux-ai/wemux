@@ -4,11 +4,11 @@
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
 
 import { parseCliArgs } from '../../cli-flags'
-import type { VibemuxClient } from '../client'
+import type { WemuxClient } from '../client'
 import { getCliName, throwUnknownCommand } from '../help'
 import { getOutputFormat, output } from '../output'
 
-export const runNodeCommand = async (client: VibemuxClient, subcommand: string, args: string[]) => {
+export const runNodeCommand = async (client: WemuxClient, subcommand: string, args: string[]) => {
   const { flags } = parseCliArgs(args)
   if (subcommand !== 'list') {
     throwUnknownCommand(getCliName(), 'node', subcommand)

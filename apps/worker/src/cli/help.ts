@@ -204,7 +204,7 @@ export const renderRootHelp = (cliName: string, version: string) => {
     '      --json     Output machine-readable JSON where supported',
     '',
     `Run "${cliName} help <resource>" for resource commands.`,
-    'Authentication: set VIBEMUX_TOKEN, or pair the local worker.',
+    'Authentication: set WEMUX_TOKEN, or pair the local worker.',
   ].join('\n')
 }
 

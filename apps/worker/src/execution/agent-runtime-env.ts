@@ -39,9 +39,9 @@ const resolveWorkerCommandPaths = () => {
 export const buildAgentRuntimeWorkerCommandEnvironment = () => {
   const commandPaths = resolveWorkerCommandPaths()
   return {
-    ...(commandPaths.launcherPath ? { VIBEMUX_WORKER_LAUNCHER: commandPaths.launcherPath } : {}),
-    ...(commandPaths.runnerPath ? { VIBEMUX_WORKER_RUNNER: commandPaths.runnerPath } : {}),
-    ...(commandPaths.entryPath ? { VIBEMUX_WORKER_ENTRY: commandPaths.entryPath } : {}),
+    ...(commandPaths.launcherPath ? { WEMUX_WORKER_LAUNCHER: commandPaths.launcherPath } : {}),
+    ...(commandPaths.runnerPath ? { WEMUX_WORKER_RUNNER: commandPaths.runnerPath } : {}),
+    ...(commandPaths.entryPath ? { WEMUX_WORKER_ENTRY: commandPaths.entryPath } : {}),
   } satisfies Record<string, string>
 }
 

@@ -4,7 +4,7 @@ type AnalyticsEnv = ImportMeta['env'] & {
 
 declare global {
   interface Window {
-    __vibemuxGtag?: (...args: unknown[]) => void
+    __wemuxGtag?: (...args: unknown[]) => void
   }
 }
 
@@ -15,11 +15,11 @@ const getMeasurementId = () => (getAnalyticsEnv().VITE_GA_MEASUREMENT_ID ?? '').
 export const trackGoogleAnalyticsPageView = (path: string, title: string) => {
   const measurementId = getMeasurementId()
 
-  if (!measurementId || typeof window === 'undefined' || typeof window.__vibemuxGtag !== 'function') {
+  if (!measurementId || typeof window === 'undefined' || typeof window.__wemuxGtag !== 'function') {
     return
   }
 
-  window.__vibemuxGtag('event', 'page_view', {
+  window.__wemuxGtag('event', 'page_view', {
     page_path: path,
     page_location: window.location.href,
     page_title: title,

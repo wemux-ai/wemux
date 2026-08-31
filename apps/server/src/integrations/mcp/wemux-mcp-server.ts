@@ -1,10 +1,10 @@
 import type { AppState } from '@shared/types'
 import { listConversationsByScope } from '../../control-plane/conversation-service'
 import { McpServer, ResourceTemplate } from './sdk'
-import { registerVibemuxMcpResources } from './vibemux-mcp-resources'
-import { registerVibemuxMcpTools } from './vibemux-mcp-tools'
+import { registerWemuxMcpResources } from './wemux-mcp-resources'
+import { registerWemuxMcpTools } from './wemux-mcp-tools'
 
-export const createVibemuxMcpServer = (params: { userId: string; runtimeAgentId?: string; getState: () => AppState }) => {
+export const createWemuxMcpServer = (params: { userId: string; runtimeAgentId?: string; getState: () => AppState }) => {
   const ctx = {
     userId: params.userId,
     runtimeAgentId: params.runtimeAgentId?.trim() || undefined,
@@ -19,12 +19,12 @@ export const createVibemuxMcpServer = (params: { userId: string; runtimeAgentId?
   }
 
   const server = new McpServer({
-    name: 'vibemux-control-plane',
+    name: 'wemux-control-plane',
     version: '0.2.2',
   })
 
-  registerVibemuxMcpResources(server, ctx, ResourceTemplate)
-  registerVibemuxMcpTools(server, ctx)
+  registerWemuxMcpResources(server, ctx, ResourceTemplate)
+  registerWemuxMcpTools(server, ctx)
 
   return server
 }

@@ -271,7 +271,7 @@ const buildWorkerDoctor = async () => {
           ].join(', ')
         : 'Mesh is disabled.',
       hint: meshConfig.enabled && (!easyTierCorePath || !easyTierCliPath || !easyTierConfigured)
-        ? 'Install EasyTier and set VIBEMUX_EASYTIER_NETWORK_NAME, VIBEMUX_EASYTIER_NETWORK_SECRET, and VIBEMUX_EASYTIER_PEERS.'
+        ? 'Install EasyTier and set WEMUX_EASYTIER_NETWORK_NAME, WEMUX_EASYTIER_NETWORK_SECRET, and WEMUX_EASYTIER_PEERS.'
         : undefined,
     },
   ]

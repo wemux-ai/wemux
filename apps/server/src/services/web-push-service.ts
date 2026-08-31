@@ -31,7 +31,7 @@ export type PushNotificationPayload = {
 }
 
 const VAPID_KEYS_META_KEY = 'web_push_vapid_keys'
-const VAPID_SUBJECT = process.env.VAPID_SUBJECT || 'mailto:no-reply@vibemux.app'
+const VAPID_SUBJECT = process.env.VAPID_SUBJECT || 'mailto:no-reply@wemux.app'
 
 type VapidKeys = {
   publicKey: string

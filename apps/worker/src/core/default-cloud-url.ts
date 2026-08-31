@@ -6,9 +6,9 @@
 import { lookup } from 'node:dns/promises'
 
 export const WEMUX_PRODUCTION_CLOUD_URL = 'https://wemux.ai'
-export const LEGACY_PRODUCTION_CLOUD_URL = 'https://vibemux.com'
+export const LEGACY_PRODUCTION_CLOUD_URL = 'https://wemux.com'
 export const WEMUX_PREVIEW_CLOUD_URL = 'https://wemux.xyz'
-export const LEGACY_PREVIEW_CLOUD_URL = 'https://vibemux.xyz'
+export const LEGACY_PREVIEW_CLOUD_URL = 'https://wemux.xyz'
 
 type ReachabilityProbe = (url: string) => Promise<boolean>
 

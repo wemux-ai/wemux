@@ -73,7 +73,7 @@ export const resolveWorkerReleaseChannel = (params: {
   packageName?: string
   environmentChannel?: string
 }) => {
-  // 兼容窗口：新老包名都识别，后续移除 vibemux-* 分支
+  // 兼容窗口：新老包名都识别，后续移除 wemux-* 分支
   if (params.packageName === 'vibemux-worker-preview' || params.packageName === 'wemux-worker-preview') {
     return 'preview'
   }
@@ -105,15 +105,15 @@ export const getWorkerReleaseChannel = () => {
   return resolveWorkerReleaseChannel({
     metadataChannel: getReleaseMetadata().channel,
     packageName: getWorkerPackageJson().name,
-    environmentChannel: process.env.VIBEMUX_WORKER_RELEASE_CHANNEL,
+    environmentChannel: getEnv('WEMUX_WORKER_RELEASE_CHANNEL'),
   })
 }
 
 const getTargetPackageName = (channel: string, currentPackageName?: string) => {
   const suffix = channel === 'preview' ? 'worker-preview' : 'worker'
   // 兼容窗口：存量 vibemux-worker 安装继续查旧包，新装 wemux-worker 查新包
-  if (currentPackageName === `vibemux-${suffix}`) {
-    return `vibemux-${suffix}`
+  if (currentPackageName === `wemux-${suffix}`) {
+    return `wemux-${suffix}`
   }
   return `wemux-${suffix}`
 }

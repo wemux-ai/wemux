@@ -84,7 +84,7 @@ Pi runner 在 `apps/worker/src/execution/pi-runner.ts`，直接使用官方 SDK�
 - `SettingsManager`
 - `ModelRegistry`
 
-Pi 会话目录固定落到：`agentDir/sessions-vibemux/<agentDir+cwd hash>`
+Pi 会话目录固定落到：`agentDir/sessions-wemux/<agentDir+cwd hash>`
 
 ## 相关文档
 

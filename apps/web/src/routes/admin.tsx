@@ -324,7 +324,7 @@ function AdminLayout() {
     || user?.role === 'admin'
     || user?.role === 'owner'
     || user?.email?.endsWith('@wemux.ai')
-    || user?.email?.endsWith('@vibemux.com')
+    || user?.email?.endsWith('@wemux.com')
 
   if (!user) {
     return <AdminAccessDenied reason="unauthenticated" />

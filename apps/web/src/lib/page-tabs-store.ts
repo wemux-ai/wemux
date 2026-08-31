@@ -94,7 +94,7 @@ const isRecord = (value: unknown): value is Record<string, unknown> => {
 
 const parseWorkspaceTabIdFromHref = (pathname: string, href: string) => {
   try {
-    const url = new URL(href, 'https://vibemux.local')
+    const url = new URL(href, 'https://wemux.local')
     const routePathname = url.pathname === '/workspace' || url.pathname === '/workspaces'
       ? url.pathname
       : pathname

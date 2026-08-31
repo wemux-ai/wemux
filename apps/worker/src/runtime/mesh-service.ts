@@ -87,7 +87,7 @@ const getDefaultMeshServiceName = () => {
   return `${workerName}-mesh`
 }
 
-const getMacOSLabel = (serviceName: string) => `com.vibemux.${serviceName}`
+const getMacOSLabel = (serviceName: string) => `com.wemux.${serviceName}`
 const getMacOSPlistPath = (serviceName: string) => `/Library/LaunchDaemons/${getMacOSLabel(serviceName)}.plist`
 const getMacOSStdoutPath = (serviceName: string) => `/Library/Logs/wemux/${serviceName}.stdout.log`
 const getMacOSStderrPath = (serviceName: string) => `/Library/Logs/wemux/${serviceName}.stderr.log`
@@ -165,9 +165,9 @@ ${args}
     <true/>
     <key>EnvironmentVariables</key>
     <dict>
-        <key>VIBEMUX_WORKER_HOME</key>
+        <key>WEMUX_WORKER_HOME</key>
         <string>${escapeXml(getWorkerHome())}</string>
-        <key>VIBEMUX_WORKER_EXECUTABLE_PATH</key>
+        <key>WEMUX_WORKER_EXECUTABLE_PATH</key>
         <string>${escapeXml(process.argv[1])}</string>
         <key>PATH</key>
         <string>${escapeXml(process.env.PATH || '/usr/bin:/bin:/usr/sbin:/sbin')}</string>
@@ -280,7 +280,7 @@ const runMacOSMeshSupervisor = async () => {
 
 const installMacOSMeshService = async (serviceName: string) => {
   if (typeof process.getuid === 'function' && process.getuid() !== 0) {
-    throw new Error(`Installing the macOS mesh service requires sudo. Run: sudo VIBEMUX_WORKER_HOME=${getWorkerHome()} ${process.argv[1]} mesh install-service`)
+    throw new Error(`Installing the macOS mesh service requires sudo. Run: sudo WEMUX_WORKER_HOME=${getWorkerHome()} ${process.argv[1]} mesh install-service`)
   }
 
   const workerConfig = loadWorkerConfig()
@@ -314,7 +314,7 @@ const installMacOSMeshService = async (serviceName: string) => {
 
 const uninstallMacOSMeshService = (serviceName: string) => {
   if (typeof process.getuid === 'function' && process.getuid() !== 0) {
-    throw new Error(`Uninstalling the macOS mesh service requires sudo. Run: sudo VIBEMUX_WORKER_HOME=${getWorkerHome()} ${process.argv[1]} mesh uninstall-service`)
+    throw new Error(`Uninstalling the macOS mesh service requires sudo. Run: sudo WEMUX_WORKER_HOME=${getWorkerHome()} ${process.argv[1]} mesh uninstall-service`)
   }
 
   const label = getMacOSLabel(serviceName)

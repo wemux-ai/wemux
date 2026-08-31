@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
-import type { VibemuxClient } from '../client'
+import type { WemuxClient } from '../client'
 import { runInboxCommand } from './inbox'
 import { runDriveCommand } from './drive'
 import { runChatCommand } from './chat'
@@ -13,7 +13,7 @@ const captureClient = () => {
       calls.push({ name, args })
       return 'ok'
     },
-  } as VibemuxClient
+  } as WemuxClient
   return { client, calls }
 }
 

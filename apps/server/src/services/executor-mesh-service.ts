@@ -1,4 +1,5 @@
 // [INPUT]: mesh 请求
+import { getEnv } from '@shared/env'
 // [OUTPUT]: 网格操作
 // [POS]: executor mesh 服务
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -39,12 +40,12 @@ export const buildExecutorMeshScope = (executor: ExecutorDescriptor) => {
 }
 
 export const buildExecutorMeshNetworkName = (executor: ExecutorDescriptor) => {
-  const configuredNetworkName = process.env.VIBEMUX_EASYTIER_NETWORK_NAME?.trim()
+  const configuredNetworkName = getEnv('WEMUX_EASYTIER_NETWORK_NAME')?.trim()
   if (configuredNetworkName) {
     return sanitizeNetworkSegment(configuredNetworkName) || 'vmx-default'
   }
 
-  const prefix = process.env.VIBEMUX_EASYTIER_NETWORK_PREFIX?.trim() || 'vmx'
+  const prefix = getEnv('WEMUX_EASYTIER_NETWORK_PREFIX')?.trim() || 'vmx'
   const scope = buildExecutorMeshScope(executor)
   return sanitizeNetworkSegment(`${prefix}-${scope}`) || 'vmx-default'
 }
@@ -62,7 +63,7 @@ const parseIpv4Prefix = (value: string) => value
   .filter((item) => Number.isInteger(item) && item >= 0 && item <= 255)
 
 export const buildExecutorMeshIpv4 = (executor: ExecutorDescriptor) => {
-  const configuredPrefix = process.env.VIBEMUX_EASYTIER_IPV4_PREFIX?.trim() || '10.144'
+  const configuredPrefix = getEnv('WEMUX_EASYTIER_IPV4_PREFIX')?.trim() || '10.144'
   const prefix = parseIpv4Prefix(configuredPrefix)
   const first = prefix[0] ?? 10
   const second = prefix[1] ?? 144
@@ -74,7 +75,7 @@ export const buildExecutorMeshIpv4 = (executor: ExecutorDescriptor) => {
 }
 
 export const resolveExecutorMeshPreviewProxyPort = (executor?: Pick<ExecutorDescriptor, 'executorId' | 'localServerPort'> | null) => {
-  const configured = Number(process.env.VIBEMUX_EASYTIER_PREVIEW_PROXY_PORT || '')
+  const configured = Number(getEnv('WEMUX_EASYTIER_PREVIEW_PROXY_PORT') || '')
   if (Number.isInteger(configured) && configured > 0 && configured <= 65535) {
     return configured
   }
@@ -87,7 +88,7 @@ export const resolveExecutorMeshPreviewProxyPort = (executor?: Pick<ExecutorDesc
 }
 
 export const resolveExecutorMeshTerminalProxyPort = (executor?: Pick<ExecutorDescriptor, 'executorId' | 'localServerPort'> | null) => {
-  const configured = Number(process.env.VIBEMUX_EASYTIER_TERMINAL_PROXY_PORT || process.env.VIBEMUX_EASYTIER_PREVIEW_PROXY_PORT || '')
+  const configured = Number(getEnv('WEMUX_EASYTIER_TERMINAL_PROXY_PORT') || getEnv('WEMUX_EASYTIER_PREVIEW_PROXY_PORT') || '')
   if (Number.isInteger(configured) && configured > 0 && configured <= 65535) {
     return configured
   }
@@ -106,7 +107,7 @@ export const resolveExecutorMeshEnrollment = (
     return undefined
   }
 
-  const enabled = truthyEnvValues.has(process.env.VIBEMUX_MESH_ENABLED?.trim().toLowerCase() || '')
+  const enabled = truthyEnvValues.has(getEnv('WEMUX_MESH_ENABLED')?.trim().toLowerCase() || '')
   if (!enabled) {
     return {
       enabled: false,
@@ -114,8 +115,8 @@ export const resolveExecutorMeshEnrollment = (
     }
   }
 
-  const networkSecret = process.env.VIBEMUX_EASYTIER_NETWORK_SECRET?.trim()
-  const peers = splitEnvList(process.env.VIBEMUX_EASYTIER_PEERS)
+  const networkSecret = getEnv('WEMUX_EASYTIER_NETWORK_SECRET')?.trim()
+  const peers = splitEnvList(getEnv('WEMUX_EASYTIER_PEERS'))
   if (!networkSecret || peers.length === 0) {
     return {
       enabled: true,

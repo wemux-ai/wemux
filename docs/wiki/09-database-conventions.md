@@ -13,13 +13,13 @@
 ### 开发环境
 
 ```bash
-DATABASE_URL=postgres://vibemux:local-dev-password@127.0.0.1:5434/vibemux
+DATABASE_URL=postgres://wemux:local-dev-password@127.0.0.1:5434/wemux
 ```
 
 ### 生产环境
 
 ```bash
-DATABASE_URL=postgres://user:password@db-host:5432/vibemux
+DATABASE_URL=postgres://user:password@db-host:5432/wemux
 ```
 
 ## 访问路径

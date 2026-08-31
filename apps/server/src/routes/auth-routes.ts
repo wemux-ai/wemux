@@ -376,7 +376,7 @@ export const registerAuthRoutes = (app: Hono, requireAuth: MiddlewareHandler) =>
     }
 
     const billingAccess = await getCommercialGate().resolveUserBillingAccess(user.id, 'execute_task')
-    // env 白名单（VIBEMUX_ADMIN_EMAILS）→ 视为 owner（超级管理员），与 admin 接口准入保持一致；
+    // env 白名单（WEMUX_ADMIN_EMAILS）→ 视为 owner（超级管理员），与 admin 接口准入保持一致；
     // 否则前端 /admin 只认 DB role/isInternal，会出现“服务端放行、页面仍无权”的判定不一致。
     const isEnvAdmin = resolveEnvAdminEmails().has(user.email?.trim().toLowerCase() ?? '')
     return c.json({

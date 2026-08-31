@@ -3,6 +3,7 @@
 // [POS]: EasyTier 公共节点服务
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
 
+import { getEnv } from '@shared/env'
 import { spawn } from 'node:child_process'
 import { accessSync, constants } from 'node:fs'
 import { delimiter, isAbsolute, join } from 'node:path'
@@ -27,7 +28,8 @@ const truthy = new Set(['1', 'true', 'yes', 'on'])
 const disabledValues = new Set(['0', 'false', 'off', 'no'])
 let currentProcess: EasyTierPublicNodeProcess | null = null
 
-const readEnv = (key: string, fallback = '') => process.env[key]?.trim() || fallback
+// 品牌迁移兼容窗口：新旧前缀都识别（getEnv 双读）
+const readEnv = (key: string, fallback = '') => getEnv(key)?.trim() || fallback
 
 const splitCsv = (value: string) => value
   .split(',')
@@ -74,25 +76,25 @@ export const resolveEasyTierServerExecutable = (command: string) => {
 }
 
 export const shouldStartEmbeddedEasyTierPublicNode = () => {
-  const embedded = readEnv('VIBEMUX_EASYTIER_SERVER_EMBEDDED_PUBLIC_NODE')
+  const embedded = readEnv('WEMUX_EASYTIER_SERVER_EMBEDDED_PUBLIC_NODE')
   if (disabledValues.has(embedded.toLowerCase())) {
     return false
   }
-  return truthy.has(readEnv('VIBEMUX_MESH_ENABLED').toLowerCase())
+  return truthy.has(readEnv('WEMUX_MESH_ENABLED').toLowerCase())
 }
 
 export const buildEasyTierPublicNodeArgsFromEnv = () => {
-  const ipv4 = readEnv('VIBEMUX_EASYTIER_SERVER_IPV4')
+  const ipv4 = readEnv('WEMUX_EASYTIER_SERVER_IPV4')
   const hostname = readEnv('VIBEMUX_EASYTIER_SERVER_HOSTNAME', readEnv('VIBEMUX_NODE_NAME', 'vibemux-server'))
   const portProfile = resolveEasyTierPortProfile({
-    explicitProfile: readEnv('VIBEMUX_EASYTIER_PORT_PROFILE'),
+    explicitProfile: readEnv('WEMUX_EASYTIER_PORT_PROFILE'),
     nodeEnv: process.env.NODE_ENV,
-    releaseChannel: readEnv('VIBEMUX_WORKER_RELEASE_CHANNEL'),
-    publicBaseUrl: readEnv('VIBEMUX_PUBLIC_BASE_URL'),
-    cloudUrl: readEnv('VIBEMUX_CLOUD_URL'),
+    releaseChannel: readEnv('WEMUX_WORKER_RELEASE_CHANNEL'),
+    publicBaseUrl: readEnv('WEMUX_PUBLIC_BASE_URL'),
+    cloudUrl: readEnv('WEMUX_CLOUD_URL'),
   })
   const listenUrls = splitCsv(readEnv(
-    'VIBEMUX_EASYTIER_LISTEN_URLS',
+    'WEMUX_EASYTIER_LISTEN_URLS',
     buildEasyTierListenUrls(portProfile).join(','),
   ))
 
@@ -143,9 +145,9 @@ export const startEmbeddedEasyTierPublicNodeAsync = async (options: StartEasyTie
     return { started: true, reason: 'already-running' }
   }
 
-  const command = readEnv('VIBEMUX_EASYTIER_CORE_PATH', 'easytier-core')
+  const command = readEnv('WEMUX_EASYTIER_CORE_PATH', 'easytier-core')
   const resolveExecutableImpl = options.resolveExecutable ?? resolveEasyTierServerExecutable
-  const autoDownload = !disabledValues.has(readEnv('VIBEMUX_EASYTIER_AUTO_DOWNLOAD', '1').toLowerCase())
+  const autoDownload = !disabledValues.has(readEnv('WEMUX_EASYTIER_AUTO_DOWNLOAD', '1').toLowerCase())
   const cached = command === 'easytier-core' ? resolveCachedEasyTierBinaries() : null
   let corePath = command !== 'easytier-core'
     ? resolveExecutableImpl(command)
@@ -168,7 +170,7 @@ export const startEmbeddedEasyTierPublicNodeAsync = async (options: StartEasyTie
   }
 
   if (!corePath) {
-    console.warn('[easytier] embedded public node skipped: easytier-core was not found. Set VIBEMUX_EASYTIER_CORE_PATH, enable automatic download, or run a sidecar public node.')
+    console.warn('[easytier] embedded public node skipped: easytier-core was not found. Set WEMUX_EASYTIER_CORE_PATH, enable automatic download, or run a sidecar public node.')
     return { started: false, reason: 'missing-binary' }
   }
 

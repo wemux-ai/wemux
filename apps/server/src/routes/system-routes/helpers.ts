@@ -17,7 +17,7 @@ const DEFAULT_WORKER_CONSOLE_URL = `http://127.0.0.1:${DEFAULT_WORKER_LOCAL_SERV
 export const trimTrailingSlash = (value: string) => value.replace(/\/+$/, '')
 
 export const resolveWorkerConsoleUrl = () => {
-  const configured = process.env.VIBEMUX_WORKER_CONSOLE_URL?.trim()
+  const configured = getEnv('WEMUX_WORKER_CONSOLE_URL')?.trim()
   return trimTrailingSlash(configured || DEFAULT_WORKER_CONSOLE_URL)
 }
 
@@ -211,7 +211,7 @@ export const resolveCustomChannelAgent = (agentId: string, userId?: string) => {
 }
 
 export const resolvePublicBaseUrl = (requestUrl: string) => {
-  const configured = trimTrailingSlash(process.env.VIBEMUX_PUBLIC_BASE_URL?.trim() || '')
+  const configured = trimTrailingSlash(getEnv('WEMUX_PUBLIC_BASE_URL')?.trim() || '')
   if (configured) {
     return configured
   }

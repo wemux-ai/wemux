@@ -23,7 +23,7 @@ const projects: Project[] = [
   {
     id: projectId,
     name: 'Wemux Core',
-    gitUrl: 'git@github.com:demo/vibemux-core.git',
+    gitUrl: 'git@github.com:demo/wemux-core.git',
     createdAt: now,
     updatedAt: now,
   },

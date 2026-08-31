@@ -165,7 +165,7 @@ const resolveCurrentLocalWorkerEnvironment = (): LocalWorkerEnvironment => {
   // 兼容窗口：新旧域名都识别
   if (
     hostname === 'vibemux.xyz'
-    || hostname.endsWith('.vibemux.xyz')
+    || hostname.endsWith('.wemux.xyz')
     || hostname === 'wemux.xyz'
     || hostname.endsWith('.wemux.xyz')
   ) {
@@ -173,7 +173,7 @@ const resolveCurrentLocalWorkerEnvironment = (): LocalWorkerEnvironment => {
   }
   if (
     hostname === 'vibemux.com'
-    || hostname.endsWith('.vibemux.com')
+    || hostname.endsWith('.wemux.com')
     || hostname === 'wemux.ai'
     || hostname.endsWith('.wemux.ai')
   ) {

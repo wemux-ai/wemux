@@ -1,4 +1,4 @@
-// [INPUT]: .vibemux.yml 导入
+// [INPUT]: .wemux.yml 导入
 // [OUTPUT]: 基线解析
 // [POS]: 环境模板导入
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md

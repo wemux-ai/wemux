@@ -33,13 +33,13 @@ RUN pnpm build:worker:npm
 FROM base AS runtime
 
 ENV NODE_ENV=production
-ENV VIBEMUX_WORKER_HOME=/var/lib/vibemux-worker
-ENV VIBEMUX_WORKER_PORT=48100
-ENV VIBEMUX_WORKER_INSTALL_PREFIX=/opt/vibemux-worker
-ENV VIBEMUX_WORKER_RESTART_STRATEGY=docker
-ENV VIBEMUX_WORKER_AUTO_UPDATE=1
-ENV VIBEMUX_WORKER_RELEASE_CHANNEL=production
-ENV PATH=/opt/vibemux-worker/bin:$PATH
+ENV WEMUX_WORKER_HOME=/var/lib/wemux-worker
+ENV WEMUX_WORKER_PORT=48100
+ENV WEMUX_WORKER_INSTALL_PREFIX=/opt/wemux-worker
+ENV WEMUX_WORKER_RESTART_STRATEGY=docker
+ENV WEMUX_WORKER_AUTO_UPDATE=1
+ENV WEMUX_WORKER_RELEASE_CHANNEL=production
+ENV PATH=/opt/wemux-worker/bin:$PATH
 
 WORKDIR /app
 
@@ -57,17 +57,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 # opencode 平台二进制已从 package.tgz 剔除（P0 包瘦身），镜像内显式安装以兑底 linux 云端 worker
 RUN npm install -g @openai/codex @anthropic-ai/claude-code opencode-ai
 
-RUN groupadd --system --gid 10001 vibemux \
-  && useradd --system --uid 10001 --gid 10001 --home-dir /var/lib/vibemux-worker --shell /usr/sbin/nologin vibemux
+RUN groupadd --system --gid 10001 wemux \
+  && useradd --system --uid 10001 --gid 10001 --home-dir /var/lib/wemux-worker --shell /usr/sbin/nologin wemux
 
-COPY --from=build /app/dist-server/worker-installer/package.tgz /tmp/vibemux-worker-package.tgz
+COPY --from=build /app/dist-server/worker-installer/package.tgz /tmp/wemux-worker-package.tgz
 
-RUN mkdir -p /var/lib/vibemux-worker /opt/vibemux-worker \
-  && npm install --no-fund --no-audit -g --prefix /opt/vibemux-worker /tmp/vibemux-worker-package.tgz \
-  && rm -f /tmp/vibemux-worker-package.tgz \
-  && chown -R 10001:10001 /var/lib/vibemux-worker /opt/vibemux-worker
+RUN mkdir -p /var/lib/wemux-worker /opt/wemux-worker \
+  && npm install --no-fund --no-audit -g --prefix /opt/wemux-worker /tmp/wemux-worker-package.tgz \
+  && rm -f /tmp/wemux-worker-package.tgz \
+  && chown -R 10001:10001 /var/lib/wemux-worker /opt/wemux-worker
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s --retries=3 \
-  CMD node -e "fetch('http://127.0.0.1:' + (process.env.VIBEMUX_WORKER_PORT || '48100') + '/api/health').then((response) => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))"
+  CMD node -e "fetch('http://127.0.0.1:' + (process.env.WEMUX_WORKER_PORT || '48100') + '/api/health').then((response) => process.exit(response.ok ? 0 : 1)).catch(() => process.exit(1))"
 
 CMD ["vibemux-worker", "daemon"]

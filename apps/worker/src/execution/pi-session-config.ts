@@ -157,7 +157,7 @@ const resolvePiAgentDir = (settings: PiAgentSettings | undefined, runtimeEnv?: R
 
 const buildManagedSessionDir = (cwd: string, agentDir: string, executionModel?: string) => {
   const digest = createHash('sha1').update(`${agentDir}::${cwd}::${executionModel?.trim() || ''}`).digest('hex').slice(0, 16)
-  return path.join(agentDir, 'sessions-vibemux', digest)
+  return path.join(agentDir, 'sessions-wemux', digest)
 }
 
 const resolveRuntimeProviderConfig = (model: PiResolvedModel, runtimeEnv?: Record<string, string>) => {
@@ -374,7 +374,7 @@ const createOverlayModelRegistry = (params: {
   apiKey?: string
   baseUrl?: string
 }) => {
-  const runtimeRoot = path.join(os.tmpdir(), `vibemux-pi-models-${randomUUID()}`)
+  const runtimeRoot = path.join(os.tmpdir(), `wemux-pi-models-${randomUUID()}`)
   mkdirSync(runtimeRoot, { recursive: true })
 
   const overlay = mergeProviderConfig({

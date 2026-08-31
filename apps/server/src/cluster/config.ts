@@ -29,7 +29,7 @@ export const assertClusterTokenConfigured = () => {
   }
 
   throw new Error(
-    'VIBEMUX_CLUSTER_TOKEN is required for a production multi-node control plane. All nodes must share the same value.',
+    'WEMUX_CLUSTER_TOKEN is required for a production multi-node control plane. All nodes must share the same value.',
   )
 }
 

@@ -8,12 +8,12 @@ dotenv.config({ path: '.env' })
 const truthy = new Set(['1', 'true', 'yes', 'on'])
 
 const readEnv = (key, fallback = '') => {
-  const wemuxKey = key.startsWith('VIBEMUX_') ? `WEMUX_${key.slice('VIBEMUX_'.length)}` : key
+  const wemuxKey = key.startsWith('WEMUX_') ? `WEMUX_${key.slice('WEMUX_'.length)}` : key
   return process.env[wemuxKey]?.trim() || process.env[key]?.trim() || fallback
 }
 
 const resolvePortProfile = () => {
-  const explicit = readEnv('VIBEMUX_EASYTIER_PORT_PROFILE').toLowerCase()
+  const explicit = readEnv('WEMUX_EASYTIER_PORT_PROFILE').toLowerCase()
   if (['dev', 'development', 'local'].includes(explicit)) {
     return 'development'
   }
@@ -24,11 +24,11 @@ const resolvePortProfile = () => {
     return 'production'
   }
 
-  const url = `${readEnv('VIBEMUX_PUBLIC_BASE_URL')} ${readEnv('VIBEMUX_CLOUD_URL')}`.toLowerCase()
-  if (url.includes('vibemux.xyz')) {
+  const url = `${readEnv('WEMUX_PUBLIC_BASE_URL')} ${readEnv('WEMUX_CLOUD_URL')}`.toLowerCase()
+  if (url.includes('wemux.xyz')) {
     return 'preview'
   }
-  if (url.includes('vibemux.com')) {
+  if (url.includes('wemux.com')) {
     return 'production'
   }
   return process.env.NODE_ENV === 'development' ? 'development' : 'production'
@@ -75,12 +75,12 @@ const resolveExecutable = (command) => {
   return ''
 }
 
-const enabled = truthy.has(readEnv('VIBEMUX_MESH_ENABLED').toLowerCase())
-const corePath = resolveExecutable(readEnv('VIBEMUX_EASYTIER_CORE_PATH', 'easytier-core'))
-const ipv4 = readEnv('VIBEMUX_EASYTIER_SERVER_IPV4')
-const hostname = readEnv('VIBEMUX_EASYTIER_SERVER_HOSTNAME', readEnv('VIBEMUX_NODE_NAME', 'vibemux-server'))
+const enabled = truthy.has(readEnv('WEMUX_MESH_ENABLED').toLowerCase())
+const corePath = resolveExecutable(readEnv('WEMUX_EASYTIER_CORE_PATH', 'easytier-core'))
+const ipv4 = readEnv('WEMUX_EASYTIER_SERVER_IPV4')
+const hostname = readEnv('WEMUX_EASYTIER_SERVER_HOSTNAME', readEnv('WEMUX_NODE_NAME', 'wemux-server'))
 const listenUrls = splitCsv(readEnv(
-  'VIBEMUX_EASYTIER_LISTEN_URLS',
+  'WEMUX_EASYTIER_LISTEN_URLS',
   getDefaultListenUrls(),
 ))
 

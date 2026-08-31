@@ -1,4 +1,5 @@
 // [INPUT]: 连接路由请求
+import { getEnv } from '@shared/env'
 // [OUTPUT]: 路由选择结果
 // [POS]: executor 连接路由
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -219,7 +220,7 @@ const resolvePublicBaseUrl = (params: {
     return requestOrigin
   }
 
-  return trimTrailingSlash(process.env.VIBEMUX_PUBLIC_BASE_URL?.trim() || '')
+  return trimTrailingSlash(getEnv('WEMUX_PUBLIC_BASE_URL')?.trim() || '')
 }
 
 const doesRouteRuleMatch = (params: {

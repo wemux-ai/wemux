@@ -1,4 +1,5 @@
 // [INPUT]: 官方连接器（open-connector runtime）管理请求（Authenticated）
+import { getEnv } from '@shared/env'
 // [OUTPUT]: 代理到 open-connector runtime 的 provider / connection / action 接口，连接归属由 connector_connections 表控制
 // [POS]: connector gateway 协议层——web 与 agent 经 Wemux server 间接访问连接器，凭据留在 runtime 边界
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -47,8 +48,8 @@ const loadOomolIconUrls = async (): Promise<Map<string, string>> => {
 }
 
 const resolveOfficialConnectorBaseUrl = () => {
-  const target = process.env.WEMUX_OFFICIAL_CONNECTOR_URL?.trim()
-    || process.env.VIBEMUX_OFFICIAL_CONNECTOR_URL?.trim()
+  const target = getEnv('WEMUX_OFFICIAL_CONNECTOR_URL')?.trim()
+    || getEnv('WEMUX_OFFICIAL_CONNECTOR_URL')?.trim()
   if (!target) {
     return ''
   }
@@ -56,12 +57,12 @@ const resolveOfficialConnectorBaseUrl = () => {
   return target.replace(/\/mcp\/?$/, '').replace(/\/+$/, '')
 }
 
-const resolveOfficialConnectorAdminToken = () => process.env.WEMUX_OFFICIAL_CONNECTOR_ADMIN_TOKEN?.trim()
-  || process.env.VIBEMUX_OFFICIAL_CONNECTOR_ADMIN_TOKEN?.trim()
+const resolveOfficialConnectorAdminToken = () => getEnv('WEMUX_OFFICIAL_CONNECTOR_ADMIN_TOKEN')?.trim()
+  || getEnv('WEMUX_OFFICIAL_CONNECTOR_ADMIN_TOKEN')?.trim()
   || ''
 
-const resolveOfficialConnectorRuntimeToken = () => process.env.WEMUX_OFFICIAL_CONNECTOR_RUNTIME_TOKEN?.trim()
-  || process.env.VIBEMUX_OFFICIAL_CONNECTOR_RUNTIME_TOKEN?.trim()
+const resolveOfficialConnectorRuntimeToken = () => getEnv('WEMUX_OFFICIAL_CONNECTOR_RUNTIME_TOKEN')?.trim()
+  || getEnv('WEMUX_OFFICIAL_CONNECTOR_RUNTIME_TOKEN')?.trim()
   || ''
 
 const proxyJson = async (
@@ -349,7 +350,7 @@ export const registerConnectorRoutes = (app: Hono, requireAuth: MiddlewareHandle
   })
 
   // 官方连接器 MCP 代理（多租户执行侧隔离）：agent 经此访问连接器，
-  // server 按 x-vibemux-workspace（执行 workspaceId）解析 collab workspace，过滤连接。
+  // server 按 x-wemux-workspace（执行 workspaceId）解析 collab workspace，过滤连接。
   // 鉴权：与直连 open-connector 相同（runtime token）；未配置时跳过（本地 dev）。
   app.post('/api/connector/mcp', async (c) => {
     const runtimeToken = resolveOfficialConnectorRuntimeToken()
@@ -358,8 +359,8 @@ export const registerConnectorRoutes = (app: Hono, requireAuth: MiddlewareHandle
       return c.json({ jsonrpc: '2.0', error: { code: -32001, message: 'Unauthorized' }, id: null }, 401)
     }
 
-    const executionWorkspaceId = c.req.header('x-vibemux-workspace')?.trim() || undefined
-    const actingUserId = c.req.header('x-vibemux-acting-user')?.trim() || undefined
+    const executionWorkspaceId = c.req.header('x-wemux-workspace')?.trim() || undefined
+    const actingUserId = c.req.header('x-wemux-acting-user')?.trim() || undefined
     const collabWorkspaceId = executionWorkspaceId
       ? await resolveCollabWorkspaceForExecutionWorkspace(executionWorkspaceId).catch(() => undefined)
       : undefined

@@ -1,4 +1,5 @@
 // [INPUT]: desktop-sandbox provider 配置
+import { getEnv } from '@shared/env'
 // [OUTPUT]: 沙箱提供能力
 // [POS]: 桌面沙箱 provider
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -27,8 +28,8 @@ export const normalizeDesktopSandboxProvider = (value?: string): WorkspaceDeskto
 
 export const resolveDesktopSandboxProvider = (): WorkspaceDesktopSandboxProvider => (
   normalizeDesktopSandboxProvider(
-    process.env.VIBEMUX_DESKTOP_SANDBOX_PROVIDER
-      || process.env.VIBEMUX_SANDBOX_DESKTOP_PROVIDER
+    getEnv('WEMUX_DESKTOP_SANDBOX_PROVIDER')
+      || getEnv('WEMUX_SANDBOX_DESKTOP_PROVIDER')
       || process.env.DESKTOP_SANDBOX_PROVIDER,
   )
 )

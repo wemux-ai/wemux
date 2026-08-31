@@ -1,4 +1,5 @@
 // [INPUT]: PostgreSQL core rows and shared task/project/session contracts.
+import { getEnv } from '@shared/env'
 // [OUTPUT]: Hydrated app-state records, including persisted task creator identity.
 // [POS]: Read-side mapping boundary for the server core app-state store.
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -68,12 +69,12 @@ export const normalizeFilters = (filters: AppState['filters']): AppState['filter
   agent: filters.agent !== 'all' && isServerAgentType(filters.agent) ? filters.agent : 'all',
 })
 
-const readOfficialConnectorTarget = () => process.env.WEMUX_OFFICIAL_CONNECTOR_URL?.trim()
-  || process.env.VIBEMUX_OFFICIAL_CONNECTOR_URL?.trim()
+const readOfficialConnectorTarget = () => getEnv('WEMUX_OFFICIAL_CONNECTOR_URL')?.trim()
+  || getEnv('WEMUX_OFFICIAL_CONNECTOR_URL')?.trim()
   || ''
 
-const readOfficialConnectorRuntimeToken = () => process.env.WEMUX_OFFICIAL_CONNECTOR_RUNTIME_TOKEN?.trim()
-  || process.env.VIBEMUX_OFFICIAL_CONNECTOR_RUNTIME_TOKEN?.trim()
+const readOfficialConnectorRuntimeToken = () => getEnv('WEMUX_OFFICIAL_CONNECTOR_RUNTIME_TOKEN')?.trim()
+  || getEnv('WEMUX_OFFICIAL_CONNECTOR_RUNTIME_TOKEN')?.trim()
   || ''
 
 export const normalizeConfig = (config: Partial<AppState['config']> | undefined): AppState['config'] => {

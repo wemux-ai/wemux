@@ -5,15 +5,15 @@ import {
   type SkillSelectionPolicy,
 } from '@shared/skill'
 
-export const VIBEMUX_YML_SYSTEM_SKILL_SLUG = 'vibemux-yml'
-export const VIBEMUX_DESKTOP_SANDBOX_SYSTEM_SKILL_SLUG = 'vibemux-desktop-sandbox'
-export const VIBEMUX_TEST_AGENT_SYSTEM_SKILL_SLUG = 'vibemux-test-agent'
-export const VIBEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG = 'vibemux-agent-ops'
-export const VIBEMUX_DRIVE_WRITEBACK_SYSTEM_SKILL_SLUG = 'vibemux-drive-writeback'
-export const VIBEMUX_MEMORY_SYSTEM_SKILL_SLUG = 'vibemux-memory'
+export const WEMUX_YML_SYSTEM_SKILL_SLUG = 'wemux-yml'
+export const WEMUX_DESKTOP_SANDBOX_SYSTEM_SKILL_SLUG = 'vibemux-desktop-sandbox'
+export const WEMUX_TEST_AGENT_SYSTEM_SKILL_SLUG = 'vibemux-test-agent'
+export const WEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG = 'vibemux-agent-ops'
+export const WEMUX_DRIVE_WRITEBACK_SYSTEM_SKILL_SLUG = 'vibemux-drive-writeback'
+export const WEMUX_MEMORY_SYSTEM_SKILL_SLUG = 'vibemux-memory'
 
-export const VIBEMUX_AGENT_OPS_REQUIRED_INSTRUCTION =
-  `每轮都必须先读取并遵循 @${VIBEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG}；涉及 wemux 产品状态或协作时，优先使用 wemux 工具。`
+export const WEMUX_AGENT_OPS_REQUIRED_INSTRUCTION =
+  `每轮都必须先读取并遵循 @${WEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG}；涉及 wemux 产品状态或协作时，优先使用 wemux 工具。`
 
 type SystemSkillDefinition = {
   name: string
@@ -36,23 +36,23 @@ const buildUtf8File = (content: string): SkillFileContent => ({
   content,
 })
 
-const VIBEMUX_YML_SKILL_MARKDOWN = `---
+const WEMUX_YML_SKILL_MARKDOWN = `---
 name: wemux YML
-description: Create or update the repo-root .vibemux.yml environment template that wemux imports for workspace start, stop, app ports, health path, logs, and preview networking.
+description: Create or update the repo-root .wemux.yml environment template that wemux imports for workspace start, stop, app ports, health path, logs, and preview networking.
 ---
 
 # wemux YML
 
 Use this skill when the user asks to create, fix, explain, or update any of these:
 - \`wemux.yml\`
-- \`vibemux.yml\`
-- \`.vibemux.yml\`
+- \`wemux.yml\`
+- \`.wemux.yml\`
 - wemux environment template
 - workspace start/stop/app port/health path/logs config
 
 ## Important naming
 
-- The real file consumed by wemux is \`.vibemux.yml\` in the repository root.
+- The real file consumed by wemux is \`.wemux.yml\` in the repository root.
 - If the user says \`wemux.yml\` without the leading dot, still write \`.vibemux.yml\` unless they explicitly ask for a different filename.
 
 ## Required behavior
@@ -63,14 +63,14 @@ Use this skill when the user asks to create, fix, explain, or update any of thes
 - Quote all command, port, and path values.
 - Prefer \`{{worktree.path}}\` over hardcoded absolute paths.
 - Ports must be dynamic per-worktree expressions, never literal numbers. In \`start\`, \`stop\`, \`appPort\`, and each \`ports[].port\`, use a deterministic helper such as \`{{add worktree.unique_id BASE_PORT}}\`.
-- Do not write localhost URLs in \`.vibemux.yml\`. wemux derives internal source URLs from ports and exposes public domains through Preview / Public Networking.
+- Do not write localhost URLs in \`.wemux.yml\`. wemux derives internal source URLs from ports and exposes public domains through Preview / Public Networking.
 - Health is a path on the primary app port. Use \`healthPath: "/health"\`, not a separate health port or URL.
 - If the dev command cannot accept a port flag and you cannot make the port dynamic, ask the user before writing any port value. Never silently hardcode a literal port.
 - If a field cannot be inferred confidently, omit that optional field instead of inventing a wrong command.
 
 ## Port strategy
 
-- Every port you write must be a dynamic per-worktree expression using \`{{add worktree.unique_id BASE_PORT}}\`. Literal numeric ports are not allowed anywhere in \`.vibemux.yml\`.
+- Every port you write must be a dynamic per-worktree expression using \`{{add worktree.unique_id BASE_PORT}}\`. Literal numeric ports are not allowed anywhere in \`.wemux.yml\`.
 - For Vite, Next.js, Remix, Astro, SvelteKit, Storybook, and similar dev servers, pass the dynamic port into the CLI's port flag.
 - Keep the same rendered port expression everywhere the service is referenced. For example, if \`start\` uses \`{{add worktree.unique_id 3000}}\`, then \`stop\` and \`appPort\` must use the same expression.
 - Pick a conventional base port for the framework, then add \`worktree.unique_id\`: Vite-style apps often use \`3000\` or \`5173\`, Next.js often uses \`3000\`, Storybook often uses \`6006\`.
@@ -88,7 +88,7 @@ Open \`references/schema.md\` for the exact supported keys and rendering helpers
 2. Infer the smallest correct install command.
 3. Infer a start/stop pair that works per worktree.
 4. Add appPort/healthPath/logs/ports only when they are grounded in the repo.
-5. Write \`.vibemux.yml\` at the repo root.
+5. Write \`.wemux.yml\` at the repo root.
 6. In the reply, mention any assumptions or fields you intentionally left out.
 
 
@@ -97,12 +97,12 @@ Open \`references/schema.md\` for the exact supported keys and rendering helpers
 Open \`references/examples.md\` when you need starter patterns for pnpm/npm/docker-compose style repos.
 `
 
-const VIBEMUX_YML_SCHEMA_REFERENCE = `# .vibemux.yml schema used by wemux
+const WEMUX_YML_SCHEMA_REFERENCE = `# .wemux.yml schema used by wemux
 
 The file must live at the repository root and be named exactly:
 
 \`\`\`text
-.vibemux.yml
+.wemux.yml
 \`\`\`
 
 Current supported shape:
@@ -150,7 +150,7 @@ Supported math helpers:
 - \`{{mul worktree.unique_id 10}}\`
 `
 
-const VIBEMUX_YML_EXAMPLES_REFERENCE = `# Example .vibemux.yml patterns
+const WEMUX_YML_EXAMPLES_REFERENCE = `# Example .wemux.yml patterns
 
 Use these as starting points only after checking the real repo.
 
@@ -209,8 +209,8 @@ environment:
 When the repo already has explicit \`start\`, \`stop\`, \`dev\`, or \`logs\` scripts, prefer those over generic fallbacks.
 `
 
-const VIBEMUX_AGENT_OPS_SKILL_MARKDOWN = `---
-name: vibemux-agent-ops
+const WEMUX_AGENT_OPS_SKILL_MARKDOWN = `---
+name: wemux-agent-ops
 description: Required collaboration protocol for every wemux Agent. Use on every turn involving wemux projects, tasks, comments, mentions, workspaces, Agent events, execution, waiting, delivery, direct chat, or group chat; prefer wemux product tools and server state over ad hoc filesystem or shell discovery.
 ---
 
@@ -287,7 +287,7 @@ description: Required collaboration protocol for every wemux Agent. Use on every
 
 Main Chat、Direct Chat、Group Chat 和外部渠道消息里的项目仓库工作，优先走 Task + Workspace Session：那里才有正确仓库上下文、隔离 worktree 和可追溯执行记录。工作不涉及项目仓库，或没有关联项目、没有可用 Workspace 时，可以直接在当前 Agent 的默认工作目录完成，不必硬造 Task。
 
-不要在项目原目录中修改项目文件或执行 Git。禁止扫描或复用 \`~/.vibemux*\` 中其他任务留下的历史工作区目录。Agent Home 只用于 Agent 自己的长期文件，不用于代替项目工作区。
+不要在项目原目录中修改项目文件或执行 Git。禁止扫描或复用 \`~/.wemux*\` 中其他任务留下的历史工作区目录。Agent Home 只用于 Agent 自己的长期文件，不用于代替项目工作区。
 
 ## 云盘文件（Drive）
 
@@ -326,7 +326,7 @@ Main Chat、Direct Chat、Group Chat 和外部渠道消息里的项目仓库工�
 - 不要代表其他 Agent 声称它已完成；读取它的工作区会话或交付记录后再总结。
 `
 
-const VIBEMUX_AGENT_OPS_MCP_REFERENCE = `# wemux MCP collaboration tools
+const WEMUX_AGENT_OPS_MCP_REFERENCE = `# wemux MCP collaboration tools
 
 以当前运行时的函数工具列表和 input schema 为准。本参考只定义稳定协作语义，不替代运行时工具发现。
 
@@ -412,7 +412,7 @@ Agent 运行时会自动绑定当前 Agent；普通 MCP 调用 \`task.comment.ad
 - 只有明确可恢复的执行失败才使用 \`task.retry_execution\`；先读取原 run 的失败原因。
 `
 
-const VIBEMUX_DESKTOP_SANDBOX_SKILL_MARKDOWN = `---
+const WEMUX_DESKTOP_SANDBOX_SKILL_MARKDOWN = `---
 name: wemux Desktop Sandbox
 description: Use wemux worker's optional Desktop Sandbox only when a task needs an isolated Linux desktop, noVNC observation, or commands inside a sandbox.
 ---
@@ -433,15 +433,15 @@ Use this skill only when the task specifically benefits from an isolated Linux d
 Open \`references/commands.md\` for the command wrapper and common subcommands.
 `
 
-const VIBEMUX_DESKTOP_SANDBOX_COMMANDS_REFERENCE = `# Desktop Sandbox commands
+const WEMUX_DESKTOP_SANDBOX_COMMANDS_REFERENCE = `# Desktop Sandbox commands
 
 Use the worker-provided launcher when available:
 
 \`\`\`bash
-if [ -n "\${VIBEMUX_WORKER_RUNNER:-}" ] && [ -n "\${VIBEMUX_WORKER_ENTRY:-}" ]; then
-  "\$VIBEMUX_WORKER_RUNNER" "\$VIBEMUX_WORKER_ENTRY" desktop-sandbox status
-elif [ -n "\${VIBEMUX_WORKER_LAUNCHER:-}" ]; then
-  "\$VIBEMUX_WORKER_LAUNCHER" desktop-sandbox status
+if [ -n "\${WEMUX_WORKER_RUNNER:-}" ] && [ -n "\${WEMUX_WORKER_ENTRY:-}" ]; then
+  "\$WEMUX_WORKER_RUNNER" "\$WEMUX_WORKER_ENTRY" desktop-sandbox status
+elif [ -n "\${WEMUX_WORKER_LAUNCHER:-}" ]; then
+  "\$WEMUX_WORKER_LAUNCHER" desktop-sandbox status
 else
   wemux-worker desktop-sandbox status
 fi
@@ -459,7 +459,7 @@ Common subcommands:
 - \`cli-command --command "..."\`
 `
 
-const VIBEMUX_TEST_AGENT_SKILL_MARKDOWN = `---
+const WEMUX_TEST_AGENT_SKILL_MARKDOWN = `---
 name: wemux Test Agent
 description: Run and test projects inside Desktop Sandbox with visual observation and UI automation.
 ---
@@ -500,13 +500,13 @@ The worker automatically mounts the worktree when starting the sandbox from a wo
 ### Run dev server
 
 \`\`\`bash
-$VIBEMUX_WORKER_LAUNCHER desktop-sandbox command --command "cd /home/desktop/workspace && npm run dev &"
+$WEMUX_WORKER_LAUNCHER desktop-sandbox command --command "cd /home/desktop/workspace && npm run dev &"
 \`\`\`
 
 ### Run tests
 
 \`\`\`bash
-$VIBEMUX_WORKER_LAUNCHER desktop-sandbox command --command "cd /home/desktop/workspace && npm test"
+$WEMUX_WORKER_LAUNCHER desktop-sandbox command --command "cd /home/desktop/workspace && npm test"
 \`\`\`
 
 ## Best Practices
@@ -518,7 +518,7 @@ $VIBEMUX_WORKER_LAUNCHER desktop-sandbox command --command "cd /home/desktop/wor
 - The workspace is mounted at /home/desktop/workspace inside the sandbox.
 `
 
-const VIBEMUX_TEST_AGENT_COMMANDS_REFERENCE = `# Test Agent commands
+const WEMUX_TEST_AGENT_COMMANDS_REFERENCE = `# Test Agent commands
 
 Test Agent uses the same Desktop Sandbox command interface.
 
@@ -529,30 +529,30 @@ See the Desktop Sandbox \`references/commands.md\` for the full command list.
 ### Install test dependencies
 
 \`\`\`bash
-$VIBEMUX_WORKER_LAUNCHER desktop-sandbox command --command "cd /home/desktop/workspace && npm install"
+$WEMUX_WORKER_LAUNCHER desktop-sandbox command --command "cd /home/desktop/workspace && npm install"
 \`\`\`
 
 ### Start dev server (background)
 
 \`\`\`bash
-$VIBEMUX_WORKER_LAUNCHER desktop-sandbox command --command "cd /home/desktop/workspace && npm run dev &"
+$WEMUX_WORKER_LAUNCHER desktop-sandbox command --command "cd /home/desktop/workspace && npm run dev &"
 \`\`\`
 
 ### Wait for server ready
 
 \`\`\`bash
-$VIBEMUX_WORKER_LAUNCHER desktop-sandbox command --command "for i in $(seq 1 30); do curl -s http://localhost:3000 > /dev/null 2>&1 && break; sleep 2; done"
+$WEMUX_WORKER_LAUNCHER desktop-sandbox command --command "for i in $(seq 1 30); do curl -s http://localhost:3000 > /dev/null 2>&1 && break; sleep 2; done"
 \`\`\`
 
 ### Read test output
 
 \`\`\`bash
-$VIBEMUX_WORKER_LAUNCHER desktop-sandbox read-file --path /home/desktop/workspace/test-results/output.json
+$WEMUX_WORKER_LAUNCHER desktop-sandbox read-file --path /home/desktop/workspace/test-results/output.json
 \`\`\`
 `
 
-const VIBEMUX_MEMORY_SKILL_MARKDOWN = `---
-name: vibemux-memory
+const WEMUX_MEMORY_SKILL_MARKDOWN = `---
+name: wemux-memory
 description: 长期记忆读写纪律。个人记忆（云盘 soul.md / USER.md / MEMORY.md，fileId 见系统上下文）与项目记忆（项目根目录 AGENTS.md）。自主记录可复用的用户偏好、项目约定与踩坑。
 ---
 
@@ -587,8 +587,8 @@ description: 长期记忆读写纪律。个人记忆（云盘 soul.md / USER.md 
 - 不要往记忆里写密钥、token、密码等敏感凭据。
 `
 
-const VIBEMUX_DRIVE_WRITEBACK_SKILL_MARKDOWN = `---
-name: vibemux-drive-writeback
+const WEMUX_DRIVE_WRITEBACK_SKILL_MARKDOWN = `---
+name: wemux-drive-writeback
 description: Read and write back Drive cloud-storage file references attached to your session (kind=drive attachments carry a driveFileId). Use when a user sends a Drive file into the conversation and asks you to edit or update it.
 ---
 
@@ -642,10 +642,10 @@ drive.write_file({
 const SYSTEM_SKILL_DEFINITIONS: SystemSkillDefinition[] = [
   {
     name: 'wemux Agent Collaboration',
-    slug: VIBEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG,
+    slug: WEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG,
     description: 'Required collaboration protocol for every wemux Agent, including tasks, comments, workspaces, waits, and delivery.',
-    markdown: VIBEMUX_AGENT_OPS_SKILL_MARKDOWN,
-    sourceLocator: buildManagedSystemSkillSourceLocator(VIBEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG),
+    markdown: WEMUX_AGENT_OPS_SKILL_MARKDOWN,
+    sourceLocator: buildManagedSystemSkillSourceLocator(WEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG),
     enabled: true,
     sourceType: 'manual',
     visibility: 'private',
@@ -654,16 +654,16 @@ const SYSTEM_SKILL_DEFINITIONS: SystemSkillDefinition[] = [
     trustLevel: 'markdown_only',
     compatibility: 'compatible',
     files: {
-      'SKILL.md': buildUtf8File(VIBEMUX_AGENT_OPS_SKILL_MARKDOWN),
-      'references/mcp-tools-full.md': buildUtf8File(VIBEMUX_AGENT_OPS_MCP_REFERENCE),
+      'SKILL.md': buildUtf8File(WEMUX_AGENT_OPS_SKILL_MARKDOWN),
+      'references/mcp-tools-full.md': buildUtf8File(WEMUX_AGENT_OPS_MCP_REFERENCE),
     },
   },
   {
     name: 'wemux YML',
-    slug: VIBEMUX_YML_SYSTEM_SKILL_SLUG,
-    description: 'Write or update the repo-root .vibemux.yml environment template for wemux projects.',
-    markdown: VIBEMUX_YML_SKILL_MARKDOWN,
-    sourceLocator: buildManagedSystemSkillSourceLocator(VIBEMUX_YML_SYSTEM_SKILL_SLUG),
+    slug: WEMUX_YML_SYSTEM_SKILL_SLUG,
+    description: 'Write or update the repo-root .wemux.yml environment template for wemux projects.',
+    markdown: WEMUX_YML_SKILL_MARKDOWN,
+    sourceLocator: buildManagedSystemSkillSourceLocator(WEMUX_YML_SYSTEM_SKILL_SLUG),
     enabled: true,
     sourceType: 'manual',
     visibility: 'private',
@@ -672,17 +672,17 @@ const SYSTEM_SKILL_DEFINITIONS: SystemSkillDefinition[] = [
     trustLevel: 'markdown_only',
     compatibility: 'compatible',
     files: {
-      'SKILL.md': buildUtf8File(VIBEMUX_YML_SKILL_MARKDOWN),
-      'references/schema.md': buildUtf8File(VIBEMUX_YML_SCHEMA_REFERENCE),
-      'references/examples.md': buildUtf8File(VIBEMUX_YML_EXAMPLES_REFERENCE),
+      'SKILL.md': buildUtf8File(WEMUX_YML_SKILL_MARKDOWN),
+      'references/schema.md': buildUtf8File(WEMUX_YML_SCHEMA_REFERENCE),
+      'references/examples.md': buildUtf8File(WEMUX_YML_EXAMPLES_REFERENCE),
     },
   },
   {
     name: 'wemux Desktop Sandbox',
-    slug: VIBEMUX_DESKTOP_SANDBOX_SYSTEM_SKILL_SLUG,
+    slug: WEMUX_DESKTOP_SANDBOX_SYSTEM_SKILL_SLUG,
     description: 'Use the optional Desktop Sandbox from wemux worker when a task needs an isolated Linux desktop or noVNC observation.',
-    markdown: VIBEMUX_DESKTOP_SANDBOX_SKILL_MARKDOWN,
-    sourceLocator: buildManagedSystemSkillSourceLocator(VIBEMUX_DESKTOP_SANDBOX_SYSTEM_SKILL_SLUG),
+    markdown: WEMUX_DESKTOP_SANDBOX_SKILL_MARKDOWN,
+    sourceLocator: buildManagedSystemSkillSourceLocator(WEMUX_DESKTOP_SANDBOX_SYSTEM_SKILL_SLUG),
     enabled: true,
     sourceType: 'manual',
     visibility: 'private',
@@ -691,16 +691,16 @@ const SYSTEM_SKILL_DEFINITIONS: SystemSkillDefinition[] = [
     trustLevel: 'markdown_only',
     compatibility: 'compatible',
     files: {
-      'SKILL.md': buildUtf8File(VIBEMUX_DESKTOP_SANDBOX_SKILL_MARKDOWN),
-      'references/commands.md': buildUtf8File(VIBEMUX_DESKTOP_SANDBOX_COMMANDS_REFERENCE),
+      'SKILL.md': buildUtf8File(WEMUX_DESKTOP_SANDBOX_SKILL_MARKDOWN),
+      'references/commands.md': buildUtf8File(WEMUX_DESKTOP_SANDBOX_COMMANDS_REFERENCE),
     },
   },
   {
     name: 'wemux Test Agent',
-    slug: VIBEMUX_TEST_AGENT_SYSTEM_SKILL_SLUG,
+    slug: WEMUX_TEST_AGENT_SYSTEM_SKILL_SLUG,
     description: 'Run and test projects inside Desktop Sandbox with visual observation and UI automation.',
-    markdown: VIBEMUX_TEST_AGENT_SKILL_MARKDOWN,
-    sourceLocator: buildManagedSystemSkillSourceLocator(VIBEMUX_TEST_AGENT_SYSTEM_SKILL_SLUG),
+    markdown: WEMUX_TEST_AGENT_SKILL_MARKDOWN,
+    sourceLocator: buildManagedSystemSkillSourceLocator(WEMUX_TEST_AGENT_SYSTEM_SKILL_SLUG),
     enabled: true,
     sourceType: 'manual',
     visibility: 'private',
@@ -709,16 +709,16 @@ const SYSTEM_SKILL_DEFINITIONS: SystemSkillDefinition[] = [
     trustLevel: 'markdown_only',
     compatibility: 'compatible',
     files: {
-      'SKILL.md': buildUtf8File(VIBEMUX_TEST_AGENT_SKILL_MARKDOWN),
-      'references/commands.md': buildUtf8File(VIBEMUX_TEST_AGENT_COMMANDS_REFERENCE),
+      'SKILL.md': buildUtf8File(WEMUX_TEST_AGENT_SKILL_MARKDOWN),
+      'references/commands.md': buildUtf8File(WEMUX_TEST_AGENT_COMMANDS_REFERENCE),
     },
   },
   {
     name: 'wemux Drive Writeback',
-    slug: VIBEMUX_DRIVE_WRITEBACK_SYSTEM_SKILL_SLUG,
+    slug: WEMUX_DRIVE_WRITEBACK_SYSTEM_SKILL_SLUG,
     description: 'Read and write back Drive cloud-storage file references attached to a session (kind=drive attachments); write_file overwrites the original file in place.',
-    markdown: VIBEMUX_DRIVE_WRITEBACK_SKILL_MARKDOWN,
-    sourceLocator: buildManagedSystemSkillSourceLocator(VIBEMUX_DRIVE_WRITEBACK_SYSTEM_SKILL_SLUG),
+    markdown: WEMUX_DRIVE_WRITEBACK_SKILL_MARKDOWN,
+    sourceLocator: buildManagedSystemSkillSourceLocator(WEMUX_DRIVE_WRITEBACK_SYSTEM_SKILL_SLUG),
     enabled: true,
     sourceType: 'manual',
     visibility: 'private',
@@ -727,15 +727,15 @@ const SYSTEM_SKILL_DEFINITIONS: SystemSkillDefinition[] = [
     trustLevel: 'markdown_only',
     compatibility: 'compatible',
     files: {
-      'SKILL.md': buildUtf8File(VIBEMUX_DRIVE_WRITEBACK_SKILL_MARKDOWN),
+      'SKILL.md': buildUtf8File(WEMUX_DRIVE_WRITEBACK_SKILL_MARKDOWN),
     },
   },
   {
     name: 'wemux Agent Memory',
-    slug: VIBEMUX_MEMORY_SYSTEM_SKILL_SLUG,
+    slug: WEMUX_MEMORY_SYSTEM_SKILL_SLUG,
     description: '长期记忆读写纪律：个人记忆（云盘 soul.md / USER.md / MEMORY.md）+ 项目记忆（项目 AGENTS.md）；何时写、怎么写、信任边界。',
-    markdown: VIBEMUX_MEMORY_SKILL_MARKDOWN,
-    sourceLocator: buildManagedSystemSkillSourceLocator(VIBEMUX_MEMORY_SYSTEM_SKILL_SLUG),
+    markdown: WEMUX_MEMORY_SKILL_MARKDOWN,
+    sourceLocator: buildManagedSystemSkillSourceLocator(WEMUX_MEMORY_SYSTEM_SKILL_SLUG),
     enabled: true,
     sourceType: 'manual',
     visibility: 'private',
@@ -744,15 +744,15 @@ const SYSTEM_SKILL_DEFINITIONS: SystemSkillDefinition[] = [
     trustLevel: 'markdown_only',
     compatibility: 'compatible',
     files: {
-      'SKILL.md': buildUtf8File(VIBEMUX_MEMORY_SKILL_MARKDOWN),
+      'SKILL.md': buildUtf8File(WEMUX_MEMORY_SKILL_MARKDOWN),
     },
   },
 ]
 
 const REQUIRED_PRIMARY_AGENT_SKILLS: SkillSelectionPolicy[] = [
   {
-    id: 'system-skill-vibemux-agent-ops',
-    slug: VIBEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG,
+    id: 'system-skill-wemux-agent-ops',
+    slug: WEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG,
     name: 'wemux Agent Collaboration',
     description: 'Follow the mandatory wemux task, comment, workspace, wait, and delivery collaboration protocol.',
     enabled: true,
@@ -761,18 +761,18 @@ const REQUIRED_PRIMARY_AGENT_SKILLS: SkillSelectionPolicy[] = [
     tags: ['system', 'vibemux', 'collaboration', 'required'],
   },
   {
-    id: 'system-skill-vibemux-yml',
-    slug: VIBEMUX_YML_SYSTEM_SKILL_SLUG,
+    id: 'system-skill-wemux-yml',
+    slug: WEMUX_YML_SYSTEM_SKILL_SLUG,
     name: 'wemux YML',
-    description: 'Write or update repository-root .vibemux.yml environment templates.',
+    description: 'Write or update repository-root .wemux.yml environment templates.',
     enabled: true,
     scope: 'agent',
     approvalMode: 'auto',
     tags: ['system', 'vibemux', 'environment'],
   },
   {
-    id: 'system-skill-vibemux-desktop-sandbox',
-    slug: VIBEMUX_DESKTOP_SANDBOX_SYSTEM_SKILL_SLUG,
+    id: 'system-skill-wemux-desktop-sandbox',
+    slug: WEMUX_DESKTOP_SANDBOX_SYSTEM_SKILL_SLUG,
     name: 'wemux Desktop Sandbox',
     description: 'Use wemux worker Desktop Sandbox only for isolated Linux desktop or noVNC tasks.',
     enabled: true,
@@ -781,8 +781,8 @@ const REQUIRED_PRIMARY_AGENT_SKILLS: SkillSelectionPolicy[] = [
     tags: ['system', 'vibemux', 'desktop-sandbox'],
   },
   {
-    id: 'system-skill-vibemux-test-agent',
-    slug: VIBEMUX_TEST_AGENT_SYSTEM_SKILL_SLUG,
+    id: 'system-skill-wemux-test-agent',
+    slug: WEMUX_TEST_AGENT_SYSTEM_SKILL_SLUG,
     name: 'wemux Test Agent',
     description: 'Run and test projects inside Desktop Sandbox with visual observation and UI automation.',
     enabled: true,
@@ -791,8 +791,8 @@ const REQUIRED_PRIMARY_AGENT_SKILLS: SkillSelectionPolicy[] = [
     tags: ['system', 'vibemux', 'test-agent', 'testing'],
   },
   {
-    id: 'system-skill-vibemux-drive-writeback',
-    slug: VIBEMUX_DRIVE_WRITEBACK_SYSTEM_SKILL_SLUG,
+    id: 'system-skill-wemux-drive-writeback',
+    slug: WEMUX_DRIVE_WRITEBACK_SYSTEM_SKILL_SLUG,
     name: 'wemux Drive Writeback',
     description: 'Read and write back Drive cloud-storage file references attached to a session; write_file overwrites the original file.',
     enabled: true,
@@ -801,8 +801,8 @@ const REQUIRED_PRIMARY_AGENT_SKILLS: SkillSelectionPolicy[] = [
     tags: ['system', 'vibemux', 'drive', 'writeback'],
   },
   {
-    id: 'system-skill-vibemux-memory',
-    slug: VIBEMUX_MEMORY_SYSTEM_SKILL_SLUG,
+    id: 'system-skill-wemux-memory',
+    slug: WEMUX_MEMORY_SYSTEM_SKILL_SLUG,
     name: 'wemux Agent Memory',
     description: '长期记忆读写纪律：个人记忆（云盘 soul/USER/MEMORY）+ 项目记忆（AGENTS.md）；自主记录可复用偏好与约定。',
     enabled: true,

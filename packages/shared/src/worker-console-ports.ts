@@ -48,7 +48,7 @@ export const resolveWorkerConsolePortEnvironment = (params: {
   }
 
   const url = `${params.cloudUrl ?? ''} ${params.appUrl ?? ''}`.toLowerCase()
-  // 兼容窗口：新旧域名都识别，后续可移除 vibemux 分支
+  // 兼容窗口：新旧域名都识别，后续可移除 wemux 分支
   if (url.includes('vibemux.xyz') || url.includes('wemux.xyz')) {
     return 'preview'
   }

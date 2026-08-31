@@ -15,7 +15,7 @@
 ## 2. 最终目录结构
 
 ```text
-~/.vibemux-dev/
+~/.wemux-dev/
 ├── node/
 │   ├── config.json
 │   ├── machine-id
@@ -37,7 +37,7 @@
         └── artifacts/
 ```
 
-生产默认根目录是 `~/.vibemux`，preview 是 `~/.vibemux-preview`，development 是 `~/.vibemux-dev`。如果配置了自定义 `workspaceRoot`，仍应保持同一套内部结构。
+生产默认根目录是 `~/.wemux`，preview 是 `~/.wemux-preview`，development 是 `~/.wemux-dev`。如果配置了自定义 `workspaceRoot`，仍应保持同一套内部结构。
 
 ## 3. Scope 规则
 
@@ -114,11 +114,11 @@ workspaces/<workspaceId>/artifacts/<artifact>
 旧路径只能用于识别、展示、迁移或 remap，不应作为新建目标：
 
 ```text
-~/.vibemux-dev/workspace/projects/<project>
-~/.vibemux-dev/projects/<project>
-~/.vibemux-dev/repos/<repo>
-~/.vibemux-dev/users/<userId>/workspaces/<workspaceId>/projects/<project>
-~/.vibemux-dev/users/unknown/workspaces/unknown/projects/<project>
+~/.wemux-dev/workspace/projects/<project>
+~/.wemux-dev/projects/<project>
+~/.wemux-dev/repos/<repo>
+~/.wemux-dev/users/<userId>/workspaces/<workspaceId>/projects/<project>
+~/.wemux-dev/users/unknown/workspaces/unknown/projects/<project>
 ```
 
 如果运行时看到 `users/unknown` 或 `workspaces/unknown`，优先检查：

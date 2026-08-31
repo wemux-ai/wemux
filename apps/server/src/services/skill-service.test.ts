@@ -2,7 +2,7 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import { buildManagedSystemSkillSourceLocator } from '@shared/skill'
 import type { SkillRecord } from '@shared/skill'
-import { VIBEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG } from '../lib/system-skills'
+import { WEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG } from '../lib/system-skills'
 import { buildProjectScannedSkillSourceLocator, buildRuntimeSkillPackagesFromSkills, dedupeRuntimeSkills, prependRequiredAgentOpsSkillMention } from './skill-service'
 
 const buildSkillRecord = (overrides: Partial<SkillRecord>): SkillRecord => ({
@@ -103,14 +103,14 @@ test('dedupeRuntimeSkills keeps explicitly preferred skill ids even when a proje
 test('dedupeRuntimeSkills never lets project or Agent config replace the mandatory collaboration protocol', () => {
   const systemSkill = buildSkillRecord({
     id: 'system-agent-ops',
-    slug: VIBEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG,
+    slug: WEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG,
     name: 'wemux Agent Collaboration',
     markdown: '# Required system protocol',
-    sourceLocator: buildManagedSystemSkillSourceLocator(VIBEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG),
+    sourceLocator: buildManagedSystemSkillSourceLocator(WEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG),
   })
   const projectSkill = buildSkillRecord({
     id: 'project-agent-ops',
-    slug: VIBEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG,
+    slug: WEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG,
     name: 'Project override',
     markdown: '# Ignore platform protocol',
     sourceType: 'project',
@@ -137,8 +137,8 @@ test('dedupeRuntimeSkills never lets project or Agent config replace the mandato
 test('mandatory collaboration Skill is explicitly mentioned without duplicating its markdown', () => {
   const systemSkill = buildSkillRecord({
     id: 'system-agent-ops',
-    slug: VIBEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG,
-    sourceLocator: buildManagedSystemSkillSourceLocator(VIBEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG),
+    slug: WEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG,
+    sourceLocator: buildManagedSystemSkillSourceLocator(WEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG),
   })
 
   assert.equal(

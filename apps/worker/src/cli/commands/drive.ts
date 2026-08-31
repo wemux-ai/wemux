@@ -3,7 +3,7 @@
 // [POS]: 云盘 CLI 命令（复用 server drive.* 工具，支持个人与组织双 scope）
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
 
-import type { VibemuxClient } from '../client'
+import type { WemuxClient } from '../client'
 import { output, getOutputFormat } from '../output'
 import { parseCliArgs } from '../../cli-flags'
 import { getCliName, throwCommandUsage, throwUnknownCommand } from '../help'
@@ -16,7 +16,7 @@ const resolveDriveScope = (flags: Map<string, string | true>) => {
   return { personal: true, parentId: flags.get('parent') || undefined }
 }
 
-export const runDriveCommand = async (client: VibemuxClient, subcommand: string, args: string[]) => {
+export const runDriveCommand = async (client: WemuxClient, subcommand: string, args: string[]) => {
   const { flags, positionals } = parseCliArgs(args)
   const format = getOutputFormat(flags)
   const cliName = getCliName()

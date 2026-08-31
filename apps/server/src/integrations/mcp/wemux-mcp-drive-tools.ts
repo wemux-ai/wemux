@@ -1,4 +1,4 @@
-// [INPUT]: Agent 身份（VibemuxMcpContext）+ Drive 工具调用
+// [INPUT]: Agent 身份（WemuxMcpContext）+ Drive 工具调用
 // [OUTPUT]: drive.list_files / read_file / write_file / file_info + create_folder / rename / move / delete /
 //           trash_list / trash_restore / versions / permissions_get / permissions_set / share / search 工具
 // [POS]: MCP 适配层；Agent 不持对象存储凭据，读写走 server 存储层（uploadDriveObject/streamDriveObject）；
@@ -11,7 +11,7 @@ import { extractSearchText } from '@shared/drive-search'
 import { VIBEMUX_READ_ONLY_MCP_TOOL_ANNOTATIONS } from '@shared/mcp'
 import type { DriveFileRecord } from '@shared/types'
 import { ErrorCode, McpError, type McpServer } from './sdk'
-import { toToolResult, type VibemuxMcpContext } from './vibemux-mcp-context'
+import { toToolResult, type WemuxMcpContext } from './wemux-mcp-context'
 import { isWorkspaceMember } from '../../repositories/workspace'
 import {
   collectDescendants,
@@ -131,7 +131,7 @@ const searchSchema = z.union([
 ])
 
 /** 校验 scope 归属：组织须为成员，个人限本人；返回 DriveScope */
-const resolveMcpScope = async (ctx: VibemuxMcpContext, input: { personal: boolean; workspaceId?: string }) => {
+const resolveMcpScope = async (ctx: WemuxMcpContext, input: { personal: boolean; workspaceId?: string }) => {
   if (input.personal) {
     return { workspaceId: null, userId: ctx.userId }
   }
@@ -144,7 +144,7 @@ const resolveMcpScope = async (ctx: VibemuxMcpContext, input: { personal: boolea
 }
 
 /** 文件级访问校验：按文件归属自动校验（组织=成员，个人=本人），并解析有效角色 */
-const assertMcpFileAccess = async (ctx: VibemuxMcpContext, fileId: string, required: 'read' | 'edit' | 'manage' = 'read') => {
+const assertMcpFileAccess = async (ctx: WemuxMcpContext, fileId: string, required: 'read' | 'edit' | 'manage' = 'read') => {
   const { role, target } = await resolveEffectiveRole(fileId, ctx.userId, ctx.runtimeAgentId)
   if (!target) throw new McpError(ErrorCode.InvalidParams, '文件不存在。')
   if (!role || !hasRoleLevel(role, required)) throw new McpError(ErrorCode.InvalidParams, '无权访问该文件。')
@@ -154,7 +154,7 @@ const assertMcpFileAccess = async (ctx: VibemuxMcpContext, fileId: string, requi
 /** 由已校验归属的文件推导 DriveScope（级联删除/恢复需要 scope 拉全量文件） */
 const scopeFromFile = (file: DriveFileRecord): DriveScope => ({ workspaceId: file.workspaceId, userId: file.createdBy })
 
-export const registerVibemuxMcpDriveTools = (server: McpServer, ctx: VibemuxMcpContext) => {
+export const registerWemuxMcpDriveTools = (server: McpServer, ctx: WemuxMcpContext) => {
   server.registerTool('drive.list_files', {
     title: 'Drive List Files',
     description: '列出云盘文件树（组织或个人 Drive）。返回文件夹与文件，含 id/name/类型/大小，供后续读写。',

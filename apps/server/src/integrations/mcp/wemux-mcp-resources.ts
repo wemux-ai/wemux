@@ -12,10 +12,10 @@ import {
   summarizeProject,
   summarizeTask,
   toJsonResource,
-  type VibemuxMcpContext,
-} from './vibemux-mcp-context'
+  type WemuxMcpContext,
+} from './wemux-mcp-context'
 
-const summarizeExecutor = (ctx: VibemuxMcpContext, executor: ReturnType<typeof listVisibleExecutorsForUser>[number]) => ({
+const summarizeExecutor = (ctx: WemuxMcpContext, executor: ReturnType<typeof listVisibleExecutorsForUser>[number]) => ({
   executorId: executor.executorId,
   name: executor.name,
   machineName: executor.machineName,
@@ -33,13 +33,13 @@ const summarizeExecutor = (ctx: VibemuxMcpContext, executor: ReturnType<typeof l
   lastSeenAt: executor.lastSeenAt,
 })
 
-const listVisibleWorkspaces = (ctx: VibemuxMcpContext) => {
+const listVisibleWorkspaces = (ctx: WemuxMcpContext) => {
   const state = ctx.getState()
   return state.projects.flatMap((project) => listProjectWorkspacesForUser(ctx.userId, project))
 }
 
-export const registerVibemuxMcpResources = (server: McpServer, ctx: VibemuxMcpContext, ResourceTemplateCtor: typeof ResourceTemplate) => {
-  server.registerResource('workspace-overview', 'vibemux://overview', {
+export const registerWemuxMcpResources = (server: McpServer, ctx: WemuxMcpContext, ResourceTemplateCtor: typeof ResourceTemplate) => {
+  server.registerResource('workspace-overview', 'wemux://overview', {
     title: 'Workspace Overview',
     description: '当前用户可见的项目、任务和会话总览',
     mimeType: JSON_MIME_TYPE,
@@ -57,7 +57,7 @@ export const registerVibemuxMcpResources = (server: McpServer, ctx: VibemuxMcpCo
     })
   })
 
-  server.registerResource('projects', 'vibemux://projects', {
+  server.registerResource('projects', 'wemux://projects', {
     title: 'Projects',
     description: '当前用户可访问的项目列表',
     mimeType: JSON_MIME_TYPE,
@@ -68,7 +68,7 @@ export const registerVibemuxMcpResources = (server: McpServer, ctx: VibemuxMcpCo
     })
   })
 
-  server.registerResource('tasks', 'vibemux://tasks', {
+  server.registerResource('tasks', 'wemux://tasks', {
     title: 'Tasks',
     description: '当前用户可访问的任务列表',
     mimeType: JSON_MIME_TYPE,
@@ -79,7 +79,7 @@ export const registerVibemuxMcpResources = (server: McpServer, ctx: VibemuxMcpCo
     })
   })
 
-  server.registerResource('conversations', 'vibemux://conversations', {
+  server.registerResource('conversations', 'wemux://conversations', {
     title: 'Conversations',
     description: '当前用户可访问的统一会话列表',
     mimeType: JSON_MIME_TYPE,
@@ -89,7 +89,7 @@ export const registerVibemuxMcpResources = (server: McpServer, ctx: VibemuxMcpCo
     })
   })
 
-  server.registerResource('executors', 'vibemux://executors', {
+  server.registerResource('executors', 'wemux://executors', {
     title: 'Executors',
     description: '当前用户可见的执行节点列表',
     mimeType: JSON_MIME_TYPE,
@@ -99,12 +99,12 @@ export const registerVibemuxMcpResources = (server: McpServer, ctx: VibemuxMcpCo
     })
   })
 
-  server.registerResource('project-detail', new ResourceTemplateCtor('vibemux://projects/{projectId}', {
+  server.registerResource('project-detail', new ResourceTemplateCtor('wemux://projects/{projectId}', {
     list: async () => {
       const state = ctx.getState()
       return {
         resources: state.projects.map((project) => ({
-          uri: `vibemux://projects/${project.id}`,
+          uri: `wemux://projects/${project.id}`,
           name: project.name,
           title: project.name,
           mimeType: JSON_MIME_TYPE,
@@ -128,12 +128,12 @@ export const registerVibemuxMcpResources = (server: McpServer, ctx: VibemuxMcpCo
     })
   })
 
-  server.registerResource('task-detail', new ResourceTemplateCtor('vibemux://tasks/{taskId}', {
+  server.registerResource('task-detail', new ResourceTemplateCtor('wemux://tasks/{taskId}', {
     list: async () => {
       const state = ctx.getState()
       return {
         resources: state.tasks.map((task) => ({
-          uri: `vibemux://tasks/${task.id}`,
+          uri: `wemux://tasks/${task.id}`,
           name: task.title,
           title: task.title,
           mimeType: JSON_MIME_TYPE,
@@ -159,12 +159,12 @@ export const registerVibemuxMcpResources = (server: McpServer, ctx: VibemuxMcpCo
     })
   })
 
-  server.registerResource('workspace-detail', new ResourceTemplateCtor('vibemux://workspaces/{workspaceId}', {
+  server.registerResource('workspace-detail', new ResourceTemplateCtor('wemux://workspaces/{workspaceId}', {
     list: async () => {
       const workspaces = listVisibleWorkspaces(ctx)
       return {
         resources: workspaces.map((workspace) => ({
-          uri: `vibemux://workspaces/${workspace.id}`,
+          uri: `wemux://workspaces/${workspace.id}`,
           name: workspace.name,
           title: workspace.name,
           mimeType: JSON_MIME_TYPE,
@@ -188,12 +188,12 @@ export const registerVibemuxMcpResources = (server: McpServer, ctx: VibemuxMcpCo
     })
   })
 
-  server.registerResource('conversation-detail', new ResourceTemplateCtor('vibemux://conversations/{conversationId}', {
+  server.registerResource('conversation-detail', new ResourceTemplateCtor('wemux://conversations/{conversationId}', {
     list: async () => {
       const conversations = ctx.getConversations()
       return {
         resources: conversations.map((item) => ({
-          uri: `vibemux://conversations/${item.conversation.id}`,
+          uri: `wemux://conversations/${item.conversation.id}`,
           name: item.conversation.title,
           title: item.conversation.title,
           mimeType: JSON_MIME_TYPE,

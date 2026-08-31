@@ -5,7 +5,7 @@ const tr = (language: string, zh: string, en: string) => language === 'zh' ? zh 
 const shellQuote = (value: string) => `'${value.replace(/'/g, `'\\''`)}'`
 
 const isPreviewWorker = (executor: Pick<ExecutorRecord, 'version' | 'workspaceRoot'>) => (
-  executor.version?.includes('preview') || executor.workspaceRoot.includes('.vibemux-preview')
+  executor.version?.includes('preview') || executor.workspaceRoot.includes('.wemux-preview')
 )
 
 const resolveWorkerBinPath = (executor: Pick<ExecutorRecord, 'version' | 'workspaceRoot'>) => {

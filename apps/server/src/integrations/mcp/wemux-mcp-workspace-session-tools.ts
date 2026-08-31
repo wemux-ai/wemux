@@ -26,8 +26,8 @@ import {
   requireProject,
   requireTask,
   toToolResult,
-  type VibemuxMcpContext,
-} from './vibemux-mcp-context'
+  type WemuxMcpContext,
+} from './wemux-mcp-context'
 
 const summarizeWorkspaceSession = (session: Awaited<ReturnType<typeof getWorkspaceSessionById>>) => {
   if (!session) return null
@@ -266,7 +266,7 @@ const resolveTaskGitIdentityForSession = async (params: {
   })
 }
 
-export const registerVibemuxMcpWorkspaceSessionTools = (server: McpServer, ctx: VibemuxMcpContext) => {
+export const registerWemuxMcpWorkspaceSessionTools = (server: McpServer, ctx: WemuxMcpContext) => {
   server.registerTool('workspace.session.list', {
     title: 'Workspace Session List',
     description: '列出某个任务关联的所有工作区会话',

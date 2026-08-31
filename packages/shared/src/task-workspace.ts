@@ -365,7 +365,7 @@ export const buildWorkspaceCodeBranchName = (params: {
   return suffix ? `${baseBranchName}-${suffix}` : baseBranchName
 }
 
-// 兼容窗口：新旧品牌前缀都识别为托管分支，后续可移除 vibemux/ 分支
+// 兼容窗口：新旧品牌前缀都识别为托管分支，后续可移除 wemux/ 分支
 const isWemuxManagedBranchName = (branchName?: string | null) => {
   const normalized = branchName?.trim() || ''
   return normalized.startsWith('wemux/') || normalized.startsWith('vibemux/')

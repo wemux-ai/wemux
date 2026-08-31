@@ -1,4 +1,5 @@
 // [INPUT]: 已鉴权 Hono app + requireAuth，管理员查询参数（limit 等）
+import { getEnv } from '@shared/env'
 // [OUTPUT]: /api/admin/* 管理路由（审计 / analytics / 用户管理 / 总账号体系）
 // [POS]: 管理员控制面 HTTP 协议层；用户管理以 role(owner/admin) 为准，isInternal 为兼容位
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -39,7 +40,7 @@ const auditQuerySchema = z.object({
 })
 
 /** 管理员准入：role(owner/admin) 为权威，isInternal 为兼容位（老内部账号）。
- * env 白名单：`VIBEMUX_ADMIN_EMAILS`（逗号分隔邮箱）→ 视为 owner（超级管理员），
+ * env 白名单：`WEMUX_ADMIN_EMAILS`（逗号分隔邮箱）→ 视为 owner（超级管理员），
  * 无需改数据库即可在部署层指定超管；空列表则按既有 role/isInternal 判定。 */
 export const resolveAdminAccess = (user: { role?: UserRole; isInternal?: boolean; email?: string | null } | null | undefined) => {
   if (!user) {
@@ -51,9 +52,9 @@ export const resolveAdminAccess = (user: { role?: UserRole; isInternal?: boolean
   return { allowed: role !== 'user', role }
 }
 
-/** 解析 VIBEMUX_ADMIN_EMAILS（逗号分隔邮箱）为小写 Set；空/未配置返回空集。 */
+/** 解析 WEMUX_ADMIN_EMAILS（逗号分隔邮箱）为小写 Set；空/未配置返回空集。 */
 export const resolveEnvAdminEmails = (): Set<string> => {
-  const raw = (process.env.VIBEMUX_ADMIN_EMAILS || process.env.WEMUX_ADMIN_EMAILS || '').trim()
+  const raw = (process.env.VIBEMUX_ADMIN_EMAILS || getEnv('WEMUX_ADMIN_EMAILS') || '').trim()
   if (!raw) {
     return new Set()
   }

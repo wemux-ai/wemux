@@ -30,7 +30,7 @@ import {
   writeWorkspaceGroupChatPreferences,
 } from './workspace-group-chat-preferences'
 
-const MOBILE_CHAT_DETAIL_HISTORY_KEY = '__vibemuxChatMobileDetail'
+const MOBILE_CHAT_DETAIL_HISTORY_KEY = '__wemuxChatMobileDetail'
 
 const isMobileChatDetailState = (state: unknown) => {
   if (!state || typeof state !== 'object') {

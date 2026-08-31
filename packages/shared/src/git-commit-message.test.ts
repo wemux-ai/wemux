@@ -1,46 +1,46 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
-  appendVibemuxAgentCoAuthorTrailer,
-  buildVibemuxAgentCommitMessage,
-  buildVibemuxAgentCoAuthorTrailer,
-  VIBEMUX_AGENT_CO_AUTHOR_TRAILER,
+  appendWemuxAgentCoAuthorTrailer,
+  buildWemuxAgentCommitMessage,
+  buildWemuxAgentCoAuthorTrailer,
+  WEMUX_AGENT_CO_AUTHOR_TRAILER,
 } from './git-commit-message'
 
-test('buildVibemuxAgentCommitMessage keeps the AI headline as subject and appends the agent trailer', () => {
+test('buildWemuxAgentCommitMessage keeps the AI headline as subject and appends the agent trailer', () => {
   assert.equal(
-    buildVibemuxAgentCommitMessage({
+    buildWemuxAgentCommitMessage({
       reply: '# Fix workspace auto commit\n\nDetails here.',
       fallback: 'vibemux: workspace auto commit',
     }),
-    `Fix workspace auto commit\n\n${VIBEMUX_AGENT_CO_AUTHOR_TRAILER}`,
+    `Fix workspace auto commit\n\n${WEMUX_AGENT_CO_AUTHOR_TRAILER}`,
   )
 })
 
-test('appendVibemuxAgentCoAuthorTrailer does not duplicate the Vibemux trailer', () => {
-  const message = `Fix something\n\n${VIBEMUX_AGENT_CO_AUTHOR_TRAILER}`
-  assert.equal(appendVibemuxAgentCoAuthorTrailer(message), message)
+test('appendWemuxAgentCoAuthorTrailer does not duplicate the Vibemux trailer', () => {
+  const message = `Fix something\n\n${WEMUX_AGENT_CO_AUTHOR_TRAILER}`
+  assert.equal(appendWemuxAgentCoAuthorTrailer(message), message)
 })
 
-test('buildVibemuxAgentCommitMessage uses the provided agent bot identity', () => {
+test('buildWemuxAgentCommitMessage uses the provided agent bot identity', () => {
   const identity = {
     name: 'Vibemux',
     email: '289628643+vibemux[bot]@users.noreply.github.com',
   }
 
   assert.equal(
-    buildVibemuxAgentCommitMessage({
+    buildWemuxAgentCommitMessage({
       reply: 'Ship the fix',
       fallback: 'vibemux: task',
       agentIdentity: identity,
     }),
-    `Ship the fix\n\n${buildVibemuxAgentCoAuthorTrailer(identity)}`,
+    `Ship the fix\n\n${buildWemuxAgentCoAuthorTrailer(identity)}`,
   )
 })
 
-test('buildVibemuxAgentCommitMessage adds both agent and user co-authors', () => {
+test('buildWemuxAgentCommitMessage adds both agent and user co-authors', () => {
   assert.equal(
-    buildVibemuxAgentCommitMessage({
+    buildWemuxAgentCommitMessage({
       reply: 'Ship the fix',
       fallback: 'vibemux: task',
       agentIdentity: {
@@ -61,12 +61,12 @@ test('buildVibemuxAgentCommitMessage adds both agent and user co-authors', () =>
   )
 })
 
-test('appendVibemuxAgentCoAuthorTrailer does not duplicate a matching agent bot email', () => {
+test('appendWemuxAgentCoAuthorTrailer does not duplicate a matching agent bot email', () => {
   const identity = {
     name: 'Vibemux',
     email: '289628643+vibemux[bot]@users.noreply.github.com',
   }
   const message = 'Fix something\n\nCo-authored-by: Vibemux Agent <289628643+vibemux[bot]@users.noreply.github.com>'
 
-  assert.equal(appendVibemuxAgentCoAuthorTrailer(message, identity), message)
+  assert.equal(appendWemuxAgentCoAuthorTrailer(message, identity), message)
 })

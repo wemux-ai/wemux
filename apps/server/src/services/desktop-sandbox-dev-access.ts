@@ -1,4 +1,5 @@
 // [INPUT]: 桌面沙箱访问请求
+import { getEnv } from '@shared/env'
 // [OUTPUT]: dev 访问判定
 // [POS]: 桌面沙箱 dev 访问控制
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -30,8 +31,8 @@ export const isDesktopSandboxDevOnlyEnabled = () => {
   }
 
   return [
-    process.env.VIBEMUX_CLOUD_URL,
-    process.env.VIBEMUX_PUBLIC_BASE_URL,
+    getEnv('WEMUX_CLOUD_URL'),
+    getEnv('WEMUX_PUBLIC_BASE_URL'),
     process.env.APP_BASE_URL,
     process.env.VITE_APP_BASE_URL,
     process.env.BETTER_AUTH_URL,

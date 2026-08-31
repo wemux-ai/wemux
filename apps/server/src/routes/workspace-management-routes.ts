@@ -3048,7 +3048,7 @@ export const registerWorkspaceManagementRoutes = (app: Hono, requireAuth: Middle
       executorId: importTarget.executorId,
     })
     if (!template) {
-      return c.json({ message: '当前工作区没有检测到 `.vibemux.yml`。' }, 404)
+      return c.json({ message: '当前工作区没有检测到 `.wemux.yml`。' }, 404)
     }
 
     const effectiveTemplate = await resolveWorkspaceEffectiveEnvironmentTemplate(project, workspaceId)
@@ -3086,7 +3086,7 @@ export const registerWorkspaceManagementRoutes = (app: Hono, requireAuth: Middle
     if (template) {
       messages.push('已同步工作区环境模板。')
     } else {
-      messages.push('未检测到工作区 `.vibemux.yml`。')
+      messages.push('未检测到工作区 `.wemux.yml`。')
     }
 
     let runtimeEnvironmentImported = false

@@ -3,12 +3,12 @@
 // [POS]: Agent CLI 命令
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
 
-import type { VibemuxClient } from '../client'
+import type { WemuxClient } from '../client'
 import { output, getOutputFormat } from '../output'
 import { parseCliArgs } from '../../cli-flags'
 import { getCliName, throwUnknownCommand } from '../help'
 
-export const runAgentCommand = async (client: VibemuxClient, subcommand: string, args: string[]) => {
+export const runAgentCommand = async (client: WemuxClient, subcommand: string, args: string[]) => {
   const { flags } = parseCliArgs(args)
   const format = getOutputFormat(flags)
 

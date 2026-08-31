@@ -98,7 +98,7 @@ const normalizeReturnTo = (value: string | undefined) => {
 }
 
 const appendResultToReturnTo = (returnTo: string, params: Record<string, string>) => {
-  const url = new URL(returnTo, 'http://vibemux.local')
+  const url = new URL(returnTo, 'http://wemux.local')
   for (const [key, value] of Object.entries(params)) {
     url.searchParams.set(key, value)
   }

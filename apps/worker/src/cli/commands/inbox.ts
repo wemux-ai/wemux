@@ -3,12 +3,12 @@
 // [POS]: 用户收件箱 CLI 命令（复用 server inbox.* 工具，recipientType='user'）
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
 
-import type { VibemuxClient } from '../client'
+import type { WemuxClient } from '../client'
 import { output, getOutputFormat } from '../output'
 import { parseCliArgs } from '../../cli-flags'
 import { getCliName, throwCommandUsage, throwUnknownCommand } from '../help'
 
-export const runInboxCommand = async (client: VibemuxClient, subcommand: string, args: string[]) => {
+export const runInboxCommand = async (client: WemuxClient, subcommand: string, args: string[]) => {
   const { flags, positionals } = parseCliArgs(args)
   const format = getOutputFormat(flags)
   const cliName = getCliName()

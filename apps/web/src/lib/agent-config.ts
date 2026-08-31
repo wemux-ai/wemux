@@ -26,15 +26,15 @@ export type McpServerPolicy = {
   managedBySystem?: boolean
 }
 
-export const VIBEMUX_MCP_SERVER_ID = 'mcp-vibemux'
-export const VIBEMUX_MCP_SERVER_NAME = 'vibemux'
-const VIBEMUX_MCP_TARGET = 'built-in://vibemux'
+export const WEMUX_MCP_SERVER_ID = 'mcp-vibemux'
+export const WEMUX_MCP_SERVER_NAME = 'vibemux'
+const WEMUX_MCP_TARGET = 'built-in://vibemux'
 
-export function createVibemuxMcpServerPolicy(enabled = true): McpServerPolicy {
+export function createWemuxMcpServerPolicy(enabled = true): McpServerPolicy {
   return {
-    id: VIBEMUX_MCP_SERVER_ID,
-    name: VIBEMUX_MCP_SERVER_NAME,
-    target: VIBEMUX_MCP_TARGET,
+    id: WEMUX_MCP_SERVER_ID,
+    name: WEMUX_MCP_SERVER_NAME,
+    target: WEMUX_MCP_TARGET,
     transport: 'http',
     enabled,
     capabilityMode: 'resources+tools',
@@ -175,14 +175,14 @@ function parseMcpServerPolicy(item: unknown, index: number): McpServerPolicy | n
     visibility,
     workspaceId,
     ownerUserId,
-    managedBySystem: item.managedBySystem === true || name === VIBEMUX_MCP_SERVER_NAME,
+    managedBySystem: item.managedBySystem === true || name === WEMUX_MCP_SERVER_NAME,
   }
 }
 
-export function ensureVibemuxMcpServer(servers: McpServerPolicy[]) {
-  const existing = servers.find((item) => item.name === VIBEMUX_MCP_SERVER_NAME || item.id === VIBEMUX_MCP_SERVER_ID)
+export function ensureWemuxMcpServer(servers: McpServerPolicy[]) {
+  const existing = servers.find((item) => item.name === WEMUX_MCP_SERVER_NAME || item.id === WEMUX_MCP_SERVER_ID)
   if (!existing) {
-    return [...servers, createVibemuxMcpServerPolicy(true)]
+    return [...servers, createWemuxMcpServerPolicy(true)]
   }
 
   return servers.map((item) => {
@@ -192,9 +192,9 @@ export function ensureVibemuxMcpServer(servers: McpServerPolicy[]) {
 
     return {
       ...item,
-      id: VIBEMUX_MCP_SERVER_ID,
-      name: VIBEMUX_MCP_SERVER_NAME,
-      target: item.target.trim() || VIBEMUX_MCP_TARGET,
+      id: WEMUX_MCP_SERVER_ID,
+      name: WEMUX_MCP_SERVER_NAME,
+      target: item.target.trim() || WEMUX_MCP_TARGET,
       transport: 'http' as const,
       capabilityMode: 'resources+tools' as const,
       managedBySystem: true,
@@ -204,7 +204,7 @@ export function ensureVibemuxMcpServer(servers: McpServerPolicy[]) {
 
 export function parseMcpServerPolicies(value: unknown): McpServerPolicy[] {
   const rawMcpServers = Array.isArray(value) ? value : []
-  return ensureVibemuxMcpServer(
+  return ensureWemuxMcpServer(
     rawMcpServers
       .map((item, index) => parseMcpServerPolicy(item, index))
       .filter((item): item is McpServerPolicy => item !== null),
@@ -212,7 +212,7 @@ export function parseMcpServerPolicies(value: unknown): McpServerPolicy[] {
 }
 
 export function buildMcpServerPolicies(servers: McpServerPolicy[]): McpServerPolicy[] {
-  return ensureVibemuxMcpServer(
+  return ensureWemuxMcpServer(
     servers
       .map((item, index): McpServerPolicy => {
         const visibility: McpServerPolicy['visibility'] = item.managedBySystem
@@ -221,9 +221,9 @@ export function buildMcpServerPolicies(servers: McpServerPolicy[]): McpServerPol
 
         return {
           ...item,
-          id: item.managedBySystem ? VIBEMUX_MCP_SERVER_ID : item.id || createStableId('mcp', item.name, index),
-          name: item.managedBySystem ? VIBEMUX_MCP_SERVER_NAME : item.name.trim(),
-          target: item.managedBySystem ? VIBEMUX_MCP_TARGET : item.target.trim(),
+          id: item.managedBySystem ? WEMUX_MCP_SERVER_ID : item.id || createStableId('mcp', item.name, index),
+          name: item.managedBySystem ? WEMUX_MCP_SERVER_NAME : item.name.trim(),
+          target: item.managedBySystem ? WEMUX_MCP_TARGET : item.target.trim(),
           transport: item.managedBySystem ? 'http' : item.transport,
           capabilityMode: item.managedBySystem ? 'resources+tools' : item.capabilityMode,
           visibility,
@@ -329,6 +329,6 @@ export function countConfiguredChannels(config: PrimaryAgentConfig) {
   return [config.channels.telegram.enabled, config.channels.feishu.enabled].filter(Boolean).length
 }
 
-export function hasEnabledVibemuxMcp(config: PrimaryAgentConfig) {
-  return config.mcpServers.some((item) => item.name === VIBEMUX_MCP_SERVER_NAME && item.enabled)
+export function hasEnabledWemuxMcp(config: PrimaryAgentConfig) {
+  return config.mcpServers.some((item) => item.name === WEMUX_MCP_SERVER_NAME && item.enabled)
 }

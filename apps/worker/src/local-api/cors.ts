@@ -1,4 +1,5 @@
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+import { getEnv } from '@shared/env'
 // [INPUT]: Browser origin and local Worker API request path.
 // [OUTPUT]: Read-only local API CORS decisions and response headers.
 // [POS]: Worker browser trust boundary shared by preview, production, and local development consoles.
@@ -18,7 +19,7 @@ export const isAllowedReadableLocalApiCorsOrigin = (origin?: string) => {
     return false
   }
 
-  const configuredOrigins = (process.env.VIBEMUX_WORKER_LOCAL_API_CORS_ORIGINS ?? '')
+  const configuredOrigins = (getEnv('WEMUX_WORKER_LOCAL_API_CORS_ORIGINS') ?? '')
     .split(',')
     .map((value) => value.trim())
     .filter(Boolean)
@@ -38,14 +39,14 @@ export const isAllowedReadableLocalApiCorsOrigin = (origin?: string) => {
     }
 
     return hostname === 'vibemux.xyz'
-      || hostname.endsWith('.vibemux.xyz')
+      || hostname.endsWith('.wemux.xyz')
       || hostname === 'wemux.xyz'
       || hostname.endsWith('.wemux.xyz')
       || hostname === 'vibemux.com'
-      || hostname.endsWith('.vibemux.com')
+      || hostname.endsWith('.wemux.com')
       || hostname === 'wemux.ai'
       || hostname.endsWith('.wemux.ai')
-      || hostname === 'app.vibemux.localtest.me'
+      || hostname === 'app.wemux.localtest.me'
       || hostname === 'app.wemux.localtest.me'
   } catch {
     return false

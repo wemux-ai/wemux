@@ -7,7 +7,7 @@ export type AgentManaged = 'ai' | 'none'
 
 export type ExecutorVisibility = 'private' | 'team'
 export type ExecutorSource = 'customer-worker' | 'managed-cloud'
-export type ExecutorManagedBy = 'user' | 'vibemux'
+export type ExecutorManagedBy = 'user' | 'wemux' | 'vibemux' // 'vibemux' 仅存量持久化行，读边界归一化为 'wemux'
 export type ExecutorRuntimeClass = 'user-worker' | 'managed-worker'
 export type ExecutorBillingClass = 'standard' | 'managed'
 
