@@ -25,6 +25,7 @@ import { buildAgentExecutionModelId, normalizeModelProviderBaseUrl } from '@shar
 import type { AppState, OpenCodeExecutionConfig } from '@shared/types'
 import { deriveExecutionCenter } from '@shared/task-orchestrator'
 import { TASK_COMMENT_ATTACHMENT_MAX_BYTES } from '@shared/task-chat-attachment'
+import { resolveAppBrand } from '../../services/brand'
 import { clusterConfig } from '../../cluster/config'
 import { checkAdapters, listAvailableModels } from '../../integrations/coding-agent/registry'
 import { listVisibleExecutorsForUser } from '../../control-plane/collaboration'
@@ -1618,11 +1619,7 @@ export const registerRuntimeSystemRoutes = (app: Hono, requireAuth: MiddlewareHa
         uptimeMs: Math.round(process.uptime() * 1000),
         publicBaseUrl: process.env.WEMUX_PUBLIC_BASE_URL?.trim() || '',
       },
-      brand: {
-        name: 'wemux',
-        site: 'https://wemux.ai',
-        edition: 'open-source',
-      },
+      brand: resolveAppBrand(),
       database: {
         mode: getPrimaryDatabaseMode(),
         storage: getPrimaryDatabaseStatus(),

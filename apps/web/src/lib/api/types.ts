@@ -485,6 +485,12 @@ export type DevLoginAccountSummary = {
   name: string
 }
 
+export type AppBrand = {
+  name: string
+  site: string
+  edition: string
+}
+
 export type DevLoginAccountsResponse = {
   enabled: boolean
   accounts: DevLoginAccountSummary[]
@@ -500,6 +506,7 @@ export type DevLoginAccountsResponse = {
   google?: {
     configured: boolean
   }
+  brand?: AppBrand
 }
 
 export type DevLoginResponse = {

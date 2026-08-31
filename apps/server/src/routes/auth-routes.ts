@@ -16,6 +16,7 @@ import { isValidUsername, normalizeUsername, USERNAME_CHANGE_COOLDOWN_MS } from 
 import { createPersonalAccessToken, listPersonalAccessTokens, deletePersonalAccessToken, revokeAllPersonalAccessTokens } from '../repositories/auth'
 import { ensureTeamMember, getRawToken, getUserIdFromHeader, publishState } from './shared'
 import { getAvatarStorageStatus, streamAvatar, uploadAvatar } from '../services/avatar-storage'
+import { resolveAppBrand } from '../services/brand'
 import { sendFeishuMessageToWebhook } from '../integrations/feishu'
 import { getUserNotificationSettings, saveUserNotificationSettings } from '../services/user-notification-settings-service'
 import {
@@ -70,6 +71,7 @@ export const registerAuthRoutes = (app: Hono, requireAuth: MiddlewareHandler) =>
       google: {
         configured: isGoogleSocialConfigured(),
       },
+      brand: resolveAppBrand(),
     })
   })
 

@@ -10,6 +10,7 @@ import { TurnstileWidget } from '../components/auth/turnstile-widget'
 import { CommunityLinkList } from '../components/community-join-dialog'
 import { Button } from '../components/ui/button'
 import { api, consumeAuthNotice, consumeAuthRedirectLoopGuard, markAuthBridgeSucceeded, type DevLoginAccountSummary, type GoogleBridgeResponse } from '../lib/api'
+import { isCommunityEdition, useAppBrand } from '../lib/app-brand'
 import { useAuth } from '../lib/auth-context'
 import { useTranslation } from '../lib/i18n/react'
 import { buildNoIndexHead } from '../lib/marketing-site'
@@ -254,7 +255,11 @@ export function LoginPage() {
     }
   }
 
-  const title = tr('登录 Wemux', 'Sign in to Wemux')
+  const loginBrand = useAppBrand()
+  const communityLogin = isCommunityEdition(loginBrand)
+  const title = communityLogin
+    ? tr('登录 Wemux 社区版', 'Sign in to Wemux Community')
+    : tr('登录 Wemux', 'Sign in to Wemux')
   const subtitle = tr('使用邮箱账号登录或注册，也可使用 Google 账号继续。', 'Sign in with your email or create an account, or continue with Google.')
   const googleLoginDisabled = loading || !googleConfigured || (isTurnstileEnabled && !turnstileToken)
 
@@ -311,7 +316,11 @@ export function LoginPage() {
       )}>
       <div className={cn('w-full space-y-5', isMacNative ? 'max-w-sm' : 'max-w-xs')}>
         <header className="space-y-1.5 text-center">
-          <p className="text-xs font-medium text-emerald-300">{t('login.workspaceBadge')}</p>
+          <p className="text-xs font-medium text-emerald-300">
+            {communityLogin
+              ? tr('Wemux 社区版 · 开源自托管', 'Wemux Community · Open-source self-hosted')
+              : t('login.workspaceBadge')}
+          </p>
           <h1 className="text-xl font-semibold tracking-tight text-zinc-50">{title}</h1>
           <p className="text-xs leading-5 text-zinc-500">{subtitle}</p>
         </header>

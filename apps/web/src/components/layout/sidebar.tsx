@@ -10,6 +10,13 @@ import {
   Workflow,
 } from 'lucide-react'
 import { cn } from '../../lib/utils'
+import { isCommunityEdition, useAppBrand } from '../../lib/app-brand'
+
+/** 侧边栏品牌名：开源社区版显示 Wemux Community，商业部署保持中性 Wemux。 */
+const SidebarBrandName = () => {
+  const brand = useAppBrand()
+  return <>{isCommunityEdition(brand) ? 'Wemux Community' : 'Wemux'}</>
+}
 
 const matchesSearch = (expected: Record<string, string | undefined>, currentSearchParams: URLSearchParams) => (
   Object.entries(expected).every(([key, value]) => currentSearchParams.get(key) === value)
@@ -80,7 +87,7 @@ export const Sidebar = () => {
       />
       <div className="flex h-14 items-center gap-2 border-b px-4">
         <img src="/logo.png" alt="" className="h-8 w-8 rounded-md" />
-        <span className="font-semibold">Wemux</span>
+        <span className="font-semibold"><SidebarBrandName /></span>
       </div>
       <nav className="flex-1 space-y-1 p-2">
         {navItems.map((item) => (
