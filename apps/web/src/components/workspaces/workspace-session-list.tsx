@@ -760,7 +760,7 @@ export function WorkspaceSessionList({
                   })
                 }}
                 onDrop={(event) => {
-                  const droppedWorkspaceSessionId = event.dataTransfer.getData('application/x-vibemux-workspace-session')
+                  const droppedWorkspaceSessionId = event.dataTransfer.getData('application/x-wemux-workspace-session')
                     || event.dataTransfer.getData('text/plain')
                     || draggedWorkspaceSessionId
                   const nextPosition = resolveWorkspaceSessionDropPosition(event)
@@ -850,7 +850,7 @@ manualUnreadActive && 'border-zinc-700 bg-zinc-900/85 text-zinc-100 shadow-[inse
                     setDropTarget(null)
                     event.dataTransfer.effectAllowed = 'move'
                     event.dataTransfer.setData('text/plain', item.id)
-                    event.dataTransfer.setData('application/x-vibemux-workspace-session', item.id)
+                    event.dataTransfer.setData('application/x-wemux-workspace-session', item.id)
                     applyWorkspaceSessionRowDragImage(event)
                   }}
                   onDragEnd={() => {

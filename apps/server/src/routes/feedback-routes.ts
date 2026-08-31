@@ -84,7 +84,7 @@ const telemetryEventSchema = z.object({
 
 /**
  * 反馈 admin 准入：与 admin-routes 统一（role(owner/admin) 为权威，
- * isInternal 为兼容位，VIBEMUX_ADMIN_EMAILS env 白名单可部署层指定）。
+ * isInternal 为兼容位，WEMUX_ADMIN_EMAILS env 白名单可部署层指定）。
  * 修复前只认 isInternal，env 白名单/role 管理员在前端能进 admin 而接口 403，表现为「反馈接收不到」。
  */
 const isFeedbackAdmin = (userId: string | null): boolean => {

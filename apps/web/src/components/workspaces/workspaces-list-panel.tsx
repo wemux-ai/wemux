@@ -445,7 +445,7 @@ function WorkspacesListPanelInner({
                 }
 
                 event.preventDefault()
-                const droppedProjectId = event.dataTransfer.getData('application/x-vibemux-project') || draggedProjectItem.projectId
+                const droppedProjectId = event.dataTransfer.getData('application/x-wemux-project') || draggedProjectItem.projectId
                 const nextOrderedProjectIds = reorderProjectIds(
                   projectGroups.map((item) => item.project.id),
                   droppedProjectId,
@@ -513,7 +513,7 @@ function WorkspacesListPanelInner({
                 }
 
                 event.preventDefault()
-                const droppedProjectId = event.dataTransfer.getData('application/x-vibemux-project') || draggedProjectItem.projectId
+                const droppedProjectId = event.dataTransfer.getData('application/x-wemux-project') || draggedProjectItem.projectId
                 const nextPosition = resolveWorkspaceListDropPosition(event)
                 const nextOrderedProjectIds = reorderProjectIds(
                   projectGroups.map((item) => item.project.id),
@@ -546,7 +546,7 @@ function WorkspacesListPanelInner({
 
                     const projectSection = event.currentTarget.closest<HTMLElement>('[data-workspace-project-section="true"]')
                     event.dataTransfer.effectAllowed = 'move'
-                    event.dataTransfer.setData('application/x-vibemux-project', group.project.id)
+                    event.dataTransfer.setData('application/x-wemux-project', group.project.id)
                     event.dataTransfer.setData('text/plain', group.project.id)
                     requestAnimationFrame(() => {
                       setDraggedProjectItem({
@@ -641,8 +641,8 @@ function WorkspacesListPanelInner({
                         }
 
                         event.dataTransfer.effectAllowed = 'move'
-                        event.dataTransfer.setData('application/x-vibemux-workspace', item.workspace.id)
-                        event.dataTransfer.setData('application/x-vibemux-workspace-project', group.project.id)
+                        event.dataTransfer.setData('application/x-wemux-workspace', item.workspace.id)
+                        event.dataTransfer.setData('application/x-wemux-workspace-project', group.project.id)
                         event.dataTransfer.setData('text/plain', item.workspace.id)
                         applyWorkspaceListRowDragImage(event)
                         requestAnimationFrame(() => {
@@ -708,8 +708,8 @@ function WorkspacesListPanelInner({
                         }
 
                         event.preventDefault()
-                        const droppedWorkspaceId = event.dataTransfer.getData('application/x-vibemux-workspace') || draggedWorkspaceItem.workspaceId
-                        const droppedProjectId = event.dataTransfer.getData('application/x-vibemux-workspace-project') || draggedWorkspaceItem.projectId
+                        const droppedWorkspaceId = event.dataTransfer.getData('application/x-wemux-workspace') || draggedWorkspaceItem.workspaceId
+                        const droppedProjectId = event.dataTransfer.getData('application/x-wemux-workspace-project') || draggedWorkspaceItem.projectId
                         const nextPosition = resolveWorkspaceListDropPosition(event)
                         const nextOrderedWorkspaceIds = reorderWorkspaceListIds(
                           group.items.map((workspaceItem) => workspaceItem.workspace.id),
@@ -759,8 +759,8 @@ function WorkspacesListPanelInner({
                         }
 
                         event.preventDefault()
-                        const droppedWorkspaceId = event.dataTransfer.getData('application/x-vibemux-workspace') || draggedWorkspaceItem.workspaceId
-                        const droppedProjectId = event.dataTransfer.getData('application/x-vibemux-workspace-project') || draggedWorkspaceItem.projectId
+                        const droppedWorkspaceId = event.dataTransfer.getData('application/x-wemux-workspace') || draggedWorkspaceItem.workspaceId
+                        const droppedProjectId = event.dataTransfer.getData('application/x-wemux-workspace-project') || draggedWorkspaceItem.projectId
                         const nextOrderedWorkspaceIds = reorderWorkspaceListIds(
                           group.items.map((workspaceItem) => workspaceItem.workspace.id),
                           droppedWorkspaceId,
@@ -810,7 +810,7 @@ function WorkspacesListPanelInner({
                 }
 
                 event.preventDefault()
-                const droppedProjectId = event.dataTransfer.getData('application/x-vibemux-project') || draggedProjectItem.projectId
+                const droppedProjectId = event.dataTransfer.getData('application/x-wemux-project') || draggedProjectItem.projectId
                 const nextOrderedProjectIds = reorderProjectIds(
                   projectGroups.map((item) => item.project.id),
                   droppedProjectId,
@@ -866,8 +866,8 @@ function WorkspacesListPanelInner({
           }
 
           event.dataTransfer.effectAllowed = 'move'
-          event.dataTransfer.setData('application/x-vibemux-workspace', item.workspace.id)
-          event.dataTransfer.setData('application/x-vibemux-workspace-project', item.project.id)
+          event.dataTransfer.setData('application/x-wemux-workspace', item.workspace.id)
+          event.dataTransfer.setData('application/x-wemux-workspace-project', item.project.id)
           event.dataTransfer.setData('text/plain', item.workspace.id)
           applyWorkspaceListRowDragImage(event)
           requestAnimationFrame(() => {

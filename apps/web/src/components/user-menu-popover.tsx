@@ -120,17 +120,17 @@ export function UserMenuPopover({ user, onLogout, language = 'zh' }: UserMenuPop
             <MenuLinkItem
               icon={Home}
               label={language === 'zh' ? '主页' : 'Home'}
-              onClick={() => window.open('https://vibemux.com', '_blank')}
+              onClick={() => window.open('https://wemux.com', '_blank')}
             />
             <MenuLinkItem
               icon={HelpCircle}
               label={language === 'zh' ? '获取帮助' : 'Get Help'}
-              onClick={() => window.open('https://docs.vibemux.com', '_blank')}
+              onClick={() => window.open('https://docs.wemux.com', '_blank')}
             />
             <MenuLinkItem
               icon={FileText}
               label={language === 'zh' ? '文档' : 'Docs'}
-              onClick={() => window.open('https://docs.vibemux.com', '_blank')}
+              onClick={() => window.open('https://docs.wemux.com', '_blank')}
             />
           </div>
 

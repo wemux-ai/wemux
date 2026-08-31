@@ -78,7 +78,8 @@ const RUNTIME_ENVIRONMENT_REFERENCE_PATTERN = /\$\{\{\s*([^}]+?)\s*\}\}/g
 const WINDOWS_ABSOLUTE_PATH_PATTERN = /^[A-Za-z]:[\\/]/u
 
 /** Roots that always resolve as platform context paths. */
-const PLATFORM_REFERENCE_ROOTS = new Set(['preview', 'node', 'task', 'workspaceSession', 'vibemux'])
+// 品牌迁移兼容窗口：`${{ vibemux.* }}` 是存量模板使用的引用前缀，与新前缀并存
+const PLATFORM_REFERENCE_ROOTS = new Set(['preview', 'node', 'task', 'workspaceSession', 'wemux', 'vibemux'])
 /** Exact platform paths that share a prefix with user scoped refs (`project.KEY` / `workspace.KEY`). */
 const PLATFORM_REFERENCE_EXACT = new Set(['project.id', 'workspace.id'])
 
@@ -258,7 +259,8 @@ export const getRuntimeEnvironmentSummary = (config?: RuntimeEnvironmentConfig |
 const normalizeReferencePath = (rawPath: string) => rawPath.trim()
 
 const isPlatformReferencePath = (path: string) => {
-  const normalized = path.startsWith('vibemux.') ? path.slice('vibemux.'.length) : path
+  const legacyStripped = path.startsWith('vibemux.') ? path.slice('vibemux.'.length) : path
+  const normalized = path.startsWith('wemux.') ? path.slice('wemux.'.length) : legacyStripped
   if (PLATFORM_REFERENCE_EXACT.has(normalized)) {
     return true
   }
@@ -275,8 +277,10 @@ const lookupPlatformVariable = (
   }
 
   const candidates = path.startsWith('vibemux.')
-    ? [path, path.slice('vibemux.'.length)]
-    : [path, `vibemux.${path}`]
+    ? [path, path.slice('wemux.'.length)]
+    : path.startsWith('vibemux.')
+      ? [path, path.slice('vibemux.'.length)]
+      : [path, `wemux.${path}`, `vibemux.${path}`]
 
   for (const candidate of candidates) {
     if (!Object.prototype.hasOwnProperty.call(platformVariables, candidate)) {
@@ -297,7 +301,7 @@ const formatReferenceToken = (path: string) => `\${{ ${path} }}`
  * Expand `${{ ... }}` references across merged project/workspace entries.
  * - `${{ KEY }}` uses effective (workspace-over-project) values
  * - `${{ project.KEY }}` / `${{ workspace.KEY }}` use scoped user values
- * - `${{ preview.* }}` / `${{ node.* }}` / `${{ vibemux.* }}` use platform context
+ * - `${{ preview.* }}` / `${{ node.* }}` / `${{ wemux.* }}` use platform context
  */
 export const resolveRuntimeEnvironmentReferenceEntries = (params: {
   projectEntries: RuntimeEnvironmentVariableEntry[]

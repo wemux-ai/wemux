@@ -27,7 +27,7 @@ const DEFAULT_WORKER_HOMES = new Set(
     const suffix = profile === 'development' ? '-dev' : profile === 'preview' ? '-preview' : ''
     return [
       path.resolve(path.join(os.homedir(), `.wemux${suffix}`)),
-      path.resolve(path.join(os.homedir(), `.vibemux${suffix}`)),
+      path.resolve(path.join(os.homedir(), `.wemux${suffix}`)),
     ]
   }),
 )
@@ -44,7 +44,7 @@ const LEGACY_LOCAL_CLOUD_URLS = new Set([
 ])
 
 const hasManagedCloudUrlOverride = () => {
-  return Boolean(process.env.VIBEMUX_CLOUD_URL?.trim())
+  return Boolean(getEnv('WEMUX_CLOUD_URL')?.trim())
 }
 
 const getManagedCloudUrl = () => {
@@ -132,7 +132,7 @@ const resolveDefaultWorkerHome = () => {
 }
 
 const getManagedLocalServerPort = () => {
-  const envPort = Number(process.env.VIBEMUX_WORKER_PORT?.trim())
+  const envPort = Number(getEnv('WEMUX_WORKER_PORT')?.trim())
   if (Number.isFinite(envPort) && envPort > 0) {
     return envPort
   }
@@ -293,7 +293,7 @@ const getConfiguredWorkerHome = () => {
 }
 
 const normalizeWorkerRunMode = () => {
-  const value = process.env.VIBEMUX_WORKER_RUN_MODE?.trim().toLowerCase()
+  const value = getEnv('WEMUX_WORKER_RUN_MODE')?.trim().toLowerCase()
   if (value === 'docker' || value === 'container') {
     return 'docker'
   }
@@ -363,7 +363,7 @@ export const getDefaultWorkerConfig = (): WorkerConfig => ({
   maxConcurrency: 5,
   labels: normalizeWorkerRunModeLabels(),
   capabilities: ['code-execution', 'git-operations'],
-  localServerPort: Number(process.env.VIBEMUX_WORKER_PORT || getManagedLocalServerPort()),
+  localServerPort: Number(getEnv('WEMUX_WORKER_PORT') || getManagedLocalServerPort()),
   previewExposureMode: 'private',
   previewIngressPort: 38080,
   previewProxySecret: '',
@@ -398,12 +398,12 @@ export const loadWorkerConfig = (): WorkerConfig => {
     config.cloudUrl = getManagedCloudUrl()
   }
 
-  const managedLocalServerPort = Number(process.env.VIBEMUX_WORKER_PORT?.trim())
+  const managedLocalServerPort = Number(getEnv('WEMUX_WORKER_PORT')?.trim())
   if (Number.isFinite(managedLocalServerPort) && managedLocalServerPort > 0) {
     config.localServerPort = managedLocalServerPort
   }
 
-  const managedPreviewIngressPort = Number(process.env.VIBEMUX_PREVIEW_INGRESS_PORT?.trim())
+  const managedPreviewIngressPort = Number(getEnv('WEMUX_PREVIEW_INGRESS_PORT')?.trim())
   if (Number.isFinite(managedPreviewIngressPort) && managedPreviewIngressPort > 0) {
     config.previewIngressPort = managedPreviewIngressPort
   }

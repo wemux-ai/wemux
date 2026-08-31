@@ -1,4 +1,5 @@
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+import { getEnv } from '@shared/env'
 // [INPUT]: Current packaged worker identity, host runtime paths, and explicit service overrides.
 // [OUTPUT]: Platform-neutral worker service commands, paths, and a minimal persistent environment.
 // [POS]: Worker service boundary; ambient application secrets and environment selection must not leak into system services.
@@ -74,9 +75,9 @@ export const getDefaultWorkerServiceName = () => {
     return packageName
   }
   if (packageName === 'wemux-worker') {
-    return 'wemux-worker'
+    return 'vibemux-worker'
   }
-  return 'vibemux-worker'
+  return 'wemux-worker'
 }
 
 export const getDefaultWorkerBinName = () => getDefaultWorkerServiceName()
@@ -140,7 +141,7 @@ export const getInstalledWorkerNodeWrapperPath = (
 }
 
 export const resolveWorkerInstallPrefix = (workerPath?: string) => {
-  const configured = process.env.VIBEMUX_WORKER_INSTALL_PREFIX?.trim()
+  const configured = getEnv('WEMUX_WORKER_INSTALL_PREFIX')?.trim()
   if (configured) {
     return path.resolve(configured)
   }
@@ -158,13 +159,13 @@ export const resolveWorkerInstallPrefix = (workerPath?: string) => {
 }
 
 export const resolveWorkerExecutablePath = (explicitPath?: string, installPrefix?: string) => {
-  const configured = explicitPath?.trim() || process.env.VIBEMUX_WORKER_EXECUTABLE_PATH?.trim()
+  const configured = explicitPath?.trim() || getEnv('WEMUX_WORKER_EXECUTABLE_PATH')?.trim()
   if (configured) {
     return path.resolve(configured)
   }
 
   const binName = getDefaultWorkerBinName()
-  const prefix = installPrefix?.trim() || process.env.VIBEMUX_WORKER_INSTALL_PREFIX?.trim()
+  const prefix = installPrefix?.trim() || getEnv('WEMUX_WORKER_INSTALL_PREFIX')?.trim()
   if (prefix) {
     for (const candidate of getInstalledWorkerExecutableCandidates(prefix, binName)) {
       if (existsSync(candidate)) {
@@ -225,14 +226,14 @@ export const buildWorkerServiceEnv = (params: {
     ...pickWorkerServiceHostEnv(process.env),
     PATH: process.env.PATH || '',
     HOME: os.homedir(),
-    VIBEMUX_WORKER_HOME: getWorkerHome(),
-    VIBEMUX_WORKER_RELEASE_CHANNEL: getWorkerReleaseChannel(),
-    VIBEMUX_WORKER_PORT_PROFILE: getWorkerServicePortEnvironment(),
-    VIBEMUX_WORKER_PORT: String(getWorkerConsolePortBase(getWorkerServicePortEnvironment())),
-    VIBEMUX_WORKER_EXECUTABLE_PATH: params.workerPath,
-    VIBEMUX_WORKER_INSTALL_PREFIX: installPrefix || '',
-    VIBEMUX_WORKER_RESTART_STRATEGY: 'system-service',
-    VIBEMUX_WORKER_AUTO_UPDATE: process.env.VIBEMUX_WORKER_AUTO_UPDATE || '1',
+    WEMUX_WORKER_HOME: getWorkerHome(),
+    WEMUX_WORKER_RELEASE_CHANNEL: getWorkerReleaseChannel(),
+    WEMUX_WORKER_PORT_PROFILE: getWorkerServicePortEnvironment(),
+    WEMUX_WORKER_PORT: String(getWorkerConsolePortBase(getWorkerServicePortEnvironment())),
+    WEMUX_WORKER_EXECUTABLE_PATH: params.workerPath,
+    WEMUX_WORKER_INSTALL_PREFIX: installPrefix || '',
+    WEMUX_WORKER_RESTART_STRATEGY: 'system-service',
+    WEMUX_WORKER_AUTO_UPDATE: getEnv('WEMUX_WORKER_AUTO_UPDATE') || '1',
     ...params.extraEnv,
   }
 }

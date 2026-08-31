@@ -5,7 +5,7 @@
 
 import type { AgentConfig, Project } from './types'
 
-export const DEFAULT_WORKSPACE_ROOT = '~/.vibemux'
+export const DEFAULT_WORKSPACE_ROOT = '~/.wemux'
 
 type ProjectLike = Pick<Project, 'id' | 'name' | 'gitUrl'>
 type ProjectPathLike = Pick<Project, 'name' | 'gitUrl'>

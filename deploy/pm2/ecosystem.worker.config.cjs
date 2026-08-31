@@ -1,13 +1,13 @@
-const channel = process.env.VIBEMUX_PM2_CHANNEL === 'preview' ? 'preview' : 'production'
-const packageName = channel === 'preview' ? 'vibemux-worker-preview' : 'vibemux-worker'
+const channel = process.env.WEMUX_PM2_CHANNEL === 'preview' ? 'preview' : 'production'
+const packageName = channel === 'preview' ? 'wemux-worker-preview' : 'wemux-worker'
 const packageTag = channel === 'preview' ? 'preview' : 'latest'
-const cloudUrl = process.env.VIBEMUX_CLOUD_URL
-  || (channel === 'preview' ? 'https://vibemux.xyz/' : 'https://vibemux.com/')
+const cloudUrl = process.env.WEMUX_CLOUD_URL
+  || (channel === 'preview' ? 'https://wemux.xyz/' : 'https://wemux.com/')
 
 module.exports = {
   apps: [
     {
-      name: `vibemux-worker-${channel}`,
+      name: `wemux-worker-${channel}`,
       script: 'npx',
       args: `-y ${packageName}@${packageTag} daemon`,
       interpreter: 'none',
@@ -17,8 +17,8 @@ module.exports = {
       kill_timeout: 10000,
       env: {
         NODE_ENV: 'production',
-        VIBEMUX_CLOUD_URL: cloudUrl,
-        VIBEMUX_WORKER_RESTART_STRATEGY: 'pm2',
+        WEMUX_CLOUD_URL: cloudUrl,
+        WEMUX_WORKER_RESTART_STRATEGY: 'pm2',
       },
     },
   ],

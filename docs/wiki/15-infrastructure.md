@@ -5,13 +5,13 @@
 ### 开发环境
 
 ```bash
-DATABASE_URL=postgres://vibemux:vibemux@127.0.0.1:5434/vibemux
+DATABASE_URL=postgres://wemux:wemux@127.0.0.1:5434/wemux
 ```
 
 ### 生产环境
 
 ```bash
-DATABASE_URL=postgres://user:password@db-host:5432/vibemux
+DATABASE_URL=postgres://user:password@db-host:5432/wemux
 ```
 
 ### Docker 开发环境
@@ -23,11 +23,11 @@ postgres:
   ports:
     - "5434:5432"
   environment:
-    POSTGRES_USER: vibemux
+    POSTGRES_USER: wemux
     POSTGRES_PASSWORD: <local-dev-password>
-    POSTGRES_DB: vibemux
+    POSTGRES_DB: wemux
   volumes:
-    - vibemux-postgres-data:/var/lib/postgresql/data
+    - wemux-postgres-data:/var/lib/postgresql/data
 ```
 
 ## S3 兼容对象存储（RustFS）
@@ -36,8 +36,8 @@ postgres:
 
 ```bash
 OBJECT_STORAGE_ENDPOINT=http://127.0.0.1:9100
-OBJECT_STORAGE_BUCKET=vibemux
-OBJECT_STORAGE_ACCESS_KEY_ID=vibemux
+OBJECT_STORAGE_BUCKET=wemux
+OBJECT_STORAGE_ACCESS_KEY_ID=wemux
 OBJECT_SECRET_KEY=<local-dev-secret>
 ```
 
@@ -45,7 +45,7 @@ OBJECT_SECRET_KEY=<local-dev-secret>
 
 ```bash
 OBJECT_STORAGE_ENDPOINT=https://your-object-storage.example.com
-OBJECT_STORAGE_BUCKET=vibemux
+OBJECT_STORAGE_BUCKET=wemux
 OBJECT_STORAGE_ACCESS_KEY_ID=your_access_key
 OBJECT_SECRET_KEY=your_secret_key
 ```
@@ -60,8 +60,8 @@ rustfs:
     - "9100:9000"   # S3 API
     - "9101:9001"   # Console
   environment:
-    RUSTFS_BUCKET: vibemux
-    RUSTFS_ACCESS_KEY: vibemux
+    RUSTFS_BUCKET: wemux
+    RUSTFS_ACCESS_KEY: wemux
     RUSTFS_SECRET_KEY: <local-dev-secret>
 ```
 
@@ -72,8 +72,8 @@ rustfs:
 | Postgres | 127.0.0.1:5434 |
 | RustFS S3 API | 127.0.0.1:9100 |
 | RustFS Console | http://127.0.0.1:9101 |
-| Bucket | vibemux |
-| Access Key | vibemux |
+| Bucket | wemux |
+| Access Key | wemux |
 | Secret Key | `<local-dev-secret>` |
 
 ## 使用场景

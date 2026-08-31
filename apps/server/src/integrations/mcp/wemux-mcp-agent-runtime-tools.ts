@@ -28,12 +28,12 @@ import {
   markInboxItemRead,
 } from '../../services/inbox-service'
 import { ErrorCode, McpError, type McpServer } from './sdk'
-import { requireTask, toToolResult, type VibemuxMcpContext } from './vibemux-mcp-context'
+import { requireTask, toToolResult, type WemuxMcpContext } from './wemux-mcp-context'
 
 const eventScopeSchema = z.record(z.string())
 const eventPayloadSchema = z.record(z.unknown())
 
-const requireUsableAgent = (ctx: VibemuxMcpContext, agentId: string) => {
+const requireUsableAgent = (ctx: WemuxMcpContext, agentId: string) => {
   const agent = getAgent(agentId)
   if (!agent || (agent.ownerUserId && agent.ownerUserId !== ctx.userId && agent.id !== ctx.runtimeAgentId)) {
     throw new McpError(ErrorCode.InvalidParams, 'Agent 不存在或无权使用。')
@@ -41,7 +41,7 @@ const requireUsableAgent = (ctx: VibemuxMcpContext, agentId: string) => {
   return agent
 }
 
-const resolveRuntimeCommentAuthor = (ctx: VibemuxMcpContext, requestedAgentId?: string) => {
+const resolveRuntimeCommentAuthor = (ctx: WemuxMcpContext, requestedAgentId?: string) => {
   const agentId = ctx.runtimeAgentId || requestedAgentId
   if (!agentId) {
     throw new McpError(ErrorCode.InvalidParams, '需要指定 Agent。')
@@ -59,7 +59,7 @@ const resolveRuntimeCommentAuthor = (ctx: VibemuxMcpContext, requestedAgentId?: 
   }
 }
 
-export const registerVibemuxMcpAgentRuntimeTools = (server: McpServer, ctx: VibemuxMcpContext) => {
+export const registerWemuxMcpAgentRuntimeTools = (server: McpServer, ctx: WemuxMcpContext) => {
   server.registerTool('agent.schedule.list', {
     title: 'List Agent Heartbeat Schedules',
     description: '读取 Agent 的定时心跳计划列表（cron 表达式 / 启停 / 上次与下次运行）。',

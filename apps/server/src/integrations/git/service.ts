@@ -2,7 +2,7 @@ import { existsSync, mkdirSync } from 'node:fs'
 import { spawn } from 'node:child_process'
 import path from 'node:path'
 import { simpleGit } from 'simple-git'
-import { buildVibemuxAgentCommitMessage, resolveVibemuxAutomatedCommitAuthor } from '@shared/git-commit-message'
+import { buildWemuxAgentCommitMessage, resolveWemuxAutomatedCommitAuthor } from '@shared/git-commit-message'
 import { createGitAuthContext, getSimpleGitOptionsForEnv } from '@shared/git-auth'
 import type { WorkspaceTaskExecutionView } from '@shared/task-workspace'
 import type { Project, TaskRuntimeGitIdentity } from '@shared/types'
@@ -304,9 +304,9 @@ const buildCommitMessageFromReply = (
   task: { id: string },
   identity?: TaskRuntimeGitIdentity,
 ) => (
-  buildVibemuxAgentCommitMessage({
+  buildWemuxAgentCommitMessage({
     reply,
-    fallback: `vibemux: ${task.id}`,
+    fallback: `wemux: ${task.id}`,
     agentIdentity: {
       name: identity?.agentCoAuthorName,
       email: identity?.agentCoAuthorEmail,
@@ -349,7 +349,7 @@ export const finalizeTaskWorktreeGit = async (params: {
       }
     }
 
-    const commitAuthor = resolveVibemuxAutomatedCommitAuthor(params.identity) ?? params.identity
+    const commitAuthor = resolveWemuxAutomatedCommitAuthor(params.identity) ?? params.identity
     await git.addConfig('user.name', commitAuthor.name ?? params.identity.name, false, 'local')
     await git.addConfig('user.email', commitAuthor.email ?? params.identity.email, false, 'local')
     if (authContext.env.GIT_SSH_COMMAND) {

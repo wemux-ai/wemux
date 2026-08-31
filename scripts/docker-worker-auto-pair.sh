@@ -3,8 +3,8 @@
 # Waits for the server, pairs automatically if needed, then starts the daemon.
 set -euo pipefail
 
-WORKER_HOME="${VIBEMUX_WORKER_HOME:-/data/vibemux-worker}"
-SERVER_URL="${VIBEMUX_CLOUD_URL:-http://server:18989}"
+WORKER_HOME="${WEMUX_WORKER_HOME:-/data/wemux-worker}"
+SERVER_URL="${WEMUX_CLOUD_URL:-http://server:18989}"
 CONFIG_DIR="${WORKER_HOME}/node"
 CONFIG_FILE="${CONFIG_DIR}/config.json"
 MACHINE_ID_FILE="${CONFIG_DIR}/machine-id"

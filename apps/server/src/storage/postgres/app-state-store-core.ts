@@ -1,3 +1,4 @@
+import { getEnv } from '@shared/env'
 /**
  * [INPUT]: Domain records and full application state snapshots.
  * [OUTPUT]: In-memory state reconciliation and durable Postgres persistence for server-owned entities.
@@ -856,7 +857,7 @@ export const replaceState = (state: AppState) => {
 }
 
 const assertDestructiveTestResetIsIsolated = () => {
-  if (!process.env.NODE_TEST_CONTEXT || process.env.VIBEMUX_ALLOW_DESTRUCTIVE_TEST_DB_RESET === '1') {
+  if (!process.env.NODE_TEST_CONTEXT || getEnv('WEMUX_ALLOW_DESTRUCTIVE_TEST_DB_RESET') === '1') {
     return
   }
 

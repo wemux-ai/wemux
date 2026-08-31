@@ -1,4 +1,5 @@
 // [INPUT]: Agent-owned outbound channel settings and a requested delivery target.
+import { getEnv } from '@shared/env'
 // [OUTPUT]: Available outbound channels and delivery results for channel.list/channel.send.
 // [POS]: Server-side outbound channel service; inbound Feishu replies are handled by channel-routes.
 // [PROTOCOL]: Update this header when changing responsibilities, then check AGENTS.md.
@@ -472,14 +473,14 @@ export const renderAgentChannelInstructions = (params: {
   return lines.join('\n')
 }
 
-/** 下载附件字节（相对 URL 按 VIBEMUX_PUBLIC_BASE_URL 解析；失败返回 null）。 */
+/** 下载附件字节（相对 URL 按 WEMUX_PUBLIC_BASE_URL 解析；失败返回 null）。 */
 const resolveAttachmentBuffer = async (attachment: TaskChatAttachment): Promise<Buffer | null> => {
   try {
     const raw = attachment.url.trim()
     if (!raw) return null
     const url = /^https?:\/\//i.test(raw)
       ? raw
-      : `${(process.env.VIBEMUX_PUBLIC_BASE_URL?.trim() || '').replace(/\/+$/, '')}${raw}`
+      : `${(getEnv('WEMUX_PUBLIC_BASE_URL')?.trim() || '').replace(/\/+$/, '')}${raw}`
     const response = await fetch(url)
     if (!response.ok) return null
     return Buffer.from(await response.arrayBuffer())

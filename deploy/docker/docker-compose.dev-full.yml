@@ -1,20 +1,20 @@
-name: ${HYBRID_PROJECT_NAME:-vibemux}
+name: ${HYBRID_PROJECT_NAME:-wemux}
 
 services:
   postgres:
     image: postgres:16-alpine
     restart: unless-stopped
     environment:
-      POSTGRES_DB: vibemux
-      POSTGRES_USER: vibemux
+      POSTGRES_DB: wemux
+      POSTGRES_USER: wemux
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-local-dev-password}
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U vibemux -d vibemux']
+      test: ['CMD-SHELL', 'pg_isready -U wemux -d wemux']
       interval: 5s
       timeout: 5s
       retries: 20
     volumes:
-      - vibemux-hybrid-postgres-data:/var/lib/postgresql/data
+      - wemux-hybrid-postgres-data:/var/lib/postgresql/data
 
   postgres-init:
     image: postgres:16-alpine
@@ -24,9 +24,9 @@ services:
     restart: 'no'
     environment:
       PGPASSWORD: ${POSTGRES_PASSWORD:-local-dev-password}
-      POSTGRES_USER: vibemux
-      POSTGRES_PREVIEW_DB: vibemux_preview
-      POSTGRES_PRODUCTION_DB: vibemux_production
+      POSTGRES_USER: wemux
+      POSTGRES_PREVIEW_DB: wemux_preview
+      POSTGRES_PRODUCTION_DB: wemux_production
     entrypoint: >-
       /bin/sh -c
       "psql -h postgres -U vibemux -d postgres -tc \"SELECT 1 FROM pg_database WHERE datname = 'vibemux_preview'\" | grep -q 1 || psql -h postgres -U vibemux -d postgres -c \"CREATE DATABASE \\\"vibemux_preview\\\"\";
@@ -56,7 +56,7 @@ services:
       BETTER_AUTH_TRUSTED_ORIGINS: ${BETTER_AUTH_TRUSTED_ORIGINS:-http://app.wemux.localtest.me:${HYBRID_WEB_PORT:-15173},http://app.wemux.localtest.me:${HYBRID_SERVER_PORT:-18989},http://127.0.0.1:${HYBRID_WEB_PORT:-15173},http://localhost:${HYBRID_WEB_PORT:-15173},http://127.0.0.1:${HYBRID_SERVER_PORT:-18989},http://localhost:${HYBRID_SERVER_PORT:-18989}}
       NPM_CONFIG_REGISTRY: ${NPM_REGISTRY:-}
       WEMUX_RUNTIME_DIR: /data/vibemux-runtime
-      DATABASE_URL: postgres://vibemux:${POSTGRES_PASSWORD:-local-dev-password}@postgres:5432/vibemux
+      DATABASE_URL: postgres://wemux:${POSTGRES_PASSWORD:-local-dev-password}@postgres:5432/wemux
       OBJECT_STORAGE_ENDPOINT: ${OBJECT_STORAGE_ENDPOINT:?OBJECT_STORAGE_ENDPOINT is required for dev:docker}
       OBJECT_STORAGE_BUCKET: ${OBJECT_STORAGE_BUCKET:?OBJECT_STORAGE_BUCKET is required for dev:docker}
       OBJECT_STORAGE_ACCESS_KEY_ID: ${OBJECT_STORAGE_ACCESS_KEY_ID:?OBJECT_STORAGE_ACCESS_KEY_ID is required for dev:docker}
@@ -64,9 +64,9 @@ services:
       OBJECT_STORAGE_REGION: ${OBJECT_STORAGE_REGION:-auto}
       WEMUX_WORKER_CONSOLE_URL: http://worker:${WEMUX_WORKER_PORT:-48121}
       WEMUX_MESH_ENABLED: ${WEMUX_MESH_ENABLED:-}
-      VIBEMUX_OFFICIAL_CONNECTOR_URL: ${VIBEMUX_OFFICIAL_CONNECTOR_URL:-}
-      VIBEMUX_OFFICIAL_CONNECTOR_ADMIN_TOKEN: ${VIBEMUX_OFFICIAL_CONNECTOR_ADMIN_TOKEN:-}
-      VIBEMUX_OFFICIAL_CONNECTOR_RUNTIME_TOKEN: ${VIBEMUX_OFFICIAL_CONNECTOR_RUNTIME_TOKEN:-}
+      WEMUX_OFFICIAL_CONNECTOR_URL: ${WEMUX_OFFICIAL_CONNECTOR_URL:-}
+      WEMUX_OFFICIAL_CONNECTOR_ADMIN_TOKEN: ${WEMUX_OFFICIAL_CONNECTOR_ADMIN_TOKEN:-}
+      WEMUX_OFFICIAL_CONNECTOR_RUNTIME_TOKEN: ${WEMUX_OFFICIAL_CONNECTOR_RUNTIME_TOKEN:-}
       WEMUX_EASYTIER_NETWORK_NAME: ${WEMUX_EASYTIER_NETWORK_NAME:-}
       WEMUX_EASYTIER_NETWORK_PREFIX: ${WEMUX_EASYTIER_NETWORK_PREFIX:-}
       WEMUX_EASYTIER_NETWORK_SECRET: ${WEMUX_EASYTIER_NETWORK_SECRET:-}
@@ -87,8 +87,8 @@ services:
       - '${HYBRID_EASYTIER_BIND_HOST:-0.0.0.0}:${WEMUX_EASYTIER_PUBLIC_PORT:-11010}:11010/udp'
     volumes:
       - ../..:/app
-      - vibemux-full-server-node-modules:/app/node_modules
-      - vibemux-hybrid-server-runtime:/data/vibemux-runtime
+      - wemux-full-server-node-modules:/app/node_modules
+      - wemux-hybrid-server-runtime:/data/wemux-runtime
 
   web:
     build:
@@ -122,7 +122,7 @@ services:
       - '${HYBRID_BIND_HOST:-0.0.0.0}:${HYBRID_WEB_PORT:-15173}:${HYBRID_WEB_PORT:-15173}'
     volumes:
       - ../..:/app
-      - vibemux-full-web-node-modules:/app/node_modules
+      - wemux-full-web-node-modules:/app/node_modules
 
   worker:
     build:
@@ -172,13 +172,13 @@ services:
       - '${HYBRID_BIND_HOST:-127.0.0.1}:${WEMUX_WORKER_PORT:-48121}:${WEMUX_WORKER_PORT:-48121}'
     volumes:
       - ../..:/app
-      - vibemux-full-worker-node-modules:/app/node_modules
-      - vibemux-full-worker-home:/data/vibemux-worker
+      - wemux-full-worker-node-modules:/app/node_modules
+      - wemux-full-worker-home:/data/wemux-worker
 
 volumes:
-  vibemux-hybrid-postgres-data:
-  vibemux-hybrid-server-runtime:
-  vibemux-full-server-node-modules:
-  vibemux-full-web-node-modules:
-  vibemux-full-worker-node-modules:
-  vibemux-full-worker-home:
+  wemux-hybrid-postgres-data:
+  wemux-hybrid-server-runtime:
+  wemux-full-server-node-modules:
+  wemux-full-web-node-modules:
+  wemux-full-worker-node-modules:
+  wemux-full-worker-home:

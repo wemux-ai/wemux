@@ -170,11 +170,11 @@ export const authFetch = async (input: string, init?: RequestInit): Promise<Resp
     const sentToken = headers.Authorization
     if (path !== '/login' && sentToken) {
       // BUG-05：部分功能接口（依赖 better-auth 会话，如 /api/auth/account/accounts）
-      // 对 dev login 用户也会返回 401，但 vibemux token 仍然有效。此时不应把整个会话登出——
-      // 先校验 vibemux token 是否仍有效，只有 token 真的失效才强制登出。
+      // 对 dev login 用户也会返回 401，但 wemux token 仍然有效。此时不应把整个会话登出——
+      // 先校验 wemux token 是否仍有效，只有 token 真的失效才强制登出。
       const storedToken = localStorage.getItem('auth_token')
       const tokenStillValid = storedToken
-        ? await vibemuxTokenStillValid(storedToken)
+        ? await wemuxTokenStillValid(storedToken)
         : false
       if (!tokenStillValid) {
         markAuthForcedLogout()
@@ -189,8 +189,8 @@ export const authFetch = async (input: string, init?: RequestInit): Promise<Resp
   return response
 }
 
-/** 校验 vibemux token 是否仍有效（/api/auth/me）。401 可能是功能级（better-auth 会话缺失），token 有效则不应登出。 */
-export const vibemuxTokenStillValid = async (token: string): Promise<boolean> => {
+/** 校验 wemux token 是否仍有效（/api/auth/me）。401 可能是功能级（better-auth 会话缺失），token 有效则不应登出。 */
+export const wemuxTokenStillValid = async (token: string): Promise<boolean> => {
   try {
     const me = await fetch(resolveApiUrl('/api/auth/me'), {
       headers: { Authorization: `Bearer ${token}` },

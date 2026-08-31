@@ -2,6 +2,7 @@ import './lib/env-bridge.mjs'
 import { createHash } from 'node:crypto'
 import path from 'node:path'
 import { spawnSync } from 'node:child_process'
+import { getEnv } from '@shared/env'
 
 const rootDir = process.cwd()
 const args = process.argv.slice(2)
@@ -15,12 +16,12 @@ const readArg = (name, fallback = '') => {
   return args[index + 1] || fallback
 }
 
-const defaultServerUrl = process.env.VIBEMUX_CLOUD_URL?.trim() || 'http://host.docker.internal:18989'
+const defaultServerUrl = getEnv('WEMUX_CLOUD_URL')?.trim() || 'http://host.docker.internal:18989'
 const defaultWorkerPort = '48111'
 const npmRegistry = process.env.NPM_REGISTRY?.trim() || ''
 const serverUrl = readArg('--server-url', defaultServerUrl)
-const pairingCode = readArg('--pairing-code', process.env.VIBEMUX_PAIRING_CODE?.trim() || '')
-const workerName = readArg('--name', process.env.VIBEMUX_WORKER_NAME?.trim() || '')
+const pairingCode = readArg('--pairing-code', getEnv('WEMUX_PAIRING_CODE')?.trim() || '')
+const workerName = readArg('--name', getEnv('WEMUX_WORKER_NAME')?.trim() || '')
 const containerName = readArg('--container-name', '')
 const hasFlag = (name) => args.includes(name)
 
@@ -33,12 +34,12 @@ const normalizePort = (value) => {
   return String(port)
 }
 
-const workerPort = normalizePort(readArg('--worker-port', process.env.VIBEMUX_WORKER_PORT?.trim() || defaultWorkerPort))
+const workerPort = normalizePort(readArg('--worker-port', getEnv('WEMUX_WORKER_PORT')?.trim() || defaultWorkerPort))
 const workspaceKey = createHash('sha1').update(rootDir).digest('hex').slice(0, 10)
-const imageTag = `vibemux-worker-dev-deps-${workspaceKey}:local`
-const nodeModulesVolume = `vibemux-worker-dev-node-modules-${workspaceKey}`
-const pnpmStoreVolume = `vibemux-worker-dev-pnpm-store-${workspaceKey}`
-const workerHomeVolume = `vibemux-worker-dev-home-${workspaceKey}-${workerPort}`
+const imageTag = `wemux-worker-dev-deps-${workspaceKey}:local`
+const nodeModulesVolume = `wemux-worker-dev-node-modules-${workspaceKey}`
+const pnpmStoreVolume = `wemux-worker-dev-pnpm-store-${workspaceKey}`
+const workerHomeVolume = `wemux-worker-dev-home-${workspaceKey}-${workerPort}`
 
 const run = (command, commandArgs, options = {}) => {
   const result = spawnSync(command, commandArgs, {
@@ -125,9 +126,9 @@ const main = async () => {
   const startWorkerCommand = pairingCode
     ? [
       'exec pnpm exec tsx watch apps/worker/src/index.ts connect',
-      '--pairing-code "$VIBEMUX_PAIRING_CODE"',
-      '--server-url "$VIBEMUX_CLOUD_URL"',
-      workerName ? '--name "$VIBEMUX_WORKER_NAME"' : '',
+      '--pairing-code "$WEMUX_PAIRING_CODE"',
+      '--server-url "$WEMUX_CLOUD_URL"',
+      workerName ? '--name "$WEMUX_WORKER_NAME"' : '',
     ].filter(Boolean).join(' ')
     : 'exec pnpm exec tsx watch apps/worker/src/index.ts daemon'
 
@@ -143,20 +144,20 @@ const main = async () => {
     '--cap-add', 'NET_ADMIN',
     '--device', '/dev/net/tun',
     '-e', 'NODE_ENV=development',
-    '-e', `VIBEMUX_CLOUD_URL=${serverUrl}`,
+    '-e', `WEMUX_CLOUD_URL=${serverUrl}`,
     '-e', 'DOTENV_CONFIG_PATH=.env.development.local',
-    '-e', 'VIBEMUX_WORKER_HOST=0.0.0.0',
-    '-e', `VIBEMUX_WORKER_PORT=${workerPort}`,
-    '-e', 'VIBEMUX_WORKER_HOME=/data/vibemux-worker',
-    '-e', 'VIBEMUX_WORKER_AUTO_INSTALL=true',
-    '-e', 'VIBEMUX_WORKER_AUTO_UPDATE=1',
-    '-e', 'VIBEMUX_WORKER_RESTART_STRATEGY=docker',
-    '-e', `VIBEMUX_EASYTIER_VERSION=${process.env.VIBEMUX_EASYTIER_VERSION?.trim() || 'v2.6.4'}`,
-    '-e', `VIBEMUX_EASYTIER_DOWNLOAD_BASE_URL=${process.env.VIBEMUX_EASYTIER_DOWNLOAD_BASE_URL?.trim() || 'https://github.com/EasyTier/EasyTier/releases/download'}`,
+    '-e', 'WEMUX_WORKER_HOST=0.0.0.0',
+    '-e', `WEMUX_WORKER_PORT=${workerPort}`,
+    '-e', 'WEMUX_WORKER_HOME=/data/wemux-worker',
+    '-e', 'WEMUX_WORKER_AUTO_INSTALL=true',
+    '-e', 'WEMUX_WORKER_AUTO_UPDATE=1',
+    '-e', 'WEMUX_WORKER_RESTART_STRATEGY=docker',
+    '-e', `WEMUX_EASYTIER_VERSION=${getEnv('WEMUX_EASYTIER_VERSION')?.trim() || 'v2.6.4'}`,
+    '-e', `WEMUX_EASYTIER_DOWNLOAD_BASE_URL=${getEnv('WEMUX_EASYTIER_DOWNLOAD_BASE_URL')?.trim() || 'https://github.com/EasyTier/EasyTier/releases/download'}`,
     '-v', `${rootDir}:/app`,
     '-v', `${nodeModulesVolume}:/app/node_modules`,
     '-v', `${pnpmStoreVolume}:/pnpm/store`,
-    '-v', `${workerHomeVolume}:/data/vibemux-worker`,
+    '-v', `${workerHomeVolume}:/data/wemux-worker`,
     '-w', '/app',
     imageTag,
     'bash',
@@ -169,15 +170,15 @@ const main = async () => {
   }
 
   for (const envName of [
-    'VIBEMUX_MESH_ENABLED',
-    'VIBEMUX_EASYTIER_NETWORK_NAME',
-    'VIBEMUX_EASYTIER_NETWORK_PREFIX',
-    'VIBEMUX_EASYTIER_NETWORK_SECRET',
-    'VIBEMUX_EASYTIER_PEERS',
-    'VIBEMUX_EASYTIER_IPV4_PREFIX',
-    'VIBEMUX_EASYTIER_PREVIEW_PROXY_PORT',
-    'VIBEMUX_EASYTIER_TERMINAL_PROXY_PORT',
-    'VIBEMUX_EASYTIER_AUTO_DOWNLOAD',
+    'WEMUX_MESH_ENABLED',
+    'WEMUX_EASYTIER_NETWORK_NAME',
+    'WEMUX_EASYTIER_NETWORK_PREFIX',
+    'WEMUX_EASYTIER_NETWORK_SECRET',
+    'WEMUX_EASYTIER_PEERS',
+    'WEMUX_EASYTIER_IPV4_PREFIX',
+    'WEMUX_EASYTIER_PREVIEW_PROXY_PORT',
+    'WEMUX_EASYTIER_TERMINAL_PROXY_PORT',
+    'WEMUX_EASYTIER_AUTO_DOWNLOAD',
   ]) {
     const value = process.env[envName]?.trim()
     if (value) {
@@ -186,11 +187,11 @@ const main = async () => {
   }
 
   if (pairingCode) {
-    dockerArgs.splice(dockerArgs.indexOf('-v'), 0, '-e', `VIBEMUX_PAIRING_CODE=${pairingCode}`)
+    dockerArgs.splice(dockerArgs.indexOf('-v'), 0, '-e', `WEMUX_PAIRING_CODE=${pairingCode}`)
   }
 
   if (workerName) {
-    dockerArgs.splice(dockerArgs.indexOf('-v'), 0, '-e', `VIBEMUX_WORKER_NAME=${workerName}`)
+    dockerArgs.splice(dockerArgs.indexOf('-v'), 0, '-e', `WEMUX_WORKER_NAME=${workerName}`)
   }
 
   run('docker', dockerArgs, {

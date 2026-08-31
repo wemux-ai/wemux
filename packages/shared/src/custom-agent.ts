@@ -533,8 +533,8 @@ const customAgentTemplatePackageSchema = z.object({
   version: z.literal(1),
   exportedAt: z.string().trim().min(1),
   source: z.object({
-    app: z.string().trim().min(1).default('vibemux'),
-  }).default({ app: 'vibemux' }),
+    app: z.string().trim().min(1).default('wemux'),
+  }).default({ app: 'wemux' }),
   template: z.object({
     name: z.string().trim().max(80).default('Agent Template'),
     summary: z.string().trim().max(240).default(''),
@@ -670,7 +670,7 @@ export const createCustomAgentTemplatePackage = (
     version: 1,
     exportedAt: options?.exportedAt?.trim() || new Date().toISOString(),
     source: {
-      app: options?.sourceApp?.trim() || 'vibemux',
+      app: options?.sourceApp?.trim() || 'wemux',
     },
     template: {
       name: templateName,

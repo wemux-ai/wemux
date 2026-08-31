@@ -48,7 +48,7 @@ const isManagedCloudExecutorRecord = (executor: Pick<ExecutorRecord, 'executorSo
 )
 
 const isDockerWorkerRoot = (workspaceRoot?: string) => (
-  workspaceRoot?.trim().replace(/\/+$/, '') === '/data/vibemux-worker'
+  workspaceRoot?.trim().replace(/\/+$/, '') === '/data/wemux-worker'
 )
 
 const getExecutorRunMode = (executor: Pick<ExecutorRecord, 'labels'> & { workspaceRoot?: string }): WorkerRunMode => {

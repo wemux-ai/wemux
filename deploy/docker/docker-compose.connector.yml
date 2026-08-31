@@ -12,7 +12,7 @@
 #   - OOMOL_CONNECT_RUNTIME_TOKEN：保护 /v1/actions 与 /mcp（Wemux worker 物化 MCP 时带它）
 #   - 若部署机处于 fake-ip / corporate VPN 网络，按需加 OOMOL_CONNECT_EGRESS_TRUSTED_HOSTS
 
-name: vibemux-connector
+name: wemux-connector
 
 services:
   connector:

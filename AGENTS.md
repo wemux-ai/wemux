@@ -73,9 +73,9 @@
 
 ### 三个页面概念必须分清
 
-- `http://app.vibemux.localtest.me:15173/chat` 是 **Agent Chat / 主聊天页**
-- `http://app.vibemux.localtest.me:15173/workspace?...` 是 **单个工作区详情页**
-- `http://app.vibemux.localtest.me:15173/workspaces?...` 是 **工作区列表 / 工作区会话入口页**
+- `http://app.wemux.localtest.me:15173/chat` 是 **Agent Chat / 主聊天页**
+- `http://app.wemux.localtest.me:15173/workspace?...` 是 **单个工作区详情页**
+- `http://app.wemux.localtest.me:15173/workspaces?...` 是 **工作区列表 / 工作区会话入口页**
 
 ### 默认语义
 
@@ -136,7 +136,7 @@
 worker 本地目录要按“节点级、用户私有、workspace 共享”分层，长期目标结构见 `docs/WORKER-LOCAL-STORAGE.md`：
 
 ```text
-~/.vibemux-dev/
+~/.wemux-dev/
 ├── node/
 │   ├── config.json
 │   ├── machine-id
@@ -218,7 +218,7 @@ pnpm dev:hybrid:down
 - 常规前端开发：`http://localhost:3000` 或 Vite 当前输出地址
 - 本地 server：`http://127.0.0.1:8989`
 - worker console：`http://127.0.0.1:48121`
-- hybrid web：`http://app.vibemux.localtest.me:15173`
+- hybrid web：`http://app.wemux.localtest.me:15173`
 - hybrid server：`http://127.0.0.1:18989`
 
 ## 导入与依赖规则

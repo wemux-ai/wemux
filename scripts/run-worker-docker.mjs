@@ -2,6 +2,7 @@ import './lib/env-bridge.mjs'
 import { existsSync } from 'node:fs'
 import path from 'node:path'
 import { spawnSync } from 'node:child_process'
+import { getEnv } from '@shared/env'
 
 const rootDir = process.cwd()
 const args = process.argv.slice(2)
@@ -28,11 +29,11 @@ const readChannel = () => {
 
 const channel = readChannel()
 const image = readArg('--image', 'node:22-bookworm-slim')
-const serverUrl = readArg('--server-url', process.env.VIBEMUX_CLOUD_URL?.trim() || 'http://host.docker.internal:18989')
+const serverUrl = readArg('--server-url', getEnv('WEMUX_CLOUD_URL')?.trim() || 'http://host.docker.internal:18989')
 const defaultWorkerPort = '48111'
 const outputDir = path.resolve(readArg('--output-dir', path.join(rootDir, '.artifacts', 'worker-npm-docker')))
 const skipBuild = hasFlag('--skip-build')
-const packageName = channel === 'preview' ? 'vibemux-worker-preview' : 'vibemux-worker'
+const packageName = channel === 'preview' ? 'wemux-worker-preview' : 'wemux-worker'
 const packageRoot = path.join(outputDir, packageName)
 
 const normalizePort = (value) => {
@@ -44,8 +45,8 @@ const normalizePort = (value) => {
   return String(port)
 }
 
-const workerPort = normalizePort(readArg('--worker-port', process.env.VIBEMUX_WORKER_PORT?.trim() || defaultWorkerPort))
-const workerHomeVolume = `vibemux-worker-npm-home-${channel}-${workerPort}`
+const workerPort = normalizePort(readArg('--worker-port', getEnv('WEMUX_WORKER_PORT')?.trim() || defaultWorkerPort))
+const workerHomeVolume = `wemux-worker-npm-home-${channel}-${workerPort}`
 
 const run = (command, commandArgs, options = {}) => {
   const result = spawnSync(command, commandArgs, {
@@ -115,8 +116,8 @@ const main = async () => {
 
   const containerCommand = [
     'set -euo pipefail',
-    'mkdir -p /data/vibemux-worker/install',
-    'cd /data/vibemux-worker/install',
+    'mkdir -p /data/wemux-worker/install',
+    'cd /data/wemux-worker/install',
     'if [ ! -f package.json ]; then npm init -y >/dev/null 2>&1; fi',
     `npm install /work/${path.basename(tarballPath)} >/dev/null`,
     `exec ./node_modules/.bin/${packageName} daemon`,
@@ -128,19 +129,19 @@ const main = async () => {
     '--device', '/dev/net/tun',
     '-p', `${workerPort}:${workerPort}`,
     '-e', `NODE_ENV=production`,
-    '-e', `VIBEMUX_CLOUD_URL=${serverUrl}`,
-    '-e', `HOME=/data/vibemux-worker`,
-    '-e', `VIBEMUX_WORKER_HOME=/data/vibemux-worker`,
-    '-e', `VIBEMUX_WORKER_INSTALL_PREFIX=/data/vibemux-worker/install`,
-    '-e', `VIBEMUX_WORKER_HOST=0.0.0.0`,
-    '-e', `VIBEMUX_WORKER_PORT=${workerPort}`,
-    '-e', 'VIBEMUX_WORKER_AUTO_INSTALL=true',
-    '-e', 'VIBEMUX_WORKER_AUTO_UPDATE=1',
-    '-e', 'VIBEMUX_WORKER_RESTART_STRATEGY=docker',
-    '-e', `VIBEMUX_EASYTIER_VERSION=${process.env.VIBEMUX_EASYTIER_VERSION?.trim() || 'v2.6.4'}`,
-    '-e', `VIBEMUX_EASYTIER_DOWNLOAD_BASE_URL=${process.env.VIBEMUX_EASYTIER_DOWNLOAD_BASE_URL?.trim() || 'https://github.com/EasyTier/EasyTier/releases/download'}`,
+    '-e', `WEMUX_CLOUD_URL=${serverUrl}`,
+    '-e', `HOME=/data/wemux-worker`,
+    '-e', `WEMUX_WORKER_HOME=/data/wemux-worker`,
+    '-e', `WEMUX_WORKER_INSTALL_PREFIX=/data/wemux-worker/install`,
+    '-e', `WEMUX_WORKER_HOST=0.0.0.0`,
+    '-e', `WEMUX_WORKER_PORT=${workerPort}`,
+    '-e', 'WEMUX_WORKER_AUTO_INSTALL=true',
+    '-e', 'WEMUX_WORKER_AUTO_UPDATE=1',
+    '-e', 'WEMUX_WORKER_RESTART_STRATEGY=docker',
+    '-e', `WEMUX_EASYTIER_VERSION=${getEnv('WEMUX_EASYTIER_VERSION')?.trim() || 'v2.6.4'}`,
+    '-e', `WEMUX_EASYTIER_DOWNLOAD_BASE_URL=${getEnv('WEMUX_EASYTIER_DOWNLOAD_BASE_URL')?.trim() || 'https://github.com/EasyTier/EasyTier/releases/download'}`,
     '-v', `${packageRoot}:/work`,
-    '-v', `${workerHomeVolume}:/data/vibemux-worker`,
+    '-v', `${workerHomeVolume}:/data/wemux-worker`,
     image,
     'bash',
     '-lc',

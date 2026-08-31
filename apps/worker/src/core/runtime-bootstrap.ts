@@ -1,4 +1,5 @@
 // [INPUT]: 运行时目标（base/all/RuntimeId）
+import { getEnv } from '@shared/env'
 // [OUTPUT]: 就绪检测（prompt/auto/block）
 // [POS]: 运行时 bootstrap
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -774,7 +775,7 @@ export const resolveWorkerRuntimeBootstrapMode = (params?: {
 }): WorkerRuntimeBootstrapMode => {
   const interactiveTerminal = params?.interactiveTerminal ?? isInteractiveTerminal()
   const autoInstallSetting = normalizeAutoInstallSetting(
-    params?.autoInstallSetting ?? process.env.VIBEMUX_WORKER_AUTO_INSTALL,
+    params?.autoInstallSetting ?? getEnv('WEMUX_WORKER_AUTO_INSTALL'),
   )
 
   if (autoInstallSetting === true) {

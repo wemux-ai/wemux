@@ -162,7 +162,7 @@ export interface ProjectEnvironmentPort {
   type?: PreviewDomainBindingType
 }
 
-export type ProjectEnvironmentTemplateSource = 'manual' | 'vibemux-yml'
+export type ProjectEnvironmentTemplateSource = 'manual' | 'wemux-yml' | 'vibemux-yml' // 'vibemux-yml' 仅存量数据，新写入用 'wemux-yml'
 
 export interface ProjectEnvironmentTemplate extends ProjectEnvironmentTemplateFields {
   configPath?: string

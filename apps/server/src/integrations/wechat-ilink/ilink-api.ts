@@ -173,7 +173,7 @@ export type WeixinSendTypingResponse = {
 
 /** 每个请求携带的基础信息（channel_version / bot_agent，参照官方插件 base_info）。 */
 const buildBaseInfo = () => ({
-  channel_version: 'vibemux-0.1.0',
+  channel_version: 'wemux-0.1.0',
   bot_agent: 'Wemux/0.3.116 (wechat-ilink channel)',
 })
 

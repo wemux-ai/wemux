@@ -80,7 +80,7 @@ const customAgentTemplateOptions: CustomAgentTemplateOption[] = [
     delegateWorkingDirectoryMode: 'inherit',
     tags: ['review', 'acceptance', 'risk'],
     recommendedSkillQueries: ['security', 'test', 'review'],
-    recommendedMcpQueries: ['github', 'git', 'vibemux'],
+    recommendedMcpQueries: ['github', 'git', 'wemux'],
   },
   {
     id: 'doc-writer',

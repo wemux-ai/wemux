@@ -1670,7 +1670,7 @@ export function AppSidebar() {
                               }}
                               onDrop={(event) => {
                                 event.preventDefault()
-                                const droppedProjectId = event.dataTransfer.getData('application/x-vibemux-project') || draggedProjectItem?.projectId
+                                const droppedProjectId = event.dataTransfer.getData('application/x-wemux-project') || draggedProjectItem?.projectId
                                 if (!droppedProjectId) {
                                   handleProjectDragEnd()
                                   return
@@ -1700,7 +1700,7 @@ export function AppSidebar() {
                                   draggable={workspaceScopedProjects.length > 1}
                                   onDragStart={(event) => {
                                     event.dataTransfer.effectAllowed = 'move'
-                                    event.dataTransfer.setData('application/x-vibemux-project', project.id)
+                                    event.dataTransfer.setData('application/x-wemux-project', project.id)
                                     event.dataTransfer.setData('text/plain', project.id)
                                     requestAnimationFrame(() => {
                                       setDraggedProjectItem({
@@ -1803,7 +1803,7 @@ export function AppSidebar() {
                               }}
                               onDrop={(event) => {
                                 event.preventDefault()
-                                const droppedProjectId = event.dataTransfer.getData('application/x-vibemux-project') || draggedProjectItem?.projectId
+                                const droppedProjectId = event.dataTransfer.getData('application/x-wemux-project') || draggedProjectItem?.projectId
                                 if (!droppedProjectId) {
                                   handleProjectDragEnd()
                                   return
@@ -1833,7 +1833,7 @@ export function AppSidebar() {
                                   draggable={personalProjects.length > 1}
                                   onDragStart={(event) => {
                                     event.dataTransfer.effectAllowed = 'move'
-                                    event.dataTransfer.setData('application/x-vibemux-project', project.id)
+                                    event.dataTransfer.setData('application/x-wemux-project', project.id)
                                     event.dataTransfer.setData('text/plain', project.id)
                                     requestAnimationFrame(() => {
                                       setDraggedProjectItem({

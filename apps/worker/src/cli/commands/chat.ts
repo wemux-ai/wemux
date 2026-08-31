@@ -3,12 +3,12 @@
 // [POS]: 会话与外联渠道 CLI 命令（复用 server conversation.* / channel.* 工具）
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
 
-import type { VibemuxClient } from '../client'
+import type { WemuxClient } from '../client'
 import { output, getOutputFormat } from '../output'
 import { parseCliArgs } from '../../cli-flags'
 import { getCliName, throwCommandUsage, throwUnknownCommand } from '../help'
 
-export const runChatCommand = async (client: VibemuxClient, subcommand: string, args: string[]) => {
+export const runChatCommand = async (client: WemuxClient, subcommand: string, args: string[]) => {
   const { flags, positionals } = parseCliArgs(args)
   const format = getOutputFormat(flags)
   const cliName = getCliName()

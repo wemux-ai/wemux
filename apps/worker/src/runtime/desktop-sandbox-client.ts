@@ -128,13 +128,13 @@ const readEnvBoolean = (name: string, fallback = false) => {
 const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms))
 const getStatePath = () => path.join(getWorkerNodeDir(), 'runtime', 'desktop-sandbox.json')
 const getServerConfigPath = () => path.join(getWorkerNodeDir(), 'runtime', 'opensandbox-server.toml')
-const resolveOpenSandboxDomain = () => readEnv('VIBEMUX_OPENSANDBOX_DOMAIN') || readEnv('OPEN_SANDBOX_DOMAIN') || DEFAULT_OPENSANDBOX_DOMAIN
-const resolveOpenSandboxProtocol = () => readEnv('VIBEMUX_OPENSANDBOX_PROTOCOL') === 'https' ? 'https' : 'http'
-const resolveDesktopImage = () => readEnv('VIBEMUX_OPENSANDBOX_DESKTOP_IMAGE') || readEnv('SANDBOX_IMAGE') || DEFAULT_DESKTOP_IMAGE
-const resolveCliImage = () => readEnv('VIBEMUX_OPENSANDBOX_CLI_IMAGE') || readEnv('CLI_SANDBOX_IMAGE') || resolveDesktopImage()
-const resolveVncPassword = () => readEnv('VIBEMUX_OPENSANDBOX_VNC_PASSWORD') || readEnv('VNC_PASSWORD') || DEFAULT_VNC_PASSWORD
+const resolveOpenSandboxDomain = () => readEnv('WEMUX_OPENSANDBOX_DOMAIN') || readEnv('OPEN_SANDBOX_DOMAIN') || DEFAULT_OPENSANDBOX_DOMAIN
+const resolveOpenSandboxProtocol = () => readEnv('WEMUX_OPENSANDBOX_PROTOCOL') === 'https' ? 'https' : 'http'
+const resolveDesktopImage = () => readEnv('WEMUX_OPENSANDBOX_DESKTOP_IMAGE') || readEnv('SANDBOX_IMAGE') || DEFAULT_DESKTOP_IMAGE
+const resolveCliImage = () => readEnv('WEMUX_OPENSANDBOX_CLI_IMAGE') || readEnv('CLI_SANDBOX_IMAGE') || resolveDesktopImage()
+const resolveVncPassword = () => readEnv('WEMUX_OPENSANDBOX_VNC_PASSWORD') || readEnv('VNC_PASSWORD') || DEFAULT_VNC_PASSWORD
 const resolveConfiguredDesktopProfile = (): WorkspaceDesktopSandboxDisplayProfile => {
-  const value = readEnv('VIBEMUX_OPENSANDBOX_DESKTOP_PROFILE')
+  const value = readEnv('WEMUX_OPENSANDBOX_DESKTOP_PROFILE')
   return normalizeWorkspaceDesktopSandboxDisplayProfile(value as WorkspaceDesktopSandboxDisplayProfile | undefined)
 }
 const resolveDisplaySettings = (params: {
@@ -147,8 +147,8 @@ const resolveDisplaySettings = (params: {
   })
   return {
     ...settings,
-    noVncQuality: readEnvNumber('VIBEMUX_OPENSANDBOX_NOVNC_QUALITY', settings.noVncQuality),
-    noVncCompression: readEnvNumber('VIBEMUX_OPENSANDBOX_NOVNC_COMPRESSION', settings.noVncCompression),
+    noVncQuality: readEnvNumber('WEMUX_OPENSANDBOX_NOVNC_QUALITY', settings.noVncQuality),
+    noVncCompression: readEnvNumber('WEMUX_OPENSANDBOX_NOVNC_COMPRESSION', settings.noVncCompression),
   }
 }
 
@@ -157,10 +157,10 @@ const stripTrailingSlashes = (value: string) => value.replace(/\/+$/, '')
 const createConnectionConfig = () => new ConnectionConfig({
   domain: resolveOpenSandboxDomain(),
   protocol: resolveOpenSandboxProtocol(),
-  apiKey: readEnv('VIBEMUX_OPENSANDBOX_API_KEY') || readEnv('OPEN_SANDBOX_API_KEY'),
-  requestTimeoutSeconds: readEnvNumber('VIBEMUX_OPENSANDBOX_REQUEST_TIMEOUT_SECONDS', DEFAULT_REQUEST_TIMEOUT_SECONDS),
-  debug: readEnvBoolean('VIBEMUX_OPENSANDBOX_DEBUG'),
-  useServerProxy: readEnvBoolean('VIBEMUX_OPENSANDBOX_USE_SERVER_PROXY'),
+  apiKey: readEnv('WEMUX_OPENSANDBOX_API_KEY') || readEnv('OPEN_SANDBOX_API_KEY'),
+  requestTimeoutSeconds: readEnvNumber('WEMUX_OPENSANDBOX_REQUEST_TIMEOUT_SECONDS', DEFAULT_REQUEST_TIMEOUT_SECONDS),
+  debug: readEnvBoolean('WEMUX_OPENSANDBOX_DEBUG'),
+  useServerProxy: readEnvBoolean('WEMUX_OPENSANDBOX_USE_SERVER_PROXY'),
 })
 
 const getControlUrl = () => {
@@ -185,7 +185,7 @@ const isLoopbackHost = (host: string) => {
 }
 
 const shouldAutostartOpenSandboxServer = () => {
-  if (!readEnvBoolean('VIBEMUX_OPENSANDBOX_AUTOSTART', true)) {
+  if (!readEnvBoolean('WEMUX_OPENSANDBOX_AUTOSTART', true)) {
     return false
   }
 
@@ -194,7 +194,7 @@ const shouldAutostartOpenSandboxServer = () => {
 }
 
 const resolveAllowedHostPaths = () => {
-  const custom = readEnv('VIBEMUX_OPENSANDBOX_ALLOWED_HOST_PATHS')?.trim()
+  const custom = readEnv('WEMUX_OPENSANDBOX_ALLOWED_HOST_PATHS')?.trim()
   if (custom) {
     return custom.split(',').map((item) => item.trim()).filter(Boolean)
   }
@@ -287,7 +287,7 @@ const checkOpenSandboxApiBase = async (): Promise<OpenSandboxApiCheck> => {
         canAutostart: false,
         message: [
           `${controlUrl} 返回的是 HTML，不像 OpenSandbox Lifecycle API。`,
-          '请确认 OpenSandbox server 正在运行，并把 VIBEMUX_OPENSANDBOX_DOMAIN 指向它的 host:port。',
+          '请确认 OpenSandbox server 正在运行，并把 WEMUX_OPENSANDBOX_DOMAIN 指向它的 host:port。',
           '如果本机 8080 被其他服务占用，请换一个 OpenSandbox server 端口。',
         ].join(' '),
       }
@@ -551,7 +551,7 @@ const connectDesktopSandbox = async () => {
   const sandbox = await Sandbox.connect({
     sandboxId,
     connectionConfig: createConnectionConfig(),
-    readyTimeoutSeconds: readEnvNumber('VIBEMUX_OPENSANDBOX_READY_TIMEOUT_SECONDS', 60),
+    readyTimeoutSeconds: readEnvNumber('WEMUX_OPENSANDBOX_READY_TIMEOUT_SECONDS', 60),
   })
   desktopSandbox = sandbox
   desktopState.phase = 'ready'
@@ -668,14 +668,14 @@ const createDesktopSandbox = async (request?: Pick<WorkspaceDesktopSandboxReques
     createdSandbox = await Sandbox.create({
       image,
       connectionConfig: createConnectionConfig(),
-      timeoutSeconds: readEnvNumber('VIBEMUX_OPENSANDBOX_DESKTOP_TIMEOUT_SECONDS', DEFAULT_DESKTOP_TIMEOUT_SECONDS),
+      timeoutSeconds: readEnvNumber('WEMUX_OPENSANDBOX_DESKTOP_TIMEOUT_SECONDS', DEFAULT_DESKTOP_TIMEOUT_SECONDS),
       env: { VNC_PASSWORD: password },
       volumes,
       metadata: {
-        source: 'vibemux',
+        source: 'wemux',
         kind: 'desktop',
       },
-      readyTimeoutSeconds: readEnvNumber('VIBEMUX_OPENSANDBOX_READY_TIMEOUT_SECONDS', 60),
+      readyTimeoutSeconds: readEnvNumber('WEMUX_OPENSANDBOX_READY_TIMEOUT_SECONDS', 60),
     })
     desktopSandbox = createdSandbox
     desktopState.sandboxId = createdSandbox.id
@@ -821,12 +821,12 @@ const createCliSandbox = async () => {
     createdSandbox = await Sandbox.create({
       image,
       connectionConfig: createConnectionConfig(),
-      timeoutSeconds: readEnvNumber('VIBEMUX_OPENSANDBOX_CLI_TIMEOUT_SECONDS', DEFAULT_CLI_TIMEOUT_SECONDS),
+      timeoutSeconds: readEnvNumber('WEMUX_OPENSANDBOX_CLI_TIMEOUT_SECONDS', DEFAULT_CLI_TIMEOUT_SECONDS),
       metadata: {
-        source: 'vibemux',
+        source: 'wemux',
         kind: 'cli',
       },
-      readyTimeoutSeconds: readEnvNumber('VIBEMUX_OPENSANDBOX_READY_TIMEOUT_SECONDS', 60),
+      readyTimeoutSeconds: readEnvNumber('WEMUX_OPENSANDBOX_READY_TIMEOUT_SECONDS', 60),
     })
     cliSandbox = createdSandbox
     cliState.phase = 'ready'
@@ -902,7 +902,7 @@ const connectCliSandbox = async () => {
   const sandbox = await Sandbox.connect({
     sandboxId,
     connectionConfig: createConnectionConfig(),
-    readyTimeoutSeconds: readEnvNumber('VIBEMUX_OPENSANDBOX_READY_TIMEOUT_SECONDS', 60),
+    readyTimeoutSeconds: readEnvNumber('WEMUX_OPENSANDBOX_READY_TIMEOUT_SECONDS', 60),
   })
   cliSandbox = sandbox
   cliState.phase = 'ready'
@@ -988,7 +988,7 @@ export const openSandboxDesktopProvider = {
           command,
           {
             background: request.background === true,
-            timeoutSeconds: readEnvNumber('VIBEMUX_OPENSANDBOX_COMMAND_TIMEOUT_SECONDS', DEFAULT_COMMAND_TIMEOUT_SECONDS),
+            timeoutSeconds: readEnvNumber('WEMUX_OPENSANDBOX_COMMAND_TIMEOUT_SECONDS', DEFAULT_COMMAND_TIMEOUT_SECONDS),
           },
         )
         desktopState.lastOutput = output
@@ -1036,7 +1036,7 @@ export const openSandboxDesktopProvider = {
         const output = await runCommand(
           await ensureCliSandbox(),
           command,
-          { timeoutSeconds: readEnvNumber('VIBEMUX_OPENSANDBOX_COMMAND_TIMEOUT_SECONDS', DEFAULT_COMMAND_TIMEOUT_SECONDS) },
+          { timeoutSeconds: readEnvNumber('WEMUX_OPENSANDBOX_COMMAND_TIMEOUT_SECONDS', DEFAULT_COMMAND_TIMEOUT_SECONDS) },
         )
         cliState.lastOutput = output
         writePersistedState()

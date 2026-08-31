@@ -1,4 +1,5 @@
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+import { getEnv } from '@shared/env'
 // [INPUT]: JSON-RPC stdin, MCP environment overrides, persisted worker pairing, and packaged defaults.
 // [OUTPUT]: Authenticated JSON-RPC forwarding to the matching control-plane MCP endpoint.
 // [POS]: Worker MCP stdio bridge; preserves per-agent context without crossing preview/production endpoints.
@@ -34,10 +35,10 @@ export const parseSsePayload = (text: string): string[] => {
 
 const resolveBridgeConfig = () => {
   const config = loadWorkerConfig()
-  const cloudUrl = process.env.VIBEMUX_MCP_CLOUD_URL?.trim() || config.cloudUrl || getWorkerDefaultCloudUrl()
-  const executorToken = process.env.VIBEMUX_MCP_EXECUTOR_TOKEN?.trim() || config.executorToken || ''
-  const actingUserId = process.env.VIBEMUX_MCP_ACTING_USER?.trim()
-  const runtimeAgentId = process.env.VIBEMUX_MCP_RUNTIME_AGENT?.trim()
+  const cloudUrl = getEnv('WEMUX_MCP_CLOUD_URL')?.trim() || config.cloudUrl || getWorkerDefaultCloudUrl()
+  const executorToken = getEnv('WEMUX_MCP_EXECUTOR_TOKEN')?.trim() || config.executorToken || ''
+  const actingUserId = getEnv('WEMUX_MCP_ACTING_USER')?.trim()
+  const runtimeAgentId = getEnv('WEMUX_MCP_RUNTIME_AGENT')?.trim()
 
   return {
     url: `${trimTrailingSlash(cloudUrl)}/mcp/executor`,
@@ -101,8 +102,8 @@ const forwardMessage = async (rawLine: string) => {
         'Content-Type': 'application/json',
         Accept: 'application/json, text/event-stream',
         'x-executor-token': config.executorToken,
-        ...(config.actingUserId ? { 'x-vibemux-acting-user': config.actingUserId } : {}),
-        ...(config.runtimeAgentId ? { 'x-vibemux-runtime-agent': config.runtimeAgentId } : {}),
+        ...(config.actingUserId ? { 'x-wemux-acting-user': config.actingUserId } : {}),
+        ...(config.runtimeAgentId ? { 'x-wemux-runtime-agent': config.runtimeAgentId } : {}),
       },
       body: JSON.stringify(payload),
     })

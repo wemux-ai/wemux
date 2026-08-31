@@ -208,7 +208,7 @@ function RuntimeEnvironmentReferenceTips({
               <span>{tr(language, '节点网络信息（仅引用时注入）', 'Node network info (inject only when referenced)')}</span>
             </li>
             <li className="flex flex-wrap items-baseline gap-x-1.5 gap-y-0.5">
-              <CodeChip>{'${{ vibemux.preview.publicUrl }}'}</CodeChip>
+              <CodeChip>{'${{ wemux.preview.publicUrl }}'}</CodeChip>
               <span>{tr(language, '平台变量别名，便于文档化', 'Platform alias for documentation')}</span>
             </li>
           </ul>

@@ -462,7 +462,7 @@ const normalizeRequestHeaders = (request: Request, previewSessionId: string) => 
   const requestUrl = new URL(request.url)
   headers.push(['x-forwarded-host', requestUrl.host])
   headers.push(['x-forwarded-proto', requestUrl.protocol.replace(':', '')])
-  headers.push(['x-vibemux-preview-id', previewSessionId])
+  headers.push(['x-wemux-preview-id', previewSessionId])
   return headers
 }
 

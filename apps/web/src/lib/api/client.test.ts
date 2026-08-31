@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
-import { authFetch, extractErrorMessage, resolveMediaUrl, vibemuxTokenStillValid } from './client'
+import { authFetch, extractErrorMessage, resolveMediaUrl, wemuxTokenStillValid } from './client'
 
 const createStorageMock = () => {
   const store = new Map<string, string>()
@@ -104,7 +104,7 @@ test('BUG-05：vibemux token 有效时 401 不被判为登出（/api/auth/me 200
     return new Response(JSON.stringify({ user: { id: 'user-1' } }), { status: 200, headers: { 'content-type': 'application/json' } })
   }
   try {
-    const stillValid = await vibemuxTokenStillValid('vibemux-token')
+    const stillValid = await wemuxTokenStillValid('vibemux-token')
     assert.equal(stillValid, true)
   } finally {
     globalThis.fetch = originalFetch
@@ -115,7 +115,7 @@ test('BUG-05：vibemux token 失效时（/api/auth/me 401）判为登出', async
   const originalFetch = globalThis.fetch
   globalThis.fetch = async () => new Response(JSON.stringify({}), { status: 401, headers: { 'content-type': 'application/json' } })
   try {
-    const stillValid = await vibemuxTokenStillValid('expired-token')
+    const stillValid = await wemuxTokenStillValid('expired-token')
     assert.equal(stillValid, false)
   } finally {
     globalThis.fetch = originalFetch
@@ -126,7 +126,7 @@ test('BUG-05：网络不可达时保守按登出处理（不引入新风险）',
   const originalFetch = globalThis.fetch
   globalThis.fetch = async () => { throw new Error('network down') }
   try {
-    const stillValid = await vibemuxTokenStillValid('vibemux-token')
+    const stillValid = await wemuxTokenStillValid('vibemux-token')
     assert.equal(stillValid, false)
   } finally {
     globalThis.fetch = originalFetch

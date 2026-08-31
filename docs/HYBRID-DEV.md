@@ -33,18 +33,18 @@ pnpm dev:worker:hybrid
 
 默认地址：
 
-- Web：`http://app.vibemux.localtest.me:15173`
-- Server：`http://app.vibemux.localtest.me:18989`
+- Web：`http://app.wemux.localtest.me:15173`
+- Server：`http://app.wemux.localtest.me:18989`
 - Server（宿主机直连）：`http://127.0.0.1:18989`
 - Worker Console：`http://127.0.0.1:48121`
 
-hybrid dev 现在默认把 Web / Server 浏览器入口都收口到 `app.vibemux.localtest.me`。这样工作区右侧本地 Preview iframe 会和 `*.vibemux.localtest.me` 处在同一站点家族下，本地授权 cookie 与网络模型都尽量接近生产。
+hybrid dev 现在默认把 Web / Server 浏览器入口都收口到 `app.wemux.localtest.me`。这样工作区右侧本地 Preview iframe 会和 `*.wemux.localtest.me` 处在同一站点家族下，本地授权 cookie 与网络模型都尽量接近生产。
 
-如果你误从 `127.0.0.1:15173` 或 `localhost:15173` 打开页面，登录页会自动把你收回到 `app.vibemux.localtest.me:15173`。
+如果你误从 `127.0.0.1:15173` 或 `localhost:15173` 打开页面，登录页会自动把你收回到 `app.wemux.localtest.me:15173`。
 
 如果你要在本地直接跳过 Google OAuth，使用内建测试账号，见 [DEV-TEST-AUTH.md](./DEV-TEST-AUTH.md)。
 
-`pnpm dev:hybrid` / `pnpm dev:hybrid:up` 会默认把 `web`、`server` 绑定到 `0.0.0.0`。浏览器公开入口默认收口到 `app.vibemux.localtest.me`，避免 workspace preview 落到跨站点 iframe，也避免浏览器从非 loopback 源站去直连 `127.0.0.1` 时触发 Private Network Access 拦截。如果你明确需要给局域网其他设备访问，再在 `.env` 里固定：
+`pnpm dev:hybrid` / `pnpm dev:hybrid:up` 会默认把 `web`、`server` 绑定到 `0.0.0.0`。浏览器公开入口默认收口到 `app.wemux.localtest.me`，避免 workspace preview 落到跨站点 iframe，也避免浏览器从非 loopback 源站去直连 `127.0.0.1` 时触发 Private Network Access 拦截。如果你明确需要给局域网其他设备访问，再在 `.env` 里固定：
 
 ```bash
 HYBRID_BIND_HOST=0.0.0.0
@@ -64,7 +64,7 @@ workspace preview 现在有三条 transport，按优先级依次尝试：
    只有当 preview `sourceAppUrl` 是 loopback（`localhost` / `127.0.0.1` / `::1`），并且当前 workspace `executorId` 与本机 worker status 读到的 `runtime.executorId` 一致时，iframe 才会优先直连本机 `127.0.0.1:<port>`。浏览器按页面环境选择本机 worker 端口：development / hybrid 优先 `48121`，preview `vibemux.xyz` 优先 `48123`，production `vibemux.com` 优先 `48100`；优先端口不可达时再尝试其他环境端口。
 
 2. `Gateway`
-   正常 hosted preview 走平台 `public-proxy` 路径，由 `*.vibemux.xyz` 入口完成鉴权和反代。
+   正常 hosted preview 走平台 `public-proxy` 路径，由 `*.wemux.xyz` 入口完成鉴权和反代。
 
 3. `Tunnel`
    当 preview 不是 `public-proxy`，或者本地直连条件不满足时，保留原有 tunnel 兼容路径。

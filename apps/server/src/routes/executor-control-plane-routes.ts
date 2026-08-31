@@ -329,7 +329,7 @@ export const registerExecutorControlPlaneRoutes = (app: Hono, requireAuth: Middl
       machineId,
       machineName,
       name: '开发自动连接测试的 Worker',
-      workspaceRoot: '/data/vibemux-worker',
+      workspaceRoot: '/data/wemux-worker',
       maxConcurrency: 5,
       capabilities: ['code-execution', 'git-operations'],
       labels: ['runtime:docker', 'env:development'],

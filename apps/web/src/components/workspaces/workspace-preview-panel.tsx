@@ -371,13 +371,13 @@ const isPreviewIpHostname = (hostname: string) => {
 
 const isHostedPreviewHostname = (hostname: string) => {
   const normalized = normalizePreviewHostname(hostname)
-  // 兼容窗口：新旧 preview 域名都按托管域名处理，后续可移除 vibemux.* 分支
+  // 兼容窗口：新旧 preview 域名都按托管域名处理，后续可移除 wemux.* 分支
   return normalized === 'vibemux.xyz'
-    || normalized.endsWith('.vibemux.xyz')
+    || normalized.endsWith('.wemux.xyz')
     || normalized === 'wemux.xyz'
     || normalized.endsWith('.wemux.xyz')
     || normalized === 'vibemux.localtest.me'
-    || normalized.endsWith('.vibemux.localtest.me')
+    || normalized.endsWith('.wemux.localtest.me')
     || normalized === 'wemux.localtest.me'
     || normalized.endsWith('.wemux.localtest.me')
 }

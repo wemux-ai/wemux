@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto'
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { getEnv } from '@shared/env'
 
 import { drizzle } from 'drizzle-orm/node-postgres'
 import { migrate } from 'drizzle-orm/node-postgres/migrator'
@@ -13,7 +14,7 @@ const resolveConnectionString = () => process.env.DATABASE_URL?.trim() || proces
 const hasDrizzleJournal = (dir: string) => fs.existsSync(path.join(dir, 'meta', '_journal.json'))
 
 const resolveMigrationsFolder = () => {
-  const fromEnv = process.env.VIBEMUX_DRIZZLE_MIGRATIONS_FOLDER?.trim()
+  const fromEnv = getEnv('WEMUX_DRIZZLE_MIGRATIONS_FOLDER')?.trim()
   if (fromEnv) {
     return path.resolve(fromEnv)
   }
@@ -121,9 +122,9 @@ let activeConnectionString = resolveConnectionString()
 
 export const getActiveConnectionString = () => activeConnectionString
 
-/** 连接池上限：默认 20（pg 默认 10 在高并发 API 下会排队），可用 VIBEMUX_PG_POOL_MAX 覆盖。 */
+/** 连接池上限：默认 20（pg 默认 10 在高并发 API 下会排队），可用 WEMUX_PG_POOL_MAX 覆盖。 */
 const readPoolMax = () => {
-  const raw = process.env.VIBEMUX_PG_POOL_MAX?.trim()
+  const raw = getEnv('WEMUX_PG_POOL_MAX')?.trim()
   const parsed = raw ? Number.parseInt(raw, 10) : Number.NaN
   return Number.isFinite(parsed) && parsed > 0 ? parsed : 20
 }
@@ -482,7 +483,7 @@ const applyDrizzleMigrations = async (currentPool: Pool) => {
  * 迁移后 schema 漂移自检（read-only 诊断，最后一道防线）。
  * migrate() 结束后，用最新 snapshot 比对 live DB 的表/列，缺了什么立即报出来——
  * 目标是把「迁移记录在但 DDL 没真正落库」这类 0065 级事故从「运行时才炸」提前到「启动即发现」。
- * 默认只打 ERROR 不阻断（避免对未知历史库的部署硬失败）；设 VIBEMUX_DB_STRICT_SCHEMA_CHECK=1 时改为抛错拒启。
+ * 默认只打 ERROR 不阻断（避免对未知历史库的部署硬失败）；设 WEMUX_DB_STRICT_SCHEMA_CHECK=1 时改为抛错拒启。
  */
 const verifyPostMigrationSchema = async (currentPool: Pool, migrationsFolder: string) => {
   const migrations = readMigrationJournal(migrationsFolder)
@@ -517,7 +518,7 @@ const verifyPostMigrationSchema = async (currentPool: Pool, migrationsFolder: st
     + 'This usually means a migration was recorded but not applied, or the DB was edited out-of-band. '
     + 'Fix the schema before serving traffic (see the database migration documentation).'
 
-  if (process.env.VIBEMUX_DB_STRICT_SCHEMA_CHECK === '1') {
+  if (getEnv('WEMUX_DB_STRICT_SCHEMA_CHECK') === '1') {
     throw new Error(message)
   }
   console.error(message)

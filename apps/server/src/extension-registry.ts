@@ -25,7 +25,7 @@ export const enterpriseStoreInitializers: EnterpriseStoreInitializer[] = []
 /** 商业 dev seed（isDevLoginEnabled 时执行；公开版注册表为空则跳过）。 */
 export const enterpriseDevSeedInitializers: Array<() => void | Promise<void>> = []
 
-/** 商业 MCP 工具注册（registerVibemuxMcpTools 末尾依次执行；公开版为空）。 */
+/** 商业 MCP 工具注册（registerWemuxMcpTools 末尾依次执行；公开版为空）。 */
 export const enterpriseMcpToolRegistrations: Array<(server: unknown, ctx: unknown) => void> = []
 
 /** 商业 landing（marketing/docs SSR）entry：核心在路由装配时依次 registerRoutes，页面分发时依次 handlePageRequest。 */

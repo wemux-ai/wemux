@@ -128,7 +128,7 @@ export const injectPromptAttachments = (
       : 'personal: true'
     return [
       `附件 ${index + 1} 是 Drive 云盘文件引用（fileId: ${attachment.driveFileId}，${scopeText}），非上传副本。`,
-      `如需修改并用 drive.write_file 写回原文件，先读取 vibemux-drive-writeback skill 的读写回方法。`,
+      `如需修改并用 drive.write_file 写回原文件，先读取 wemux-drive-writeback skill 的读写回方法。`,
     ]
   })
 

@@ -552,7 +552,7 @@ const normalizePreviewWebSocketHeaders = (request: Request, previewSessionId: st
   const requestUrl = new URL(request.url)
   headers.push(['x-forwarded-host', requestUrl.host])
   headers.push(['x-forwarded-proto', requestUrl.protocol.replace(':', '')])
-  headers.push(['x-vibemux-preview-id', previewSessionId])
+  headers.push(['x-wemux-preview-id', previewSessionId])
   return headers
 }
 
@@ -614,10 +614,10 @@ const decodeRelayJson = <T>(raw: string | null | undefined): T | null => {
 const sanitizeRelayRequestHeaders = (headers: Headers) => {
   headers.delete('host')
   headers.delete('x-cluster-token')
-  headers.delete('x-vibemux-preview-path')
-  headers.delete('x-vibemux-preview-target-url')
-  headers.delete('x-vibemux-preview-relay-headers')
-  headers.delete('x-vibemux-preview-relay-subprotocols')
+  headers.delete('x-wemux-preview-path')
+  headers.delete('x-wemux-preview-target-url')
+  headers.delete('x-wemux-preview-relay-headers')
+  headers.delete('x-wemux-preview-relay-subprotocols')
   return headers
 }
 
@@ -708,11 +708,11 @@ const relayPreviewHttpRequest = async (params: {
   targetUrl?: string
 }) => {
   const relayHeaders = new Headers(params.request.headers)
-  relayHeaders.set('x-vibemux-preview-path', params.pathWithQuery)
+  relayHeaders.set('x-wemux-preview-path', params.pathWithQuery)
   if (params.targetUrl) {
-    relayHeaders.set('x-vibemux-preview-target-url', params.targetUrl)
+    relayHeaders.set('x-wemux-preview-target-url', params.targetUrl)
   } else {
-    relayHeaders.delete('x-vibemux-preview-target-url')
+    relayHeaders.delete('x-wemux-preview-target-url')
   }
   if (clusterConfig.sharedToken) {
     relayHeaders.set('x-cluster-token', clusterConfig.sharedToken)
@@ -741,12 +741,12 @@ const relayPreviewPublicIngressHttpRequest = async (params: {
   targetUrl?: string
 }) => {
   const relayHeaders = new Headers(params.request.headers)
-  relayHeaders.set('x-vibemux-preview-path', params.pathWithQuery)
+  relayHeaders.set('x-wemux-preview-path', params.pathWithQuery)
   relayHeaders.set('authorization', `Bearer ${getExecutorPreviewProxySecret(params.executorId)}`)
   if (params.targetUrl) {
-    relayHeaders.set('x-vibemux-preview-target-url', params.targetUrl)
+    relayHeaders.set('x-wemux-preview-target-url', params.targetUrl)
   } else {
-    relayHeaders.delete('x-vibemux-preview-target-url')
+    relayHeaders.delete('x-wemux-preview-target-url')
   }
   relayHeaders.delete('host')
 
@@ -888,7 +888,7 @@ const buildDesktopNoVncPolish = (session: PreviewSessionRecord) => {
     return ''
   }
 
-  return `<style data-vibemux-desktop-novnc-polish>
+  return `<style data-wemux-desktop-novnc-polish>
 #noVNC_status_bar { display: none !important; }
 #noVNC_container { top: 0 !important; }
 </style>`
@@ -1094,12 +1094,12 @@ export const registerPreviewGatewayRoutes = (app: Hono) => {
       return c.json({ message: 'preview session 不存在。' }, 404)
     }
 
-    const pathWithQuery = c.req.header('x-vibemux-preview-path')?.trim()
+    const pathWithQuery = c.req.header('x-wemux-preview-path')?.trim()
     if (!pathWithQuery) {
       return c.json({ message: '缺少 preview relay path。' }, 400)
     }
 
-    const targetUrl = c.req.header('x-vibemux-preview-target-url')?.trim() || undefined
+    const targetUrl = c.req.header('x-wemux-preview-target-url')?.trim() || undefined
     const proxyRequest = await buildInternalPreviewProxyRequest({
       session,
       request: c.req.raw,
@@ -1257,11 +1257,11 @@ export const registerPreviewGatewayWsRoute = (app: Hono, upgradeWebSocket: any) 
       ;(c as any).set('previewRelayTargetUrl', c.req.query('targetUrl')?.trim() || undefined)
       ;(c as any).set(
         'previewRelayHeaders',
-        decodeRelayJson<Array<[string, string]>>(c.req.header('x-vibemux-preview-relay-headers')) ?? [],
+        decodeRelayJson<Array<[string, string]>>(c.req.header('x-wemux-preview-relay-headers')) ?? [],
       )
       ;(c as any).set(
         'previewRelaySubprotocols',
-        decodeRelayJson<string[]>(c.req.header('x-vibemux-preview-relay-subprotocols')) ?? [],
+        decodeRelayJson<string[]>(c.req.header('x-wemux-preview-relay-subprotocols')) ?? [],
       )
       await next()
     },
@@ -1391,8 +1391,8 @@ export const registerPreviewGatewayWsRoute = (app: Hono, upgradeWebSocket: any) 
                     : (clusterConfig.sharedToken ? { 'x-cluster-token': clusterConfig.sharedToken } : {})),
                   ...(publicIngressTarget || relayTarget
                     ? {
-                        'x-vibemux-preview-relay-headers': relayHeaders,
-                        'x-vibemux-preview-relay-subprotocols': relaySubprotocols,
+                        'x-wemux-preview-relay-headers': relayHeaders,
+                        'x-wemux-preview-relay-subprotocols': relaySubprotocols,
                       }
                     : {}),
                 },

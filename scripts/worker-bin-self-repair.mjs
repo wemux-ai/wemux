@@ -37,7 +37,7 @@ export const resolveChannelSuffixFromCliName = (cliName) => {
 }
 
 export const resolveWorkerHomeDir = ({ env = process.env, homedir = os.homedir(), channelSuffix = '' } = {}) => {
-  const configured = env.VIBEMUX_WORKER_HOME?.trim()
+  const configured = env.WEMUX_WORKER_HOME?.trim()
   if (configured) return path.resolve(configured)
   return path.join(homedir, `.wemux${channelSuffix}`)
 }

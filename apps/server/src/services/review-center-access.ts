@@ -1,4 +1,5 @@
 // [INPUT]: 评审中心访问
+import { getEnv } from '@shared/env'
 // [OUTPUT]: 授权判定
 // [POS]: 评审中心访问控制
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -29,13 +30,13 @@ export const isReviewCenterEnabled = () => {
     return true
   }
 
-  if (process.env.VIBEMUX_ENV?.trim().toLowerCase() === 'preview') {
+  if (getEnv('WEMUX_ENV')?.trim().toLowerCase() === 'preview') {
     return true
   }
 
   return [
-    process.env.VIBEMUX_CLOUD_URL,
-    process.env.VIBEMUX_PUBLIC_BASE_URL,
+    getEnv('WEMUX_CLOUD_URL'),
+    getEnv('WEMUX_PUBLIC_BASE_URL'),
     process.env.APP_BASE_URL,
     process.env.VITE_APP_BASE_URL,
     process.env.BETTER_AUTH_URL,

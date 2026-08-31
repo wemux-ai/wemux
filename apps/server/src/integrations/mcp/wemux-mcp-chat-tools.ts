@@ -6,7 +6,7 @@
 import { z } from 'zod'
 import { VIBEMUX_READ_ONLY_MCP_TOOL_ANNOTATIONS } from '@shared/mcp'
 import { ErrorCode, McpError, type McpServer } from './sdk'
-import { toToolResult, type VibemuxMcpContext } from './vibemux-mcp-context'
+import { toToolResult, type WemuxMcpContext } from './wemux-mcp-context'
 import { listAgentGroupChatTargets, listChatUserTargets, sendAgentChatMessage } from '../../services/chat-send-service'
 
 /**
@@ -66,7 +66,7 @@ const chatSendSchema = {
   attachments: z.array(chatAttachmentSchema).optional().describe('可选附件（图片/文件/Dive 引用）'),
 }
 
-export const registerVibemuxMcpChatTools = (server: McpServer, ctx: VibemuxMcpContext) => {
+export const registerWemuxMcpChatTools = (server: McpServer, ctx: WemuxMcpContext) => {
   server.registerTool('chat.group.list', {
     title: 'List Agent Group Chat Targets',
     description: '列出当前 Agent 所属的全部群聊及其会话（Agent 可主动发消息的目标），返回 workspaceId / groupId / sessionId 供 chat.send 使用。',

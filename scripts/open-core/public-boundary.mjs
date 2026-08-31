@@ -129,7 +129,7 @@ const canaryPatterns = [
   /hosted_model_catalog/i,
   /CREEM_/i,
   /connector\.wemux\.xyz/i,
-  /internal\.vibemux/i,
+  /internal\.wemux/i,
   /Partner Portal/i,
 ]
 

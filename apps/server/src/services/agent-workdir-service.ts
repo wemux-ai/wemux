@@ -1,4 +1,5 @@
 // [INPUT]: Agent Home 目录请求
+import { getEnv } from '@shared/env'
 // [OUTPUT]: 工作目录管理
 // [POS]: Agent 工作目录服务
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -27,7 +28,7 @@ export type AgentWorkdirFileEntry = ExecutorAgentWorkdirFileEntry
 export type AgentWorkdirSummary = ExecutorAgentWorkdirSummary
 export type AgentWorkdirReadResult = ExecutorAgentWorkdirReadResult
 
-const getAgentHome = () => process.env.VIBEMUX_AGENT_HOME?.trim()
+const getAgentHome = () => getEnv('WEMUX_AGENT_HOME')?.trim()
 
 const resolveWorkspaceScope = (workspaceId?: string) => workspaceId?.trim() || undefined
 

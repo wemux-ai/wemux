@@ -34,7 +34,7 @@ export class WindowsService implements PlatformService {
   constructor(private readonly serviceName = getDefaultWorkerServiceName()) {}
 
   private scheduledTaskPath() {
-    return '\\Vibemux\\'
+    return '\\Wemux\\'
   }
 
   private scheduledTaskLeafName() {
@@ -42,7 +42,7 @@ export class WindowsService implements PlatformService {
   }
 
   private serviceRoot() {
-    return path.join(os.homedir(), 'AppData', 'Local', 'Vibemux', 'services', this.serviceName)
+    return path.join(os.homedir(), 'AppData', 'Local', 'Wemux', 'services', this.serviceName)
   }
 
   private envPath() {
@@ -76,7 +76,7 @@ export class WindowsService implements PlatformService {
   private startupShortcutPath() {
     const home = process.env.USERPROFILE || os.homedir()
     const startupDir = path.join(home, 'AppData', 'Roaming', 'Microsoft', 'Windows', 'Start Menu', 'Programs', 'Startup')
-    return path.join(startupDir, `Vibemux-${this.serviceName}.vbs`)
+    return path.join(startupDir, `Wemux-${this.serviceName}.vbs`)
   }
 
   private supervisorNodeCommand(config?: WindowsServiceRuntimeConfig) {

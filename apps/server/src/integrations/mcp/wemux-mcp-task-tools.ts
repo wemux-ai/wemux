@@ -61,8 +61,8 @@ import {
   summarizeTask,
   summarizeTaskRun,
   toToolResult,
-  type VibemuxMcpContext,
-} from './vibemux-mcp-context'
+  type WemuxMcpContext,
+} from './wemux-mcp-context'
 
 const taskListStatusSchema = z.enum(['backlog', 'todo', 'in_progress', 'in_review', 'done', 'blocked', 'cancelled'])
 const serverAgentTypeSchema = z.enum(SERVER_AGENT_TYPES)
@@ -161,7 +161,7 @@ const listAssignableAgents = (userId: string, runtimeAgentId?: string) => (
  */
 /** 判定与投递都在 deliverTaskAssignment 里；这里只把结果翻译成 MCP 返回值。 */
 const applyTaskAssignment = async (params: {
-  ctx: VibemuxMcpContext
+  ctx: WemuxMcpContext
   task: Task
   previousAssigneeAgentId?: string
   /** 换 Squad 但 leader 不变时也算指派变化，所以前任的 group 也要传。 */
@@ -266,7 +266,7 @@ const writeTaskCustomFields = async (
   return listTaskCustomFieldValuesByKey(taskId, projectId)
 }
 
-export const registerVibemuxMcpTaskTools = (server: McpServer, ctx: VibemuxMcpContext) => {
+export const registerWemuxMcpTaskTools = (server: McpServer, ctx: WemuxMcpContext) => {
   server.registerTool('task.list', {
     title: 'Task List',
     description: '按项目或状态筛选任务列表',

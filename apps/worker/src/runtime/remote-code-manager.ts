@@ -63,12 +63,12 @@ const commandRuns = (command: string, args: string[], timeoutMs = 5000) => new P
 })
 
 const resolveExistingCodeServerBin = async () => {
-  const configured = readEnv('VIBEMUX_CODE_SERVER_BIN')
+  const configured = readEnv('WEMUX_CODE_SERVER_BIN')
   if (configured) {
     if (await commandRuns(configured, ['--version'])) {
       return configured
     }
-    throw new Error(`VIBEMUX_CODE_SERVER_BIN 不可执行或无法启动: ${configured}`)
+    throw new Error(`WEMUX_CODE_SERVER_BIN 不可执行或无法启动: ${configured}`)
   }
 
   const managedBin = getManagedCodeServerBin()
@@ -90,7 +90,7 @@ const installManagedCodeServer = async () => {
   }
 
   if (process.platform === 'win32') {
-    throw new Error('当前 worker 平台暂不支持自动安装 code-server，请设置 VIBEMUX_CODE_SERVER_BIN。')
+    throw new Error('当前 worker 平台暂不支持自动安装 code-server，请设置 WEMUX_CODE_SERVER_BIN。')
   }
 
   const prefix = getManagedCodeServerPrefix()
@@ -213,7 +213,7 @@ const isPortAvailable = (port: number) => new Promise<boolean>((resolve) => {
 })
 
 const pickPort = async () => {
-  const configured = Number(readEnv('VIBEMUX_CODE_SERVER_PORT') || 0)
+  const configured = Number(readEnv('WEMUX_CODE_SERVER_PORT') || 0)
   if (Number.isInteger(configured) && configured > 0 && await isPortAvailable(configured)) {
     return configured
   }

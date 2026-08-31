@@ -1,7 +1,7 @@
 import { isNativeClient } from './native-client'
 import { CURRENT_APP_BUILD_ID } from './node-version'
 
-const SKIP_WAITING_MESSAGE_TYPE = 'VIBEMUX_SKIP_WAITING'
+const SKIP_WAITING_MESSAGE_TYPE = 'WEMUX_SKIP_WAITING'
 const DEFAULT_UPDATE_CHECK_INTERVAL_MS = 5 * 60 * 1000
 const DEFAULT_BUILD_VERSION_CHECK_INTERVAL_MS = 60 * 1000
 const VERSION_MANIFEST_PATH = '/version.json'

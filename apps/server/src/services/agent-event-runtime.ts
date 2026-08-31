@@ -841,7 +841,7 @@ export const buildAgentEventPrompt = (task: AgentTask, event: PersistedAgentEven
           '先用 agent.inbox.list 检查收件箱，按需查看渠道消息与任务进度。',
           '只处理已指派/已提及/已到达你收件箱的事项；不要主动寻找未被分配的工作。',
           '有需要处理的事项就按既有上下文处理；没有时简短汇报当前状态即可（保持低成本）。',
-          '如配置了记忆维护约定（vibemux-memory），可按需更新记忆文件。',
+          '如配置了记忆维护约定（wemux-memory），可按需更新记忆文件。',
           '不要为心跳创建影子任务，不要重复处理已在进行的任务；本轮没有外部等待时直接结束。',
         ].join('\n')
       : '',

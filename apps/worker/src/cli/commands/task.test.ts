@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import test from 'node:test'
 
-import type { VibemuxClient } from '../client'
+import type { WemuxClient } from '../client'
 import { runTaskCommand } from './task'
 
 test('task send keeps flags out of the message', async () => {
@@ -11,7 +11,7 @@ test('task send keeps flags out of the message', async () => {
       calls.push({ name, args })
       return 'sent'
     },
-  } as VibemuxClient
+  } as WemuxClient
 
   await runTaskCommand(client, 'send', [
     'task-1',
@@ -41,7 +41,7 @@ test('task create accepts an unquoted multi-word description', async () => {
       calls.push({ name, args })
       return 'created'
     },
-  } as VibemuxClient
+  } as WemuxClient
 
   await runTaskCommand(client, 'create', ['project-1', 'fix', 'login', 'flow', '--title=Login'])
 
@@ -62,7 +62,7 @@ test('task run maps workspace execution flags to task.execute', async () => {
       calls.push({ name, args })
       return 'queued'
     },
-  } as VibemuxClient
+  } as WemuxClient
 
   await runTaskCommand(client, 'run', ['task-1', '--workspace', 'workspace-1', '--new-session', '--branch=dev'])
 

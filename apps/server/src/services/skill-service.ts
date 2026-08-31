@@ -28,7 +28,7 @@ import type { ExecutorSkillPackage, Project } from '@shared/types'
 import { executorRegistry } from '../control-plane/executor-registry'
 import { executorWsService } from '../control-plane/executor-ws-service'
 import { listVisibleExecutorsForUser } from '../control-plane/collaboration'
-import { VIBEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG } from '../lib/system-skills'
+import { WEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG } from '../lib/system-skills'
 import { getDefaultUserAgent } from '../repositories/agent'
 import { getTeamMemberRole } from '../repositories/auth'
 import { auditSkillFiles, type SkillAuditFinding } from '@shared/skill'
@@ -736,9 +736,9 @@ const shouldReplaceRuntimeSkill = (
   },
 ) => {
   const currentIsRequiredAgentOps = isManagedSystemSkill(current)
-    && normalizeSkillSlug(current.slug) === VIBEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG
+    && normalizeSkillSlug(current.slug) === WEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG
   const nextIsRequiredAgentOps = isManagedSystemSkill(next)
-    && normalizeSkillSlug(next.slug) === VIBEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG
+    && normalizeSkillSlug(next.slug) === WEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG
   if (currentIsRequiredAgentOps !== nextIsRequiredAgentOps) {
     return nextIsRequiredAgentOps
   }
@@ -843,7 +843,7 @@ export const buildRuntimeSkillPackagesFromSkills = (skills: SkillRecord[]): Exec
       slug: skill.slug,
       description: skill.description,
       markdown: skill.markdown,
-      sourceLocator: skill.sourceLocator ?? `vibemux://skills/${skill.id}`,
+      sourceLocator: skill.sourceLocator ?? `wemux://skills/${skill.id}`,
       trustLevel: skill.trustLevel,
       fileInventory: skill.fileInventory,
       files,
@@ -853,9 +853,9 @@ export const buildRuntimeSkillPackagesFromSkills = (skills: SkillRecord[]): Exec
 
 export const prependRequiredAgentOpsSkillMention = (message: string, skills: SkillRecord[]) => {
   const normalizedMessage = message.trim()
-  const requiredMention = `@${VIBEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG}`
+  const requiredMention = `@${WEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG}`
   const hasRequiredAgentOps = skills.some((skill) => (
-    normalizeSkillSlug(skill.slug) === VIBEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG
+    normalizeSkillSlug(skill.slug) === WEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG
     && isManagedSystemSkill(skill)
   ))
 

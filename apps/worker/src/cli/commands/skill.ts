@@ -3,13 +3,13 @@
 // [POS]: Skill CLI 命令
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
 
-import type { VibemuxClient } from '../client'
+import type { WemuxClient } from '../client'
 import { output, getOutputFormat } from '../output'
 import { parseCliArgs } from '../../cli-flags'
 import { getCliName, throwCommandUsage, throwUnknownCommand } from '../help'
 import { confirmDangerousAction } from '../confirm'
 
-export const runSkillCommand = async (client: VibemuxClient, subcommand: string, args: string[]) => {
+export const runSkillCommand = async (client: WemuxClient, subcommand: string, args: string[]) => {
   const { flags, positionals } = parseCliArgs(args)
   const format = getOutputFormat(flags)
 

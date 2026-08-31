@@ -35,8 +35,8 @@
 
 ## 二、控制面 MCP 工具面
 
-- **端点**：`POST /mcp`（Bearer token，用户身份）与 `POST /mcp/executor`（executor token，可选 `x-vibemux-acting-user` 换身份）——`apps/server/src/routes/mcp-routes.ts`
-- **组装**：`apps/server/src/integrations/mcp/vibemux-mcp-tools.ts` 聚合注册以下模块：
+- **端点**：`POST /mcp`（Bearer token，用户身份）与 `POST /mcp/executor`（executor token，可选 `x-wemux-acting-user` 换身份）——`apps/server/src/routes/mcp-routes.ts`
+- **组装**：`apps/server/src/integrations/mcp/wemux-mcp-tools.ts` 聚合注册以下模块：
 
 | 模块 | 工具域 |
 |------|--------|
@@ -54,4 +54,4 @@
 - **收件箱双端**：`agent.inbox.*` 服务 Agent runtime（recipientType 写死 `'agent'`）；`inbox.*` 服务用户（`'user'`）。数据层共用 `inbox-service`（投递/分组/已读/回复都按 recipient 隔离），**不要复制一份收件箱逻辑**
 - **只读注解**：查询类工具注册时带 `WEMUX_READ_ONLY_MCP_TOOL_ANNOTATIONS`，新增查询工具须同步
 - **回复路由**：inbox item 的 `replyTo` 字段决定回信地址（task_comment / channel / inbox_item），渠道差异只活在那里，投递方必须填、路由层不猜
-- CLI 与 Agent 共用同一工具面：CLI 命令是 `VibemuxClient.callTool(name)` 的薄封装，**不为 CLI 发明服务端逻辑**
+- CLI 与 Agent 共用同一工具面：CLI 命令是 `WemuxClient.callTool(name)` 的薄封装，**不为 CLI 发明服务端逻辑**

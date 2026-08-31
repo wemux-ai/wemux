@@ -1,6 +1,6 @@
 const CACHE_NAME = 'wemux-pwa-v1'
 const APP_SHELL = ['/', '/manifest.webmanifest', '/favicon.png', '/apple-touch-icon.png', '/pwa-192x192.png', '/pwa-512x512.png']
-const SKIP_WAITING_MESSAGE_TYPE = 'VIBEMUX_SKIP_WAITING'
+const SKIP_WAITING_MESSAGE_TYPE = 'WEMUX_SKIP_WAITING'
 
 const cacheIfOk = (request, response) => {
   if (!response.ok) {

@@ -1,4 +1,5 @@
 // [INPUT]: dev 登录输入
+import { getEnv } from '@shared/env'
 // [OUTPUT]: dev 账号就绪
 // [POS]: dev 认证服务
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -115,7 +116,7 @@ const DEFAULT_DEV_LOGIN_ACCOUNTS: DevLoginAccountConfig[] = [
 ]
 
 export const getConfiguredDevLoginAccounts = (): DevLoginAccountConfig[] => {
-  const raw = process.env.VIBEMUX_DEV_LOGIN_ACCOUNTS?.trim()
+  const raw = getEnv('WEMUX_DEV_LOGIN_ACCOUNTS')?.trim()
   if (!raw) {
     return DEFAULT_DEV_LOGIN_ACCOUNTS
   }
@@ -159,7 +160,7 @@ export const getConfiguredDevLoginAccounts = (): DevLoginAccountConfig[] => {
 
     return accounts.length > 0 ? accounts : DEFAULT_DEV_LOGIN_ACCOUNTS
   } catch (error) {
-    console.warn('[dev-auth] Failed to parse VIBEMUX_DEV_LOGIN_ACCOUNTS, falling back to defaults.', error)
+    console.warn('[dev-auth] Failed to parse WEMUX_DEV_LOGIN_ACCOUNTS, falling back to defaults.', error)
     return DEFAULT_DEV_LOGIN_ACCOUNTS
   }
 }
@@ -178,8 +179,8 @@ const resolveAccountUserInput = (account: DevLoginAccountConfig) => {
   }
 }
 
-export const isDevLoginEnabled = () => process.env.VIBEMUX_ENABLE_DEV_LOGIN === 'true'
-  || (process.env.NODE_ENV !== 'production' && process.env.VIBEMUX_ENABLE_DEV_LOGIN !== 'false')
+export const isDevLoginEnabled = () => getEnv('WEMUX_ENABLE_DEV_LOGIN') === 'true'
+  || (process.env.NODE_ENV !== 'production' && getEnv('WEMUX_ENABLE_DEV_LOGIN') !== 'false')
 
 export const getDevLoginAccounts = (): DevLoginAccountSummary[] => {
   if (!isDevLoginEnabled()) {

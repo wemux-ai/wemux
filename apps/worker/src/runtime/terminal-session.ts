@@ -81,7 +81,7 @@ export const shouldUseZellijTerminalBackend = (
   platform = process.platform,
   env: NodeJS.ProcessEnv = process.env,
 ) => {
-  const explicit = env.VIBEMUX_TERMINAL_BACKEND?.trim().toLowerCase()
+  const explicit = env.WEMUX_TERMINAL_BACKEND?.trim().toLowerCase()
   if (explicit === 'native' || explicit === 'regular' || explicit === 'pty') {
     return false
   }
@@ -107,10 +107,10 @@ export const buildZellijSessionName = (terminalKey: string | undefined, cwd: str
   const source = terminalKey?.trim() || cwd
   const readableName = sanitizeZellijSessionName(source) || 'terminal'
   if (readableName.length <= MAX_READABLE_ZELLIJ_SESSION_NAME_LENGTH) {
-    return `vibemux-${readableName}`
+    return `wemux-${readableName}`
   }
 
-  return `vibemux-${createHash('sha256').update(source).digest('hex').slice(0, 32)}`
+  return `wemux-${createHash('sha256').update(source).digest('hex').slice(0, 32)}`
 }
 
 // Unix domain socket paths are capped at ~104 bytes (sun_path) on macOS and 108 on
@@ -157,7 +157,7 @@ export const resolveZellijSocketDir = (
     }
   }
 
-  return path.join(SHORT_UNIX_TMP_DIR, `vibemux-zellij-${uid}`)
+  return path.join(SHORT_UNIX_TMP_DIR, `wemux-zellij-${uid}`)
 }
 
 export const buildZellijSocketPath = (params: {
@@ -744,7 +744,7 @@ const TERMINAL_ENV_STRIP_KEYS = new Set([
   'BETTER_AUTH_URL',
   'BETTER_AUTH_TRUSTED_ORIGINS',
   'PORT',
-  'VIBEMUX_PUBLIC_BASE_URL',
+  'WEMUX_PUBLIC_BASE_URL',
 ])
 
 export const createTerminalCommandEnv = (source: NodeJS.ProcessEnv = process.env): NodeJS.ProcessEnv => {
@@ -811,13 +811,13 @@ export const runTerminalCommand = (
         const usePipedBackgroundOutput = process.platform === 'win32'
         const backgroundCommand = usePipedBackgroundOutput
           ? command
-          : `exec >"$VIBEMUX_BACKGROUND_OUTPUT_PATH" 2>&1\n${command}`
+          : `exec >"$WEMUX_BACKGROUND_OUTPUT_PATH" 2>&1\n${command}`
         let pipedBackgroundOutput = ''
         const child = spawn(shell, buildNonInteractiveShellArgs(backgroundCommand), {
           cwd: resolvedCwd,
           env: {
             ...terminalEnv,
-            VIBEMUX_BACKGROUND_OUTPUT_PATH: capture.outputPath,
+            WEMUX_BACKGROUND_OUTPUT_PATH: capture.outputPath,
           },
           detached: process.platform !== 'win32',
           stdio: usePipedBackgroundOutput ? ['ignore', 'pipe', 'pipe'] : 'ignore',

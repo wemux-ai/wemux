@@ -1,4 +1,5 @@
 // [INPUT]: 已鉴权 Hono app，desktop-sandbox 请求（displayProfile/clientNetwork/action）
+import { getEnv } from '@shared/env'
 // [OUTPUT]: /api/tasks/:id/desktop-sandbox/* 路由
 // [POS]: 桌面沙箱控制 HTTP 协议层（dev-only 访问控制）
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -63,10 +64,10 @@ const desktopSandboxCommandSchema = desktopSandboxScopeSchema.extend({
 const buildAgentUsageHint = () => [
   'Agent can operate the wemux Desktop Sandbox through the local worker CLI:',
   '```bash',
-  'if [ -n "${VIBEMUX_WORKER_RUNNER:-}" ] && [ -n "${VIBEMUX_WORKER_ENTRY:-}" ]; then',
-  '  "$VIBEMUX_WORKER_RUNNER" "$VIBEMUX_WORKER_ENTRY" desktop-sandbox status',
-  'elif [ -n "${VIBEMUX_WORKER_LAUNCHER:-}" ]; then',
-  '  "$VIBEMUX_WORKER_LAUNCHER" desktop-sandbox status',
+  'if [ -n "${WEMUX_WORKER_RUNNER:-}" ] && [ -n "${WEMUX_WORKER_ENTRY:-}" ]; then',
+  '  "$WEMUX_WORKER_RUNNER" "$WEMUX_WORKER_ENTRY" desktop-sandbox status',
+  'elif [ -n "${WEMUX_WORKER_LAUNCHER:-}" ]; then',
+  '  "$WEMUX_WORKER_LAUNCHER" desktop-sandbox status',
   'else',
   '  wemux-worker desktop-sandbox status',
   'fi',
@@ -177,7 +178,7 @@ const isLocaltestHost = (host: string) => {
 const getConfiguredLocalDesktopServerPort = () => {
   const candidates = [
     process.env.HYBRID_SERVER_PORT,
-    process.env.VIBEMUX_SERVER_PORT,
+    getEnv('WEMUX_SERVER_PORT'),
     process.env.PORT,
   ]
 

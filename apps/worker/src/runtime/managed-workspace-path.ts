@@ -82,7 +82,7 @@ export const remapManagedProjectPath = (workspaceRoot: string, rawPath?: string)
     return remappedParts ? path.join(resolvedWorkspaceRoot, ...remappedParts) : resolvedPath
   }
 
-  const match = normalizedForMatch.match(/(?:^|\/)\.vibemux(?:-[^/]+)?\/(.+)$/)
+  const match = normalizedForMatch.match(/(?:^|\/)\.wemux(?:-[^/]+)?\/(.+)$/)
   if (!match) {
     return resolvedPath
   }

@@ -748,7 +748,7 @@ export const registerProjectRoutes = (app: Hono, requireAuth: MiddlewareHandler)
     })
 
     if (!detected) {
-      return c.json({ state: getScopedState(state, userId), message: '没有检测到 `.vibemux.yml`。' }, 404)
+      return c.json({ state: getScopedState(state, userId), message: '没有检测到 `.wemux.yml`。' }, 404)
     }
 
     const updated = {
@@ -829,7 +829,7 @@ export const registerProjectRoutes = (app: Hono, requireAuth: MiddlewareHandler)
       project = updatedProject
       syncedParts.push('已同步项目环境模板。')
     } else {
-      syncedParts.push('未检测到项目 `.vibemux.yml`。')
+      syncedParts.push('未检测到项目 `.wemux.yml`。')
     }
 
     const activeBindingPath = resolvePreparedProjectBindingPath(project.id, requestedExecutorId)

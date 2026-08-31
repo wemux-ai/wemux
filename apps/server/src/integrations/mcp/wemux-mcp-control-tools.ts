@@ -53,8 +53,8 @@ import {
   summarizeProject,
   summarizeTask,
   toToolResult,
-  type VibemuxMcpContext,
-} from './vibemux-mcp-context'
+  type WemuxMcpContext,
+} from './wemux-mcp-context'
 
 export const sortWorkspacesForRuntimeAgent = <T extends Pick<WorkspaceRecord, 'createdBy'>>(
   workspaces: T[],
@@ -105,7 +105,7 @@ const projectUpdateSchema = z.object({
       type: z.enum(['generated', 'custom']).optional(),
     })).optional(),
     configPath: z.string().trim().optional(),
-    source: z.enum(['manual', 'vibemux-yml']).optional(),
+    source: z.enum(['manual', 'wemux-yml']).optional(),
     imported: z.object({
       installCommand: z.string().trim().optional(),
       buildCommand: z.string().trim().optional(),
@@ -215,7 +215,7 @@ const normalizeEnvironmentTemplateInput = (
   }
 }
 
-const findVisibleWorkspace = (ctx: VibemuxMcpContext, workspaceId: string) => {
+const findVisibleWorkspace = (ctx: WemuxMcpContext, workspaceId: string) => {
   const state = ctx.getState()
   for (const project of state.projects) {
     const workspace = getScopedWorkspaceForProject(ctx.userId, project, workspaceId)
@@ -237,7 +237,7 @@ const requireSession = (state: AppState, sessionId: string, userId: string) => {
   return { mainState, session }
 }
 
-export const registerVibemuxMcpControlTools = (server: McpServer, ctx: VibemuxMcpContext) => {
+export const registerWemuxMcpControlTools = (server: McpServer, ctx: WemuxMcpContext) => {
   server.registerTool('executor.list', {
     title: 'Executor List',
     description: '列出当前用户可见的执行节点',

@@ -1,4 +1,5 @@
 // [INPUT]: 本地控制台输入
+import { getEnv } from '@shared/env'
 // [OUTPUT]: 打开本地控制台
 // [POS]: 本地控制台启动
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -18,7 +19,7 @@ const formatUrlHost = (host: string) => {
 }
 
 export const getLocalWorkerConsoleListenHost = () => {
-  return process.env.VIBEMUX_WORKER_HOST?.trim() || DEFAULT_LOCAL_CONSOLE_HOST
+  return getEnv('WEMUX_WORKER_HOST')?.trim() || DEFAULT_LOCAL_CONSOLE_HOST
 }
 
 export const getLocalWorkerConsoleUrl = (port: number) => {

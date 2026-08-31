@@ -44,7 +44,7 @@ pnpm dev:docker:down     # 停止所有容器
 
 默认地址：
 
-- Web：`http://app.vibemux.localtest.me:15173`
+- Web：`http://app.wemux.localtest.me:15173`
 - Server：`http://127.0.0.1:18989`
 - Worker Console：`http://127.0.0.1:48121`
 

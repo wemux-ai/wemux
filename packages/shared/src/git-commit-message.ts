@@ -3,36 +3,36 @@
 // [POS]: Git commit 消息工具
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
 
-export type VibemuxAgentCoAuthorIdentity = {
+export type WemuxAgentCoAuthorIdentity = {
   name?: string
   email?: string
 }
 
-export type VibemuxAutomatedCommitIdentity = VibemuxAgentCoAuthorIdentity & {
+export type WemuxAutomatedCommitIdentity = WemuxAgentCoAuthorIdentity & {
   agentCoAuthorName?: string
   agentCoAuthorEmail?: string
 }
 
-const DEFAULT_VIBEMUX_AGENT_CO_AUTHOR_NAME = 'Vibemux'
-const DEFAULT_VIBEMUX_AGENT_CO_AUTHOR_EMAIL = '289628643+vibemux[bot]@users.noreply.github.com'
+const DEFAULT_WEMUX_AGENT_CO_AUTHOR_NAME = 'Wemux'
+const DEFAULT_WEMUX_AGENT_CO_AUTHOR_EMAIL = '289628643+wemux[bot]@users.noreply.github.com'
 
-export const VIBEMUX_AGENT_CO_AUTHOR_TRAILER = `Co-authored-by: ${DEFAULT_VIBEMUX_AGENT_CO_AUTHOR_NAME} <${DEFAULT_VIBEMUX_AGENT_CO_AUTHOR_EMAIL}>`
+export const WEMUX_AGENT_CO_AUTHOR_TRAILER = `Co-authored-by: ${DEFAULT_WEMUX_AGENT_CO_AUTHOR_NAME} <${DEFAULT_WEMUX_AGENT_CO_AUTHOR_EMAIL}>`
 
 const escapeRegex = (value: string) => value.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 
-const normalizeIdentity = (identity?: VibemuxAgentCoAuthorIdentity) => {
+const normalizeIdentity = (identity?: WemuxAgentCoAuthorIdentity) => {
   const name = identity?.name?.trim()
   const email = identity?.email?.trim()
   return name && email ? { name, email } : undefined
 }
 
-const appendCoAuthorTrailer = (message: string, identity: VibemuxAgentCoAuthorIdentity) => {
+const appendCoAuthorTrailer = (message: string, identity: WemuxAgentCoAuthorIdentity) => {
   const normalizedIdentity = normalizeIdentity(identity)
   if (!normalizedIdentity) {
     return message
   }
 
-  const trailer = buildVibemuxAgentCoAuthorTrailer(normalizedIdentity)
+  const trailer = buildWemuxAgentCoAuthorTrailer(normalizedIdentity)
   if (!message.trim()) {
     return trailer
   }
@@ -47,25 +47,25 @@ const appendCoAuthorTrailer = (message: string, identity: VibemuxAgentCoAuthorId
   return `${message}\n${trailer}`
 }
 
-export const buildVibemuxAgentCoAuthorTrailer = (identity?: VibemuxAgentCoAuthorIdentity) => {
-  const name = identity?.name?.trim() || DEFAULT_VIBEMUX_AGENT_CO_AUTHOR_NAME
-  const email = identity?.email?.trim() || DEFAULT_VIBEMUX_AGENT_CO_AUTHOR_EMAIL
+export const buildWemuxAgentCoAuthorTrailer = (identity?: WemuxAgentCoAuthorIdentity) => {
+  const name = identity?.name?.trim() || DEFAULT_WEMUX_AGENT_CO_AUTHOR_NAME
+  const email = identity?.email?.trim() || DEFAULT_WEMUX_AGENT_CO_AUTHOR_EMAIL
   return `Co-authored-by: ${name} <${email}>`
 }
 
-export const resolveVibemuxAutomatedCommitAuthor = (identity?: VibemuxAutomatedCommitIdentity) => {
+export const resolveWemuxAutomatedCommitAuthor = (identity?: WemuxAutomatedCommitIdentity) => {
   return normalizeIdentity({
     name: identity?.agentCoAuthorName,
     email: identity?.agentCoAuthorEmail,
   }) ?? normalizeIdentity(identity)
 }
 
-export const appendVibemuxAgentCoAuthorTrailer = (
+export const appendWemuxAgentCoAuthorTrailer = (
   message: string,
-  identity?: VibemuxAgentCoAuthorIdentity,
+  identity?: WemuxAgentCoAuthorIdentity,
 ) => {
   const normalizedMessage = message.trim()
-  const trailer = buildVibemuxAgentCoAuthorTrailer(identity)
+  const trailer = buildWemuxAgentCoAuthorTrailer(identity)
   if (!normalizedMessage) {
     return trailer
   }
@@ -81,12 +81,12 @@ export const appendVibemuxAgentCoAuthorTrailer = (
   return `${normalizedMessage}\n\n${trailer}`
 }
 
-export const appendVibemuxCoAuthorTrailers = (
+export const appendWemuxCoAuthorTrailers = (
   message: string,
-  identities: VibemuxAgentCoAuthorIdentity[],
+  identities: WemuxAgentCoAuthorIdentity[],
 ) => {
   const normalizedMessage = message.trim()
-  const initialMessage = normalizedMessage || buildVibemuxAgentCoAuthorTrailer()
+  const initialMessage = normalizedMessage || buildWemuxAgentCoAuthorTrailer()
   const [head, ...existingTrailerLines] = initialMessage.split(/\n(?=Co-authored-by: )/g)
   const trailerBlock = identities.reduce(
     (current, identity) => appendCoAuthorTrailer(current, identity),
@@ -114,18 +114,18 @@ export const buildGitCommitSubjectFromReply = (reply: string, fallback: string) 
   return normalized.length > 72 ? normalized.slice(0, 72) : normalized
 }
 
-export const buildVibemuxAgentCommitMessage = (params: {
+export const buildWemuxAgentCommitMessage = (params: {
   reply?: string
   fallback: string
-  agentIdentity?: VibemuxAgentCoAuthorIdentity
-  userIdentity?: VibemuxAgentCoAuthorIdentity
+  agentIdentity?: WemuxAgentCoAuthorIdentity
+  userIdentity?: WemuxAgentCoAuthorIdentity
 }) => {
   const subject = buildGitCommitSubjectFromReply(params.reply ?? '', params.fallback)
   const agentIdentity = normalizeIdentity(params.agentIdentity) ?? {
-    name: DEFAULT_VIBEMUX_AGENT_CO_AUTHOR_NAME,
-    email: DEFAULT_VIBEMUX_AGENT_CO_AUTHOR_EMAIL,
+    name: DEFAULT_WEMUX_AGENT_CO_AUTHOR_NAME,
+    email: DEFAULT_WEMUX_AGENT_CO_AUTHOR_EMAIL,
   }
-  return appendVibemuxCoAuthorTrailers(subject, [
+  return appendWemuxCoAuthorTrailers(subject, [
     agentIdentity,
     params.userIdentity ?? {},
   ])

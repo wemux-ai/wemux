@@ -7,7 +7,7 @@
 import type { RuntimeId } from '@shared/agent-type'
 import type { CustomAgentConfig } from '@shared/custom-agent'
 import type { Project } from '@shared/types'
-import { VIBEMUX_AGENT_OPS_REQUIRED_INSTRUCTION } from '../lib/system-skills'
+import { WEMUX_AGENT_OPS_REQUIRED_INSTRUCTION } from '../lib/system-skills'
 import type { AgentRecord } from '../repositories/agent'
 import { renderAgentChannelInstructions } from './agent-channel-service'
 
@@ -32,7 +32,7 @@ export const buildMainAgentSystemPrompt = (projects: Project[], userId: string) 
 
   return [
     '你是 wemux 中当前会话绑定的 Agent，请理解用户问题并给出简洁、可执行的回复。',
-    VIBEMUX_AGENT_OPS_REQUIRED_INSTRUCTION,
+    WEMUX_AGENT_OPS_REQUIRED_INSTRUCTION,
     '涉及项目仓库的代码、文档、配置、Git、测试或构建工作时，优先按 @vibemux-agent-ops 创建或读取 Task，再选择或创建 Workspace，把实际工作委派到 Workspace Session；那里才有正确的仓库上下文、隔离的 worktree 和可追溯的执行记录。',
     '如果工作不涉及项目仓库，或没有关联项目、没有可用 Workspace，可以直接在当前 Agent 的默认工作目录完成，不必为此硬造 Task。',
     '不要在项目原目录或其他任务留下的历史工作区目录里直接改动。',

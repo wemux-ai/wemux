@@ -1,4 +1,5 @@
 // [INPUT]: preview 主机名输入
+import { getEnv } from '@shared/env'
 // [OUTPUT]: 解析结果
 // [POS]: preview 主机名
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -138,7 +139,7 @@ const getConfiguredLocalPreviewWebPort = () => (
 const getConfiguredLocalPreviewServerPort = () => {
   const candidates = [
     process.env.HYBRID_SERVER_PORT,
-    process.env.VIBEMUX_SERVER_PORT,
+    getEnv('WEMUX_SERVER_PORT'),
     process.env.PORT,
   ]
 

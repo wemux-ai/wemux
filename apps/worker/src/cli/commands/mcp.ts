@@ -4,12 +4,12 @@
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
 
 import { parseCliArgs } from '../../cli-flags'
-import type { VibemuxClient } from '../client'
+import type { WemuxClient } from '../client'
 import { loadWorkerConfig } from '../../core/config'
 import { getCliName, throwUnknownCommand } from '../help'
 import { getOutputFormat, output } from '../output'
 
-export const runMcpCommand = async (client: VibemuxClient, subcommand: string, args: string[]) => {
+export const runMcpCommand = async (client: WemuxClient, subcommand: string, args: string[]) => {
   const { flags } = parseCliArgs(args)
   if (subcommand === 'list') {
     output(await client.callTool('mcp.list', {}), getOutputFormat(flags))

@@ -8,12 +8,6 @@ on:
     paths-ignore:
       - 'docs/**'
   workflow_dispatch:
-    inputs:
-      skip_webhook:
-        description: 'Build and push image only'
-        required: false
-        default: false
-        type: boolean
 
 permissions:
   contents: read
@@ -29,10 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     env:
-      DOKPLOY_SHARED_WEBHOOK_URL: ${{ secrets.DOKPLOY_SHARED_WEBHOOK_URL }}
-      DOKPLOY_PRODUCTION_WEBHOOK_URL: ${{ secrets.DOKPLOY_PRODUCTION_WEBHOOK_URL }}
       VITE_GA_MEASUREMENT_ID: ${{ vars.VITE_GA_MEASUREMENT_ID || 'G-KHSGWBC0DV' }}
-      SKIP_WEBHOOK: ${{ github.event_name == 'workflow_dispatch' && inputs.skip_webhook || 'false' }}
 
     steps:
       - name: Checkout
@@ -54,13 +45,6 @@ jobs:
           NODE_OPTIONS: --max-old-space-size=4096
         run: pnpm typecheck
 
-      - name: Ensure Production Webhook Is Configured
-        if: ${{ env.SKIP_WEBHOOK != 'true' }}
-        run: |
-          if [ -z "$DOKPLOY_SHARED_WEBHOOK_URL" ] && [ -z "$DOKPLOY_PRODUCTION_WEBHOOK_URL" ]; then
-            echo "Missing DOKPLOY_SHARED_WEBHOOK_URL or DOKPLOY_PRODUCTION_WEBHOOK_URL secret" >&2
-            exit 1
-          fi
 
       - name: Setup Docker Buildx
         uses: docker/setup-buildx-action@v4
@@ -108,8 +92,3 @@ jobs:
           cache-from: type=gha,scope=control-plane-production
           cache-to: type=gha,mode=min,scope=control-plane-production
 
-      - name: Trigger Dokploy Production Deployment
-        if: ${{ env.SKIP_WEBHOOK != 'true' }}
-        run: |
-          WEBHOOK_URL="${DOKPLOY_PRODUCTION_WEBHOOK_URL:-$DOKPLOY_SHARED_WEBHOOK_URL}"
-          curl --retry 3 --retry-all-errors --connect-timeout 10 --max-time 60 -fsSL -X POST "$WEBHOOK_URL"

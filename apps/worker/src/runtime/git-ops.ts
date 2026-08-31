@@ -7,7 +7,7 @@ import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises'
 import os from 'node:os'
 import path from 'node:path'
 import { simpleGit } from 'simple-git'
-import { buildVibemuxAgentCommitMessage } from '@shared/git-commit-message'
+import { buildWemuxAgentCommitMessage } from '@shared/git-commit-message'
 import { rewriteGitCredentialError } from '@shared/git-auth'
 import type {
   ExecutorGitBaselineDiffResult,
@@ -157,10 +157,10 @@ const syncTaskBranchBeforePush = async (git: ReturnType<typeof simpleGit>, branc
 
 const buildCommitMessageFromReply = (
   reply: string,
-  fallback = 'vibemux: workspace auto commit',
+  fallback = 'wemux: workspace auto commit',
   identity?: TaskRuntimeGitIdentity,
 ) => (
-  buildVibemuxAgentCommitMessage({
+  buildWemuxAgentCommitMessage({
     reply,
     fallback,
     agentIdentity: {

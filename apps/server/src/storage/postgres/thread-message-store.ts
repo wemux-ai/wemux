@@ -250,7 +250,7 @@ const writeMessages = async (plans: MessageUpsertPlan[]) => {
 
 const deleteRows = async (threadIds: string[], messageIds: string[]) => {
   const db = getDrizzleDb()
-  // 0 行 DELETE 也会触发 vibemux_storage_change 语句级触发器，而 storage_change
+  // 0 行 DELETE 也会触发 wemux_storage_change 语句级触发器，而 storage_change
   // 又会触发 initAppStateStore → syncMainChatThreads 重算 plan——若 plan 包含
   // 已被 retention/其他路径删掉的行，就会形成每轮重复发 0 行 DELETE 的自反馈循环。
   // 这里先取实存行，只在确有目标时执行 DELETE。
@@ -650,7 +650,7 @@ export const applyMessageRetention = async (now = new Date()): Promise<Retention
   let deletedMessages: Array<{ id: string }> = []
   if (freeConversationIds.length > 0) {
     // TTL：免费会话过期消息。
-    // 先取可删行再 DELETE：0 行 DELETE 也会触发 vibemux_storage_change
+    // 先取可删行再 DELETE：0 行 DELETE 也会触发 wemux_storage_change
     // 语句级触发器（storage_change_events + pg_notify），而 initAppStateStore
     // 每次 storage_change 都会重跑本 retention——无条件 DELETE 会形成自反馈
     // 死循环（8/8 事故同款机制），这里必须只在确有可删行时执行 DELETE。

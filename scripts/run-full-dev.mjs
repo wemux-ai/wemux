@@ -14,7 +14,7 @@ if (!validModes.has(mode)) {
 const COMPOSE_FILE = 'deploy/docker/docker-compose.dev-full.yml'
 
 const readEnv = (key, fallback = '') => {
-  const wemuxKey = key.startsWith('VIBEMUX_') ? `WEMUX_${key.slice('VIBEMUX_'.length)}` : key
+  const wemuxKey = key.startsWith('WEMUX_') ? `WEMUX_${key.slice('WEMUX_'.length)}` : key
   return process.env[wemuxKey]?.trim() || process.env[key]?.trim() || fallback
 }
 const trimTrailingSlash = (value) => value.replace(/\/+$/, '')
@@ -27,7 +27,7 @@ const isClientReachableHost = (value) => {
   return normalized && !isLoopbackHost(normalized) && !isBindOnlyHost(normalized)
 }
 const loopbackServerOrigin = (port) => `http://127.0.0.1:${port}`
-const defaultHybridPreviewAppHost = 'app.vibemux.localtest.me'
+const defaultHybridPreviewAppHost = 'app.wemux.localtest.me'
 
 const parseIpv4 = (address) => {
   const parts = address.split('.').map((part) => Number.parseInt(part, 10))
@@ -89,18 +89,18 @@ const normalizeServerOrigin = (value, port) => {
 }
 
 const webOrigin = normalizeOrigin(
-  readEnv('VITE_APP_BASE_URL') || readEnv('APP_BASE_URL') || readEnv('VIBEMUX_PUBLIC_BASE_URL'),
+  readEnv('VITE_APP_BASE_URL') || readEnv('APP_BASE_URL') || readEnv('WEMUX_PUBLIC_BASE_URL'),
   hybridWebPort,
 )
 const browserServerOrigin = normalizeOrigin(
-  readEnv('VITE_API_BASE_URL') || readEnv('BETTER_AUTH_URL') || readEnv('APP_URL') || readEnv('VIBEMUX_CLOUD_URL'),
+  readEnv('VITE_API_BASE_URL') || readEnv('BETTER_AUTH_URL') || readEnv('APP_URL') || readEnv('WEMUX_CLOUD_URL'),
   hybridServerPort,
 )
 const browserApiOrigin = webOrigin
 const browserAuthClientOrigin = `${webOrigin}/api/identity`
 const stackServerProxyTarget = `http://server:${hybridServerPort}`
 const directServerOrigin = normalizeServerOrigin(
-  readEnv('APP_URL') || readEnv('VIBEMUX_CLOUD_URL'),
+  readEnv('APP_URL') || readEnv('WEMUX_CLOUD_URL'),
   hybridServerPort,
 )
 const authOrigin = (() => {
@@ -143,8 +143,8 @@ const fullEnv = {
   VITE_BETTER_AUTH_URL: browserAuthClientOrigin,
   APP_BASE_URL: webOrigin,
   APP_URL: directServerOrigin,
-  VIBEMUX_PUBLIC_BASE_URL: webOrigin,
-  VIBEMUX_CLOUD_URL: directServerOrigin,
+  WEMUX_PUBLIC_BASE_URL: webOrigin,
+  WEMUX_CLOUD_URL: directServerOrigin,
   BETTER_AUTH_URL: authOrigin,
   BETTER_AUTH_TRUSTED_ORIGINS: trustedOrigins,
   VITE_SERVER_PROXY_TARGET: stackServerProxyTarget,
@@ -178,7 +178,7 @@ const logUrls = () => {
   console.log(`[full-dev] server (direct): ${directServerOrigin}`)
   console.log(`[full-dev] auth (browser): ${browserAuthClientOrigin}`)
   console.log(`[full-dev] auth (server): ${authOrigin}`)
-  console.log(`[full-dev] worker: http://${fullEnv.HYBRID_BIND_HOST === '0.0.0.0' ? '127.0.0.1' : fullEnv.HYBRID_BIND_HOST}:${readEnv('VIBEMUX_WORKER_PORT', '48121')} (inside Docker)`)
+  console.log(`[full-dev] worker: http://${fullEnv.HYBRID_BIND_HOST === '0.0.0.0' ? '127.0.0.1' : fullEnv.HYBRID_BIND_HOST}:${readEnv('WEMUX_WORKER_PORT', '48121')} (inside Docker)`)
 }
 
 try {

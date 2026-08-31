@@ -1,4 +1,5 @@
 // [INPUT]: 预览入口请求
+import { getEnv } from '@shared/env'
 // [OUTPUT]: 控制器
 // [POS]: 预览入口控制
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -77,7 +78,7 @@ const hasInterfaceAddress = (targetAddress: string) => {
 export const resolveWorkerMeshProxyPort = (config: Pick<WorkerConfig, 'localServerPort' | 'meshEnrollment'>) => {
   const fallbackMeshPort = deriveMeshProxyPortFromLocalServerPort(config.localServerPort)
   const configuredMeshPort = Number(config.meshEnrollment?.previewProxyPort || 0)
-  const hasExplicitMeshProxyPort = Boolean(process.env.VIBEMUX_EASYTIER_PREVIEW_PROXY_PORT?.trim())
+  const hasExplicitMeshProxyPort = Boolean(getEnv('WEMUX_EASYTIER_PREVIEW_PROXY_PORT')?.trim())
   return hasExplicitMeshProxyPort && Number.isInteger(configuredMeshPort) && configuredMeshPort > 0 && configuredMeshPort <= 65535
     ? configuredMeshPort
     : fallbackMeshPort

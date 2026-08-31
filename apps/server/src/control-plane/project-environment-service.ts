@@ -7,10 +7,13 @@ import { existsSync, readFileSync } from 'node:fs'
 import path from 'node:path'
 import { DEFAULT_RUNTIME_ENVIRONMENT_FILE_NAME } from '@shared/runtime-environment'
 import { parseProjectEnvironmentTemplate } from '@shared/project-environment-template'
-import type { ProjectEnvironmentTemplate } from '@shared/types'
+import type { ProjectEnvironmentTemplate, ProjectEnvironmentTemplateSource } from '@shared/types'
 import { executorWsService } from './executor-ws-service'
 
 const CONFIG_FILENAMES = [
+  '.wemux.yml',
+  '.Wemux.yml',
+  // 品牌迁移兼容窗口：存量仓库可能仍用旧名模板文件
   '.vibemux.yml',
   '.Vibemux.yml',
 ] as const
@@ -40,7 +43,7 @@ const loadProjectEnvironmentTemplateFromExecutor = async (executorId: string, re
 
     const parsed = parseProjectEnvironmentTemplate(result.content, {
       configPath,
-      source: 'vibemux-yml',
+      source: templateSourceForFilename(filename),
     })
     if (parsed) {
       return parsed
@@ -49,6 +52,9 @@ const loadProjectEnvironmentTemplateFromExecutor = async (executorId: string, re
 
   return null
 }
+
+const templateSourceForFilename = (filename: string): ProjectEnvironmentTemplateSource =>
+  filename.toLowerCase().includes('vibemux') ? 'vibemux-yml' : 'wemux-yml'
 
 const loadProjectEnvironmentTemplateFromLocalPath = (rootPath: string) => {
   const normalizedRootPath = path.resolve(rootPath)
@@ -61,7 +67,7 @@ const loadProjectEnvironmentTemplateFromLocalPath = (rootPath: string) => {
 
     const parsed = parseProjectEnvironmentTemplate(readFileSync(configPath, 'utf8'), {
       configPath,
-      source: 'vibemux-yml',
+      source: templateSourceForFilename(filename),
     })
     if (parsed) {
       return parsed

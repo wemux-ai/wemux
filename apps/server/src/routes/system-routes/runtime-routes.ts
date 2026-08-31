@@ -1,4 +1,5 @@
 // [INPUT]: Authenticated runtime/settings requests, task-scoped uploads, object storage, and worker control services.
+import { getEnv } from '@shared/env'
 // [OUTPUT]: Runtime control APIs plus task image/attachment upload and media streaming endpoints.
 // [POS]: Server system-route boundary; comment-purpose uploads store objects without creating task conversation turns.
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
@@ -931,7 +932,7 @@ export const registerRuntimeSystemRoutes = (app: Hono, requireAuth: MiddlewareHa
       client_id: CLAUDE_OAUTH_CLIENT_ID,
       redirect_uri: CLAUDE_OAUTH_REDIRECT_URI,
       response_type: 'code',
-      state: `vibemux-${Math.random().toString(36).slice(2, 10)}`,
+      state: `wemux-${Math.random().toString(36).slice(2, 10)}`,
     })
     return c.json({ authorizeUrl: `${CLAUDE_PLATFORM_BASE}/oauth/authorize?${search.toString()}` })
   })
@@ -1560,7 +1561,7 @@ export const registerRuntimeSystemRoutes = (app: Hono, requireAuth: MiddlewareHa
   // checks 为扁平检查项列表，AI 可直接逐项判断 ok/warning/error。
   app.get('/api/health/detailed', async (c) => {
     const token = c.req.header('x-health-token') || c.req.query('token')
-    const expected = process.env.WEMUX_HEALTH_TOKEN?.trim()
+    const expected = getEnv('WEMUX_HEALTH_TOKEN')?.trim()
     if (expected && token !== expected) {
       return c.json({ ok: false, message: 'unauthorized: missing or invalid x-health-token' }, 401)
     }
@@ -1617,7 +1618,7 @@ export const registerRuntimeSystemRoutes = (app: Hono, requireAuth: MiddlewareHa
         nodeVersion: process.version,
         platform: `${process.platform}/${process.arch}`,
         uptimeMs: Math.round(process.uptime() * 1000),
-        publicBaseUrl: process.env.WEMUX_PUBLIC_BASE_URL?.trim() || '',
+        publicBaseUrl: getEnv('WEMUX_PUBLIC_BASE_URL')?.trim() || '',
       },
       brand: resolveAppBrand(),
       database: {

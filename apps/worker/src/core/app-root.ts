@@ -1,4 +1,5 @@
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+import { getEnv } from '@shared/env'
 // [INPUT]: Worker module location, packaged metadata, package manifest, and optional runtime root.
 // [OUTPUT]: Stable packaged-worker roots, identity, version, launcher, and channel-aware defaults.
 // [POS]: Worker package identity boundary used before persisted configuration is available.
@@ -38,7 +39,7 @@ const hasWorkerPackageJson = (targetPath: string) => {
 }
 
 const resolveWorkerAppRoot = () => {
-  const configuredRoot = process.env.VIBEMUX_RUNTIME_ROOT?.trim()
+  const configuredRoot = getEnv('WEMUX_RUNTIME_ROOT')?.trim()
   if (configuredRoot) {
     const resolvedConfiguredRoot = path.resolve(configuredRoot)
     const currentModulePath = fileURLToPath(import.meta.url)
@@ -94,7 +95,7 @@ export const getWorkerRuntimeMetadata = () => {
 
 export const getWorkerDefaultCloudUrl = () => {
   const packageName = getWorkerPackageJson().name
-  // 兼容窗口：新老包名都识别；后续移除 vibemux-* 分支
+  // 兼容窗口：新老包名都识别；后续移除 wemux-* 分支
   if (packageName === 'vibemux-worker-preview' || packageName === 'wemux-worker-preview') {
     return 'https://wemux.xyz'
   }
@@ -149,7 +150,7 @@ export const resolveNpmWorkerInstallPrefixFromAppRoot = (appRoot: string, packag
 }
 
 export const getWorkerNpmInstallPrefix = () => {
-  const configuredPrefix = process.env.VIBEMUX_WORKER_INSTALL_PREFIX?.trim()
+  const configuredPrefix = getEnv('WEMUX_WORKER_INSTALL_PREFIX')?.trim()
   if (configuredPrefix) {
     return path.resolve(configuredPrefix)
   }

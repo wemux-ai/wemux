@@ -82,13 +82,13 @@ export const auth = betterAuth({
     type: 'postgres',
   },
   databaseHooks: {
-    // 数据隔离修复（BUG-01）：better-auth 用户写在 user 表，vibemux admin 读 users 表。
-    // 注册时同步创建 vibemux users 记录，保证邮箱注册用户对 admin 用户管理可见/可管理。
+    // 数据隔离修复（BUG-01）：better-auth 用户写在 user 表，wemux admin 读 users 表。
+    // 注册时同步创建 wemux users 记录，保证邮箱注册用户对 admin 用户管理可见/可管理。
     user: {
       create: {
         after: async (user) => {
-          await syncBetterAuthUserToVibemux(user).catch((error) => {
-            console.error('[better-auth] sync user to vibemux users failed', error)
+          await syncBetterAuthUserToWemux(user).catch((error) => {
+            console.error('[better-auth] sync user to wemux users failed', error)
           })
         },
       },
@@ -125,11 +125,11 @@ export const auth = betterAuth({
 })
 
 /**
- * 数据隔离同步（BUG-01）：better-auth 用户（user 表）→ vibemux users 表。
+ * 数据隔离同步（BUG-01）：better-auth 用户（user 表）→ wemux users 表。
  * 注册/验证后保持两表一致，确保 admin 用户管理可见并可管理邮箱注册账号。
  * passwordHash 由 ensurePasswordUser 写入随机占位（权威密码在 better-auth）。
  */
-const syncBetterAuthUserToVibemux = async (user: {
+const syncBetterAuthUserToWemux = async (user: {
   email: string
   name?: string
   emailVerified?: boolean

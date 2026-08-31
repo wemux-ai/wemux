@@ -105,7 +105,7 @@ const buildCliLauncher = (cliName, { selfRepair = false } = {}) => {
     'const scriptDir = path.dirname(fileURLToPath(import.meta.url))',
     "const appRoot = path.resolve(scriptDir, '..')",
     `process.env.WEMUX_CLI_NAME = ${JSON.stringify(cliName)}`,
-    'process.env.VIBEMUX_RUNTIME_ROOT = appRoot',
+    'process.env.WEMUX_RUNTIME_ROOT = appRoot',
   ]
   if (!selfRepair) {
     lines.push('', entryImport)
@@ -176,9 +176,9 @@ writeFileSync(
     "  return path.join(installPrefix, 'bin', binName)",
     '}',
     'const workerBin = resolveWorkerBin()',
-    "process.env.VIBEMUX_RUNTIME_ROOT = appRoot",
-    "process.env.VIBEMUX_WORKER_INSTALL_PREFIX = process.env.VIBEMUX_WORKER_INSTALL_PREFIX || installPrefix",
-    'process.env.VIBEMUX_WORKER_EXECUTABLE_PATH = workerBin',
+    "process.env.WEMUX_RUNTIME_ROOT = appRoot",
+    "process.env.WEMUX_WORKER_INSTALL_PREFIX = process.env.WEMUX_WORKER_INSTALL_PREFIX || installPrefix",
+    'process.env.WEMUX_WORKER_EXECUTABLE_PATH = workerBin',
     "await import(pathToFileURL(path.join(appRoot, 'dist-worker', 'apps', 'worker', 'src', 'index.js')).href)",
   ].join('\n') + '\n',
 )

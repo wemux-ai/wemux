@@ -1,4 +1,5 @@
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+import { getEnv } from '@shared/env'
 // [INPUT]: JSON-RPC stdin, connector bridge environment, persisted worker pairing.
 // [OUTPUT]: Authenticated JSON-RPC forwarding to the Wemux connector proxy (/api/connector/mcp).
 // [POS]: Worker official-connector stdio bridge; lets runtimes without remote MCP headers (e.g. Codex) use the connector.
@@ -12,11 +13,11 @@ const readText = async (response: Response) => response.text().catch(() => '')
 
 const resolveBridgeConfig = () => {
   const config = loadWorkerConfig()
-  const cloudUrl = process.env.VIBEMUX_MCP_CLOUD_URL?.trim() || config.cloudUrl || getWorkerDefaultCloudUrl()
-  const connectorToken = process.env.VIBEMUX_CONNECTOR_TOKEN?.trim() || ''
-  const workspaceId = process.env.VIBEMUX_MCP_WORKSPACE?.trim()
-  const actingUserId = process.env.VIBEMUX_MCP_ACTING_USER?.trim()
-  const runtimeAgentId = process.env.VIBEMUX_MCP_RUNTIME_AGENT?.trim()
+  const cloudUrl = getEnv('WEMUX_MCP_CLOUD_URL')?.trim() || config.cloudUrl || getWorkerDefaultCloudUrl()
+  const connectorToken = getEnv('WEMUX_CONNECTOR_TOKEN')?.trim() || ''
+  const workspaceId = getEnv('WEMUX_MCP_WORKSPACE')?.trim()
+  const actingUserId = getEnv('WEMUX_MCP_ACTING_USER')?.trim()
+  const runtimeAgentId = getEnv('WEMUX_MCP_RUNTIME_AGENT')?.trim()
 
   return {
     url: `${trimTrailingSlash(cloudUrl)}/api/connector/mcp`,
@@ -69,7 +70,7 @@ const forwardMessage = async (rawLine: string) => {
     : null
 
   if (!config.connectorToken) {
-    writeErrorResponse(id, 'Official connector token is not configured. Set VIBEMUX_CONNECTOR_TOKEN.')
+    writeErrorResponse(id, 'Official connector token is not configured. Set WEMUX_CONNECTOR_TOKEN.')
     return
   }
 
@@ -81,9 +82,9 @@ const forwardMessage = async (rawLine: string) => {
         'Content-Type': 'application/json',
         Accept: 'application/json, text/event-stream',
         Authorization: `Bearer ${config.connectorToken}`,
-        ...(config.workspaceId ? { 'x-vibemux-workspace': config.workspaceId } : {}),
-        ...(config.actingUserId ? { 'x-vibemux-acting-user': config.actingUserId } : {}),
-        ...(config.runtimeAgentId ? { 'x-vibemux-runtime-agent': config.runtimeAgentId } : {}),
+        ...(config.workspaceId ? { 'x-wemux-workspace': config.workspaceId } : {}),
+        ...(config.actingUserId ? { 'x-wemux-acting-user': config.actingUserId } : {}),
+        ...(config.runtimeAgentId ? { 'x-wemux-runtime-agent': config.runtimeAgentId } : {}),
       },
       body: JSON.stringify(payload),
     })

@@ -177,7 +177,7 @@ Pi 会话准备在：
   - `workerConfig.piAgentDir`
   - `~/.pi/agent`
 - Pi 会话目录不再依赖默认 CLI 路径，而是固定落到：
-  - `agentDir/sessions-vibemux/<agentDir+cwd hash>`
+  - `agentDir/sessions-wemux/<agentDir+cwd hash>`
 - 执行模型会优先走 canonical `provider/model`
 - 如果 worker 运行时提供了自定义 `baseUrl` 或模型不在当前 `models.json` 中，会生成 overlay `models.json`
 - API key 会通过 `AuthStorage.setRuntimeApiKey()` 注入 runtime 作用域
@@ -300,7 +300,7 @@ Pi 导出能力包括：
 
 Pi inspect 现在不仅会扫默认 `sessions` 目录，也会扫：
 
-- `agentDir/sessions-vibemux`
+- `agentDir/sessions-wemux`
 
 因此 worker console 可以看到 Wemux 自己管理的 Pi 会话，而不是只看到 Pi 默认 CLI 会话。
 

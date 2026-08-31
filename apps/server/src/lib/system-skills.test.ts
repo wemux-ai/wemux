@@ -3,17 +3,17 @@ import test from 'node:test'
 import {
   appendRequiredPrimaryAgentSystemSkills,
   getSystemSkillDefinitions,
-  VIBEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG,
-  VIBEMUX_DESKTOP_SANDBOX_SYSTEM_SKILL_SLUG,
-  VIBEMUX_DRIVE_WRITEBACK_SYSTEM_SKILL_SLUG,
-  VIBEMUX_MEMORY_SYSTEM_SKILL_SLUG,
-  VIBEMUX_TEST_AGENT_SYSTEM_SKILL_SLUG,
-  VIBEMUX_YML_SYSTEM_SKILL_SLUG,
+  WEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG,
+  WEMUX_DESKTOP_SANDBOX_SYSTEM_SKILL_SLUG,
+  WEMUX_DRIVE_WRITEBACK_SYSTEM_SKILL_SLUG,
+  WEMUX_MEMORY_SYSTEM_SKILL_SLUG,
+  WEMUX_TEST_AGENT_SYSTEM_SKILL_SLUG,
+  WEMUX_YML_SYSTEM_SKILL_SLUG,
 } from './system-skills'
 
 test('system skills include the mandatory wemux Agent collaboration protocol', () => {
   const skills = getSystemSkillDefinitions()
-  const collaborationSkill = skills.find((skill) => skill.slug === VIBEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG)
+  const collaborationSkill = skills.find((skill) => skill.slug === WEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG)
 
   if (!collaborationSkill) {
     assert.fail('expected built-in Wemux Agent collaboration skill to exist')
@@ -56,7 +56,7 @@ test('system skills include the mandatory wemux Agent collaboration protocol', (
 
 test('system skills include the built-in wemux YML writer package', () => {
   const skills = getSystemSkillDefinitions()
-  const vibemuxYmlSkill = skills.find((skill) => skill.slug === VIBEMUX_YML_SYSTEM_SKILL_SLUG)
+  const vibemuxYmlSkill = skills.find((skill) => skill.slug === WEMUX_YML_SYSTEM_SKILL_SLUG)
 
   if (!vibemuxYmlSkill) {
     assert.fail('expected built-in wemux YML skill to exist')
@@ -83,7 +83,7 @@ test('system skills include the built-in wemux YML writer package', () => {
 
 test('system skills include the built-in Desktop Sandbox package', () => {
   const skills = getSystemSkillDefinitions()
-  const desktopSandboxSkill = skills.find((skill) => skill.slug === VIBEMUX_DESKTOP_SANDBOX_SYSTEM_SKILL_SLUG)
+  const desktopSandboxSkill = skills.find((skill) => skill.slug === WEMUX_DESKTOP_SANDBOX_SYSTEM_SKILL_SLUG)
 
   if (!desktopSandboxSkill) {
     assert.fail('expected built-in Desktop Sandbox skill to exist')
@@ -96,7 +96,7 @@ test('system skills include the built-in Desktop Sandbox package', () => {
 
 test('system skills include the built-in Test Agent package', () => {
   const skills = getSystemSkillDefinitions()
-  const testAgentSkill = skills.find((skill) => skill.slug === VIBEMUX_TEST_AGENT_SYSTEM_SKILL_SLUG)
+  const testAgentSkill = skills.find((skill) => skill.slug === WEMUX_TEST_AGENT_SYSTEM_SKILL_SLUG)
 
   if (!testAgentSkill) {
     assert.fail('expected built-in Test Agent skill to exist')
@@ -116,13 +116,13 @@ test('primary agent config appends required system skills without duplicates', (
 
   assert.deepEqual((appended.skills as Array<{ slug?: string } | string>).map((skill) => (
     typeof skill === 'string' ? skill : skill.slug
-  )), ['existing-skill', VIBEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG, VIBEMUX_YML_SYSTEM_SKILL_SLUG, VIBEMUX_DESKTOP_SANDBOX_SYSTEM_SKILL_SLUG, VIBEMUX_TEST_AGENT_SYSTEM_SKILL_SLUG, VIBEMUX_DRIVE_WRITEBACK_SYSTEM_SKILL_SLUG, VIBEMUX_MEMORY_SYSTEM_SKILL_SLUG])
+  )), ['existing-skill', WEMUX_AGENT_OPS_SYSTEM_SKILL_SLUG, WEMUX_YML_SYSTEM_SKILL_SLUG, WEMUX_DESKTOP_SANDBOX_SYSTEM_SKILL_SLUG, WEMUX_TEST_AGENT_SYSTEM_SKILL_SLUG, WEMUX_DRIVE_WRITEBACK_SYSTEM_SKILL_SLUG, WEMUX_MEMORY_SYSTEM_SKILL_SLUG])
   assert.equal((appendedAgain.skills as unknown[]).length, 7)
 })
 
 test('system skills include the Drive writeback package', () => {
   const skills = getSystemSkillDefinitions()
-  const writebackSkill = skills.find((skill) => skill.slug === VIBEMUX_DRIVE_WRITEBACK_SYSTEM_SKILL_SLUG)
+  const writebackSkill = skills.find((skill) => skill.slug === WEMUX_DRIVE_WRITEBACK_SYSTEM_SKILL_SLUG)
 
   if (!writebackSkill) {
     assert.fail('expected built-in Drive writeback skill to exist')

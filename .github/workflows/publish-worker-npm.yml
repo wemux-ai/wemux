@@ -84,9 +84,9 @@ jobs:
         shell: bash
         run: |
           PACKAGE_ROOT=".artifacts/worker-npm/${PACKAGE_NAME}"
-          VIBEMUX_WORKER_HOME="${RUNNER_TEMP}/vbx-smoke" node "${PACKAGE_ROOT}/bin/vbx.mjs" --help
-          VIBEMUX_WORKER_HOME="${RUNNER_TEMP}/vbx-smoke" node "${PACKAGE_ROOT}/bin/vibemux.mjs" --version
-          VIBEMUX_WORKER_HOME="${RUNNER_TEMP}/vbx-smoke" node "${PACKAGE_ROOT}/bin/cli.mjs" daemon --help
+          WEMUX_WORKER_HOME="${RUNNER_TEMP}/vbx-smoke" node "${PACKAGE_ROOT}/bin/vbx.mjs" --help
+          WEMUX_WORKER_HOME="${RUNNER_TEMP}/vbx-smoke" node "${PACKAGE_ROOT}/bin/wemux.mjs" --version
+          WEMUX_WORKER_HOME="${RUNNER_TEMP}/vbx-smoke" node "${PACKAGE_ROOT}/bin/cli.mjs" daemon --help
         env:
           PACKAGE_NAME: ${{ steps.prep.outputs.package_name }}
 

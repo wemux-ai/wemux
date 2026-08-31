@@ -8,7 +8,7 @@ import { z } from 'zod'
 import { VIBEMUX_READ_ONLY_MCP_TOOL_ANNOTATIONS } from '@shared/mcp'
 import { INBOX_QUERY_SCOPES, type InboxQueryScope } from '@shared/inbox'
 import { ErrorCode, McpError, type McpServer } from './sdk'
-import { requireTask, toToolResult, type VibemuxMcpContext } from './vibemux-mcp-context'
+import { requireTask, toToolResult, type WemuxMcpContext } from './wemux-mcp-context'
 import { getUserById } from '../../repositories/auth'
 import { appendTaskComment, publishTaskCommentEvent } from '../../services/task-comment-service'
 import { getInboxItemByIdInternal, listInboxGroups, listInboxItems, markInboxGroupRead, markInboxItemRead } from '../../services/inbox-service'
@@ -16,7 +16,7 @@ import { saveTask } from '../../storage/app-state-store'
 
 const inboxSectionSchema = z.enum(INBOX_QUERY_SCOPES as [InboxQueryScope, ...InboxQueryScope[]]).optional()
 
-const requireUserInboxItem = async (ctx: VibemuxMcpContext, itemId: string) => {
+const requireUserInboxItem = async (ctx: WemuxMcpContext, itemId: string) => {
   const item = await getInboxItemByIdInternal(itemId)
   if (!item || item.recipientType !== 'user' || item.recipientId !== ctx.userId) {
     throw new McpError(ErrorCode.InvalidParams, '收件箱条目不存在或无权访问。')
@@ -24,7 +24,7 @@ const requireUserInboxItem = async (ctx: VibemuxMcpContext, itemId: string) => {
   return item
 }
 
-export const registerVibemuxMcpInboxTools = (server: McpServer, ctx: VibemuxMcpContext) => {
+export const registerWemuxMcpInboxTools = (server: McpServer, ctx: WemuxMcpContext) => {
   server.registerTool('inbox.list', {
     title: 'List User Inbox Items',
     description: '列出当前用户的收件箱条目（任务指派、评论提及、工作区需要输入等），按时间倒序，含未读分组计数。',

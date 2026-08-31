@@ -17,8 +17,8 @@ Hybrid 模式是一种三段式开发架构：
 
 | 服务 | Hybrid 地址 | 宿主机直连 |
 |------|------------|----------|
-| 前端 | http://app.vibemux.localtest.me:15173 | - |
-| 后端 | http://app.vibemux.localtest.me:18989 | http://127.0.0.1:18989 |
+| 前端 | http://app.wemux.localtest.me:15173 | - |
+| 后端 | http://app.wemux.localtest.me:18989 | http://127.0.0.1:18989 |
 | Worker Console | http://127.0.0.1:48121 | http://127.0.0.1:48121 |
 
 ## 启动命令

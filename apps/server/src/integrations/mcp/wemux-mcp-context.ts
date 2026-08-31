@@ -12,7 +12,7 @@ import { ErrorCode, McpError } from './sdk'
 
 export const JSON_MIME_TYPE = 'application/json'
 
-export type VibemuxMcpContext = {
+export type WemuxMcpContext = {
   userId: string
   runtimeAgentId?: string
   getState: () => AppState
@@ -25,7 +25,7 @@ type CreatorIdentityLookups = {
 }
 
 export const resolveMcpCreatorIdentity = (
-  ctx: Pick<VibemuxMcpContext, 'runtimeAgentId' | 'userId'>,
+  ctx: Pick<WemuxMcpContext, 'runtimeAgentId' | 'userId'>,
   lookups: CreatorIdentityLookups = { getAgentById: getAgent, getUserById },
 ): CreatorIdentity => {
   const runtimeAgentId = ctx.runtimeAgentId?.trim()
@@ -184,7 +184,7 @@ export const requireProject = (state: AppState, projectId: string) => {
 }
 
 export const listProjectsForMcpActor = (
-  ctx: Pick<VibemuxMcpContext, 'runtimeAgentId' | 'userId'>,
+  ctx: Pick<WemuxMcpContext, 'runtimeAgentId' | 'userId'>,
   state: AppState,
 ) => {
   const runtimeAgentId = ctx.runtimeAgentId?.trim()
@@ -205,7 +205,7 @@ export const listProjectsForMcpActor = (
 }
 
 export const requireProjectForMcpActor = (
-  ctx: Pick<VibemuxMcpContext, 'runtimeAgentId' | 'userId'>,
+  ctx: Pick<WemuxMcpContext, 'runtimeAgentId' | 'userId'>,
   state: AppState,
   projectId: string,
 ) => {
