@@ -1,0 +1,31 @@
+name: Notify commercial composition
+
+# Core pushes drive commercial deployments: wemux-cloud composes
+# core@<branch> with its main branch and ships the matching line.
+on:
+  push:
+    branches:
+      - main
+      - preview
+
+permissions: {}
+
+concurrency:
+  group: notify-commercial-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch core-pushed to wemux-cloud
+        env:
+          GH_TOKEN: ${{ secrets.WEMUX_CLOUD_DISPATCH_TOKEN }}
+          BRANCH: ${{ github.ref_name }}
+        run: |
+          curl --retry 3 --retry-all-errors --connect-timeout 10 --max-time 30 -fsSL \
+            -X POST https://api.github.com/repos/wemux-ai/wemux-cloud/dispatches \
+            -H "Authorization: Bearer $GH_TOKEN" \
+            -H "Accept: application/vnd.github+json" \
+            -d "{\"event_type\":\"core-pushed\",\"client_payload\":{\"branch\":\"$BRANCH\"}}"
+          echo "Dispatched core-pushed branch=$BRANCH"
