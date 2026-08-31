@@ -13,12 +13,6 @@ on:
       - 'NOTICE'
       - 'CODEOWNERS'
   workflow_dispatch:
-    inputs:
-      skip_webhook:
-        description: 'Build and push image only'
-        required: false
-        default: false
-        type: boolean
 
 permissions:
   contents: read
@@ -125,55 +119,3 @@ jobs:
             ${{ steps.prep.outputs.image }}:preview-${{ steps.prep.outputs.sha_short }}
           cache-from: type=gha,scope=control-plane-preview
           cache-to: type=gha,scope=control-plane-preview,mode=max
-
-  deploy:
-    needs: [typecheck, build-image]
-    runs-on: ubuntu-latest
-    environment: preview
-    env:
-      DOKPLOY_SHARED_WEBHOOK_URL: ${{ secrets.DOKPLOY_SHARED_WEBHOOK_URL }}
-      DOKPLOY_PREVIEW_WEBHOOK_URL: ${{ secrets.DOKPLOY_PREVIEW_WEBHOOK_URL }}
-      SKIP_WEBHOOK: ${{ github.event_name == 'workflow_dispatch' && inputs.skip_webhook || 'false' }}
-      EXPECTED_WORKER_INSTALLER_VERSION: ${{ needs.build-image.outputs.worker_installer_package_version }}
-
-    steps:
-      - name: Ensure Preview Webhook Is Configured
-        if: ${{ env.SKIP_WEBHOOK != 'true' }}
-        run: |
-          if [ -z "$DOKPLOY_SHARED_WEBHOOK_URL" ] && [ -z "$DOKPLOY_PREVIEW_WEBHOOK_URL" ]; then
-            echo "Missing DOKPLOY_SHARED_WEBHOOK_URL or DOKPLOY_PREVIEW_WEBHOOK_URL secret" >&2
-            exit 1
-          fi
-
-      - name: Trigger Dokploy Preview Deployment
-        if: ${{ env.SKIP_WEBHOOK != 'true' }}
-        run: |
-          WEBHOOK_URL="${DOKPLOY_PREVIEW_WEBHOOK_URL:-$DOKPLOY_SHARED_WEBHOOK_URL}"
-          curl --retry 3 --retry-all-errors --connect-timeout 10 --max-time 60 -fsSL -X POST "$WEBHOOK_URL"
-
-      - name: Verify Preview Worker Installer Version
-        if: ${{ env.SKIP_WEBHOOK != 'true' }}
-        env:
-          PREVIEW_BASE_URL: https://wemux.xyz
-        shell: bash
-        run: |
-          max_attempts=90
-          for attempt in $(seq 1 "$max_attempts"); do
-            manifest="$(curl -fsSL "$PREVIEW_BASE_URL/install/worker/manifest.json" || true)"
-            package_version="$(python3 -c 'import json,sys; sys.stdout.write((json.loads(sys.argv[1]) or {}).get("packageVersion", "") or "")' "$manifest" 2>/dev/null || true)"
-
-            if [ "$package_version" = "$EXPECTED_WORKER_INSTALLER_VERSION" ]; then
-              echo "Preview worker installer is live: $package_version"
-              curl -fsSL "$PREVIEW_BASE_URL/install/worker.sh" | grep -F "install_nvm()" >/dev/null
-              echo "Preview worker installer contains automatic nvm bootstrap."
-              exit 0
-            fi
-
-            echo "Waiting for preview worker installer $EXPECTED_WORKER_INSTALLER_VERSION; current: ${package_version:-unavailable} (attempt $attempt/$max_attempts)"
-            sleep 5
-          done
-
-          echo "Preview worker installer did not update to $EXPECTED_WORKER_INSTALLER_VERSION." >&2
-          echo "Current manifest:" >&2
-          curl -fsSL "$PREVIEW_BASE_URL/install/worker/manifest.json" >&2 || true
-          exit 1
