@@ -7,6 +7,23 @@ import { getEnv } from '@shared/env'
 import { existsSync } from 'node:fs'
 import { pathToFileURL } from 'node:url'
 import path from 'node:path'
+import {
+  enterpriseBackgroundServices,
+  enterpriseDevSeedInitializers,
+  enterpriseLandingEntries,
+  enterpriseMcpToolRegistrations,
+  enterpriseRouteRegistrations,
+  enterpriseStoreInitializers,
+  type CommercialExtensionActivationContext,
+} from './extension-registry'
+import { registerAppBrand } from './services/brand'
+import { registerAdminAnalyticsProvider } from './services/gate/admin-analytics-gate'
+import {
+  registerCommercialGate,
+  registerCreditInsufficientError,
+} from './services/gate/commercial-gate'
+import { registerHostedModelGate } from './services/gate/hosted-model-gate'
+import { registerManagedCloudGate } from './services/gate/managed-cloud-gate'
 
 const builtExtensionEntry = path.resolve(process.cwd(), 'dist-server/apps/server/src/enterprise/index.js')
 const sourceExtensionEntry = path.resolve(process.cwd(), 'apps/server/src/enterprise/index.ts')
@@ -30,6 +47,32 @@ export const loadCommercialServerExtension = async (): Promise<boolean> => {
     return false
   }
 
-  await import(pathToFileURL(entry).href)
+  const mod = (await import(pathToFileURL(entry).href)) as {
+    activateCommercialExtension?: (ctx: CommercialExtensionActivationContext) => void | Promise<void>
+  }
+
+  // 新契约：核心把真实注册表以参数交给扩展，避免双包各自持有模块状态。
+  // 旧产物无 activate 导出时回退为副作用加载（行为与历史版本一致）。
+  if (typeof mod.activateCommercialExtension === 'function') {
+    const ctx: CommercialExtensionActivationContext = {
+      registries: {
+        enterpriseRouteRegistrations,
+        enterpriseBackgroundServices,
+        enterpriseStoreInitializers,
+        enterpriseDevSeedInitializers,
+        enterpriseMcpToolRegistrations,
+        enterpriseLandingEntries,
+      },
+      registerAppBrand,
+      gates: {
+        registerCommercialGate,
+        registerCreditInsufficientError,
+        registerManagedCloudGate,
+        registerHostedModelGate,
+        registerAdminAnalyticsProvider,
+      },
+    }
+    await mod.activateCommercialExtension(ctx)
+  }
   return true
 }
