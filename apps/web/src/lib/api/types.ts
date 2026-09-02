@@ -1867,8 +1867,7 @@ export type AdminAccountSystemResponse = {
 }
 
 export type CommunityChannelsConfig = {
-  telegramUrl?: string
-  feishuUrl?: string
+  discordUrl?: string
   wechatQrUrl?: string
 }
 

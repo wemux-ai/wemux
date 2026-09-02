@@ -1,6 +1,6 @@
 // [INPUT]: 已鉴权 Hono app + requireAuth；社区渠道配置（meta）与二维码上传
 // [OUTPUT]: /api/site/community-channels（公开）、/api/site/community/wechat-qr/:filename（公开）、/api/admin/settings/community-channels（owner）
-// [POS]: 社区渠道（Telegram / 飞书 / 微信群二维码）公开读取与超管配置 HTTP 协议层
+// [POS]: 社区渠道（Discord / 微信群二维码）公开读取与超管配置 HTTP 协议层
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
 
 import type { Hono, MiddlewareHandler } from 'hono'
@@ -15,22 +15,18 @@ import { resolveAdminAccess } from './admin-routes'
 const COMMUNITY_CHANNELS_META_KEY = 'settings:community-channels'
 
 export type CommunityChannelsConfig = {
-  telegramUrl?: string
-  feishuUrl?: string
+  discordUrl?: string
   wechatQrUrl?: string
 }
 
 const isAbsoluteHttpUrl = (value: string) => /^https?:\/\//i.test(value.trim())
 const isSafeImageUrl = (value: string) => value.trim().startsWith('/') || isAbsoluteHttpUrl(value)
 
-/** 配置校验：Telegram / 飞书必须是 http(s) 链接；微信群二维码允许链接或相对路径。
+/** 配置校验：Discord 必须是 http(s) 链接；微信群二维码允许链接或相对路径。
  * 返回错误消息；null 表示合法。 */
 export const validateCommunityChannels = (value: CommunityChannelsConfig): string | null => {
-  if (value.telegramUrl && !isAbsoluteHttpUrl(value.telegramUrl)) {
-    return 'Telegram 链接必须是 http(s) 地址。'
-  }
-  if (value.feishuUrl && !isAbsoluteHttpUrl(value.feishuUrl)) {
-    return '飞书群链接必须是 http(s) 地址。'
+  if (value.discordUrl && !isAbsoluteHttpUrl(value.discordUrl)) {
+    return 'Discord 邀请链接必须是 http(s) 地址。'
   }
   if (value.wechatQrUrl && !isSafeImageUrl(value.wechatQrUrl)) {
     return '微信群二维码必须是 http(s) 图片地址或相对路径。'
@@ -80,7 +76,7 @@ export const registerCommunityChannelRoutes = (app: Hono, requireAuth: Middlewar
   app.get('/api/site/community-channels', async (c) => {
     const stored = getMeta<CommunityChannelsConfig>(COMMUNITY_CHANNELS_META_KEY, {})
     const channels: CommunityChannelsConfig = {}
-    for (const key of ['telegramUrl', 'feishuUrl', 'wechatQrUrl'] as const) {
+    for (const key of ['discordUrl', 'wechatQrUrl'] as const) {
       if (typeof stored[key] === 'string') {
         channels[key] = stored[key]
       }
@@ -105,7 +101,7 @@ export const registerCommunityChannelRoutes = (app: Hono, requireAuth: Middlewar
   app.get('/api/admin/settings/community-channels', requireAuth, requireOwner, async (c) => {
     const stored = getMeta<CommunityChannelsConfig>(COMMUNITY_CHANNELS_META_KEY, {})
     const channels: CommunityChannelsConfig = {}
-    for (const key of ['telegramUrl', 'feishuUrl', 'wechatQrUrl'] as const) {
+    for (const key of ['discordUrl', 'wechatQrUrl'] as const) {
       if (typeof stored[key] === 'string') {
         channels[key] = stored[key]
       }
@@ -116,14 +112,12 @@ export const registerCommunityChannelRoutes = (app: Hono, requireAuth: Middlewar
   app.put('/api/admin/settings/community-channels', requireAuth, requireOwner, async (c) => {
     const actorId = getUserIdFromHeader(c)!
     const payload = z.object({
-      telegramUrl: z.string().trim().optional(),
-      feishuUrl: z.string().trim().optional(),
+      discordUrl: z.string().trim().optional(),
       wechatQrUrl: z.string().trim().optional(),
     }).parse(await c.req.json().catch(() => ({})))
 
     const next: CommunityChannelsConfig = {
-      telegramUrl: payload.telegramUrl ?? '',
-      feishuUrl: payload.feishuUrl ?? '',
+      discordUrl: payload.discordUrl ?? '',
       wechatQrUrl: payload.wechatQrUrl ?? '',
     }
     const validationError = validateCommunityChannels(next)

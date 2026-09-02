@@ -193,21 +193,12 @@ export function AdminSettingsPage() {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-1.5">
-                <Label htmlFor="community-telegram-url">{t('admin.settings.telegramLabel')}</Label>
+                <Label htmlFor="community-discord-url">{t('admin.settings.discordLabel')}</Label>
                 <Input
-                  id="community-telegram-url"
-                  value={channels.telegramUrl ?? ''}
-                  onChange={(event) => setChannels((current) => ({ ...current, telegramUrl: event.target.value }))}
-                  placeholder="https://t.me/..."
-                />
-              </div>
-              <div className="space-y-1.5">
-                <Label htmlFor="community-feishu-url">{t('admin.settings.feishuLabel')}</Label>
-                <Input
-                  id="community-feishu-url"
-                  value={channels.feishuUrl ?? ''}
-                  onChange={(event) => setChannels((current) => ({ ...current, feishuUrl: event.target.value }))}
-                  placeholder="https://applink.feishu.cn/..."
+                  id="community-discord-url"
+                  value={channels.discordUrl ?? ''}
+                  onChange={(event) => setChannels((current) => ({ ...current, discordUrl: event.target.value }))}
+                  placeholder="https://discord.gg/..."
                 />
               </div>
               <div className="space-y-1.5">
