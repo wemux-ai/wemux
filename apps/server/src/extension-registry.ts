@@ -4,6 +4,14 @@
 //        阶段 3 拆仓后本文件留在核心；商业扩展在云仓向同一注册表登记。
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
 
+import { registerAdminAnalyticsProvider } from './services/gate/admin-analytics-gate'
+import {
+  registerCommercialGate,
+  registerCreditInsufficientError,
+} from './services/gate/commercial-gate'
+import { registerHostedModelGate } from './services/gate/hosted-model-gate'
+import { registerManagedCloudGate } from './services/gate/managed-cloud-gate'
+
 export type EnterpriseRouteRegistration = (app: unknown, requireAuth: unknown) => void
 
 export interface EnterpriseBackgroundService {
@@ -35,3 +43,27 @@ export interface EnterpriseLandingEntry {
 }
 
 export const enterpriseLandingEntries: EnterpriseLandingEntry[] = []
+
+/**
+ * 商业扩展激活上下文：loader 显式把核心侧注册表/品牌/gate 注入器传递给扩展入口。
+ * 扩展产物与核心产物可能被独立打包（esbuild per-entry），模块级单例在两侧
+ * 各有一份拷贝；跨包状态必须以参数传递，禁止扩展直接 import 核心可变模块。
+ */
+export interface CommercialExtensionActivationContext {
+  registries: {
+    enterpriseRouteRegistrations: EnterpriseRouteRegistration[]
+    enterpriseBackgroundServices: EnterpriseBackgroundService[]
+    enterpriseStoreInitializers: EnterpriseStoreInitializer[]
+    enterpriseDevSeedInitializers: Array<() => void | Promise<void>>
+    enterpriseMcpToolRegistrations: Array<(server: unknown, ctx: unknown) => void>
+    enterpriseLandingEntries: EnterpriseLandingEntry[]
+  }
+  registerAppBrand: (brand: { name: string; site: string; edition: string }) => void
+  gates: {
+    registerCommercialGate: typeof registerCommercialGate
+    registerCreditInsufficientError: typeof registerCreditInsufficientError
+    registerManagedCloudGate: typeof registerManagedCloudGate
+    registerHostedModelGate: typeof registerHostedModelGate
+    registerAdminAnalyticsProvider: typeof registerAdminAnalyticsProvider
+  }
+}
