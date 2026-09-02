@@ -97,7 +97,7 @@ jobs:
         shell: bash
         run: |
           package_version="$(node -p "require('./package.json').version")"
-          echo "image=ghcr.io/${GITHUB_REPOSITORY,,}/control-plane" >> "$GITHUB_OUTPUT"
+          echo "image=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
           echo "sha_short=${GITHUB_SHA::12}" >> "$GITHUB_OUTPUT"
           echo "sha_short_8=${GITHUB_SHA::8}" >> "$GITHUB_OUTPUT"
           echo "package_version=${package_version}" >> "$GITHUB_OUTPUT"

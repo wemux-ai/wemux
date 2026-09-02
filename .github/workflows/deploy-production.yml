@@ -72,7 +72,7 @@ jobs:
         id: prep
         shell: bash
         run: |
-          echo "image=ghcr.io/${GITHUB_REPOSITORY,,}/control-plane" >> "$GITHUB_OUTPUT"
+          echo "image=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
           echo "sha_short=${GITHUB_SHA::12}" >> "$GITHUB_OUTPUT"
 
       - name: Build and Push Production Image
