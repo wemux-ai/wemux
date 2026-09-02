@@ -1,6 +1,6 @@
 // [INPUT]: 公开接口 /api/site/community-channels + 环境变量社区渠道默认值
 // [OUTPUT]: useCommunityChannels() hook / loadCommunityChannels()
-// [POS]: 社区渠道（Telegram / 飞书 / 微信群二维码）前端读取；admin 保存后需 clearCommunityChannelsCache()
+// [POS]: 社区渠道（Discord / 微信群二维码）前端读取；admin 保存后需 clearCommunityChannelsCache()
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
 
 import { useEffect, useState } from 'react'
@@ -20,8 +20,7 @@ const mergeCommunityChannels = (remote: RemoteCommunityChannels | null): Communi
     remote && key in remote ? (remote[key] ?? '') : env[key]
   )
   return {
-    feishuUrl: pick('feishuUrl'),
-    telegramUrl: pick('telegramUrl'),
+    discordUrl: pick('discordUrl'),
     wechatQrUrl: pick('wechatQrUrl'),
   }
 }

@@ -7,8 +7,7 @@ type RuntimeEnv = ImportMeta['env'] & {
   VITE_BILLING_DEBUG_ENABLED?: string
   VITE_DEMO_BOOKING_URL?: string
   VITE_DEMO_EMAIL?: string
-  VITE_COMMUNITY_FEISHU_URL?: string
-  VITE_COMMUNITY_TELEGRAM_URL?: string
+  VITE_COMMUNITY_DISCORD_URL?: string
   VITE_COMMUNITY_WECHAT_QR_URL?: string
 }
 
@@ -17,8 +16,6 @@ const LOOPBACK_HOSTNAMES = new Set(['127.0.0.1', 'localhost', '[::1]', '::1'])
 const LOCAL_PREVIEW_SITE_SUFFIXES = ['.vibemux.localtest.me', '.wemux.localtest.me']
 const PREVIEW_SITE_HOSTS = ['vibemux.xyz', 'wemux.xyz']
 const PRODUCTION_SITE_HOSTS = ['vibemux.com', 'wemux.ai']
-const DEFAULT_COMMUNITY_FEISHU_URL = 'https://applink.feishu.cn/client/chat/chatter/add_by_link?link_token=698nc030-32ae-4919-af6d-710ba1b8b52c'
-const DEFAULT_COMMUNITY_TELEGRAM_URL = 'https://t.me/+xl4Ie1jyDXU1MjY9'
 const isPrivateIpv4Hostname = (hostname: string) => /^10\./.test(hostname)
   || /^192\.168\./.test(hostname)
   || /^172\.(1[6-9]|2\d|3[0-1])\./.test(hostname)
@@ -405,7 +402,6 @@ export const getDemoBookingUrl = () => getEnvValue('VITE_DEMO_BOOKING_URL')
 export const getDemoEmail = () => (getRuntimeEnv().VITE_DEMO_EMAIL ?? '').trim()
 
 export const getCommunityChannels = () => ({
-  feishuUrl: (getRuntimeEnv().VITE_COMMUNITY_FEISHU_URL ?? '').trim() || DEFAULT_COMMUNITY_FEISHU_URL,
-  telegramUrl: (getRuntimeEnv().VITE_COMMUNITY_TELEGRAM_URL ?? '').trim() || DEFAULT_COMMUNITY_TELEGRAM_URL,
+  discordUrl: (getRuntimeEnv().VITE_COMMUNITY_DISCORD_URL ?? '').trim(),
   wechatQrUrl: (getRuntimeEnv().VITE_COMMUNITY_WECHAT_QR_URL ?? '').trim(),
 })

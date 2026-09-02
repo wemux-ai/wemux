@@ -24,9 +24,8 @@ type CommunityJoinDialogProps = {
 }
 
 export function CommunityJoinDialog({ language, open, onOpenChange }: CommunityJoinDialogProps) {
-  const { feishuUrl, telegramUrl, wechatQrUrl } = useCommunityChannels()
-  const hasFeishuLink = isSafeExternalUrl(feishuUrl)
-  const hasTelegramLink = isSafeExternalUrl(telegramUrl)
+  const { discordUrl, wechatQrUrl } = useCommunityChannels()
+  const hasDiscordLink = isSafeExternalUrl(discordUrl)
   const hasWechatQr = isSafeImageUrl(wechatQrUrl)
 
   return (
@@ -46,47 +45,23 @@ export function CommunityJoinDialog({ language, open, onOpenChange }: CommunityJ
           <section className="px-5 py-4">
             <div className="flex items-start justify-between gap-4">
               <div className="min-w-0">
-                <h3 className="text-sm font-medium text-zinc-100">Telegram</h3>
+                <h3 className="text-sm font-medium text-zinc-100">Discord</h3>
                 <p className="mt-1 text-xs leading-5 text-zinc-500">
-                  {text(language, '适合跨时区交流与接收社区讨论。', 'For cross-timezone discussion and community updates.')}
+                  {text(language, '英文社区：跨时区交流、公告与产品反馈。', 'English-speaking community: cross-timezone discussion, announcements, and feedback.')}
                 </p>
               </div>
-              {hasTelegramLink ? (
+              {hasDiscordLink ? (
                 <Button asChild className="h-8 shrink-0 rounded-md bg-zinc-100 px-2.5 text-xs font-medium text-zinc-950 hover:bg-zinc-200">
-                  <a href={telegramUrl} target="_blank" rel="noreferrer">
-                    {text(language, '打开 Telegram', 'Open Telegram')}
+                  <a href={discordUrl} target="_blank" rel="noreferrer">
+                    {text(language, '打开 Discord', 'Open Discord')}
                     <ExternalLink className="ml-1.5 h-3.5 w-3.5" />
                   </a>
                 </Button>
               ) : null}
             </div>
-            {!hasTelegramLink ? (
+            {!hasDiscordLink ? (
               <p className="mt-3 text-[11px] text-zinc-600">
-                {text(language, 'Telegram 社群链接配置后会在这里显示。', 'The Telegram group link will appear here once configured.')}
-              </p>
-            ) : null}
-          </section>
-
-          <section className="px-5 py-4">
-            <div className="flex items-start justify-between gap-4">
-              <div className="min-w-0">
-                <h3 className="text-sm font-medium text-zinc-100">{text(language, '飞书群', 'Feishu group')}</h3>
-                <p className="mt-1 text-xs leading-5 text-zinc-500">
-                  {text(language, '适合获取公告、参与讨论和提交产品反馈。', 'For announcements, discussion, and product feedback.')}
-                </p>
-              </div>
-              {hasFeishuLink ? (
-                <Button asChild className="h-8 shrink-0 rounded-md bg-zinc-100 px-2.5 text-xs font-medium text-zinc-950 hover:bg-zinc-200">
-                  <a href={feishuUrl} target="_blank" rel="noreferrer">
-                    {text(language, '打开飞书', 'Open Feishu')}
-                    <ExternalLink className="ml-1.5 h-3.5 w-3.5" />
-                  </a>
-                </Button>
-              ) : null}
-            </div>
-            {!hasFeishuLink ? (
-              <p className="mt-3 text-[11px] text-zinc-600">
-                {text(language, '飞书群链接配置后会在这里显示。', 'The Feishu group link will appear here once configured.')}
+                {text(language, 'Discord 社群链接配置后会在这里显示。', 'The Discord community link will appear here once configured.')}
               </p>
             ) : null}
           </section>
@@ -99,7 +74,7 @@ export function CommunityJoinDialog({ language, open, onOpenChange }: CommunityJ
               <div className="min-w-0">
                 <h3 className="text-sm font-medium text-zinc-100">{text(language, '微信群', 'WeChat group')}</h3>
                 <p className="mt-1 text-xs leading-5 text-zinc-500">
-                  {text(language, '使用微信扫描群二维码加入。', 'Scan the group QR code with WeChat to join.')}
+                  {text(language, '中文社区：使用微信扫描群二维码加入。', 'Chinese-speaking community: scan the group QR code with WeChat to join.')}
                 </p>
               </div>
             </div>
@@ -131,20 +106,14 @@ export function CommunityLinkList({
   language: string
 }) {
   const [open, setOpen] = useState(false)
-  const { feishuUrl, telegramUrl } = useCommunityChannels()
-  const hasFeishuLink = isSafeExternalUrl(feishuUrl)
-  const hasTelegramLink = isSafeExternalUrl(telegramUrl)
+  const { discordUrl } = useCommunityChannels()
+  const hasDiscordLink = isSafeExternalUrl(discordUrl)
 
   return (
     <>
-      {hasTelegramLink ? (
-        <a className={className} href={telegramUrl} target="_blank" rel="noreferrer">
-          Telegram
-        </a>
-      ) : null}
-      {hasFeishuLink ? (
-        <a className={className} href={feishuUrl} target="_blank" rel="noreferrer">
-          {text(language, '飞书群', 'Feishu group')}
+      {hasDiscordLink ? (
+        <a className={className} href={discordUrl} target="_blank" rel="noreferrer">
+          Discord
         </a>
       ) : null}
       <button type="button" className={className} onClick={() => setOpen(true)}>
