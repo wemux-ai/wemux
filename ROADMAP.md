@@ -12,6 +12,7 @@ repository under the Apache-2.0 license.
 
 ## Next
 
+- **Agent Computer** — give every agent (and human) a remotely accessible computer: agent-driven with visible control and instant human takeover, on host machines and sandbox containers ([roadmap discussion #2](https://github.com/wemux-ai/wemux/discussions/2))
 - Broader agent ecosystem integrations
 - Continued reliability work across control plane and executor routing
 - Documentation and onboarding improvements
