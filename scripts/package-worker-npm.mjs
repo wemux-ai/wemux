@@ -49,6 +49,7 @@ const workerPackageJson = {
   version: finalVersion,
   private: false,
   type: 'module',
+  license: 'Apache-2.0',
   packageManager: rootPackageJson.packageManager,
   bin: {
     vbx: './bin/vbx.mjs',

@@ -2,12 +2,16 @@
   "name": "wemux",
   "version": "0.3.130",
   "description": "wemux — an AI delivery platform where workers execute code tasks on real device nodes: self-hostable control plane, web console, and worker daemon (monorepo).",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/wemux-ai/wemux.git"
   },
+  "bugs": "https://github.com/wemux-ai/wemux/issues",
   "private": true,
+  "engines": {
+    "node": ">=20"
+  },
   "packageManager": "pnpm@10.24.0",
   "type": "module",
   "scripts": {
