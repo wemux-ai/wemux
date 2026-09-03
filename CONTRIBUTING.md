@@ -43,7 +43,7 @@ Wemux 本身就是一个大量由 Agent 参与开发的 AI 原生项目，因此
 - 使用、安装、部署和排障问题 → GitHub Discussions 的 **Q&A** 分类
 - 开放式想法、产品方向和方案比较 → GitHub Discussions 的 **Ideas** 分类
 - 使用案例、项目展示和实践经验 → GitHub Discussions 的 **Show and tell** 分类
-- 维护者发布的路线图和版本方向 → GitHub Discussions 的 **Roadmap** 分类
+- 维护者发布的路线图和版本方向 → GitHub Discussions（标题带 `[roadmap]` 前缀，见 [ROADMAP.md](ROADMAP.md)）
 - 安全漏洞 → 按 [SECURITY.md](SECURITY.md) 私下报告，不要开公开 Issue 或 Discussion
 
 不要把“想法”直接写成未经拆解的工程 Issue；维护者会将获得确认的想法转换为带验收标准的 Engineering task。Issue 和 Discussion 都应避免粘贴密钥、token、私有仓库内容或用户数据。
