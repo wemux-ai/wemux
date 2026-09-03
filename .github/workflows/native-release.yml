@@ -59,6 +59,9 @@ jobs:
       - name: Build static renderer
         run: pnpm build:native:web-static
 
+      - name: Build meeting runtime
+        run: pnpm build:meeting-runtime
+
       - name: Build Electron artifacts
         working-directory: apps/desktop
         env:
