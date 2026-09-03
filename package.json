@@ -1,6 +1,6 @@
 {
   "name": "wemux",
-  "version": "0.3.130",
+  "version": "0.3.131",
   "description": "wemux — an AI delivery platform where workers execute code tasks on real device nodes: self-hostable control plane, web console, and worker daemon (monorepo).",
   "license": "Apache-2.0",
   "repository": {
