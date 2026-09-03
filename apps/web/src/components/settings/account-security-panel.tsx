@@ -124,7 +124,16 @@ export function AccountSecurityPanel({
       return
     }
     await run(async () => {
-      await betterAuthClient.unlinkAccount({ providerId: 'google' })
+      // better-auth >= 1.7：unlinkAccount 只接受行级 accountId，需先拉取账号列表定位 google 绑定
+      const { data: accounts, error } = await betterAuthClient.listAccounts()
+      if (error || !accounts) {
+        throw new Error(error?.message ?? tr('获取账号列表失败', 'Failed to load linked accounts'))
+      }
+      const google = accounts.find((account) => account.providerId === 'google')
+      if (!google) {
+        throw new Error(tr('未找到 Google 账号绑定', 'Google account is not linked'))
+      }
+      await betterAuthClient.unlinkAccount({ accountId: google.accountId })
     })
   }
 
