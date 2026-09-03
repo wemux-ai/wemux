@@ -247,7 +247,10 @@ export type GitHubAppAuthorizeUrlResponse = {
 
 export type GitHubAppConnectUrlResponse = {
   configured: true
-  url: string
+  url?: string
+  alreadyInstalled?: boolean
+  installations?: GitHubAppInstallationSummary[]
+  message?: string
 }
 
 export type ProjectGitCredentialBinding = {
