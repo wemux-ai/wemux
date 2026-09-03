@@ -143,7 +143,10 @@ export const createHttpApp = () => {
   app.use('*', async (c, next) => {
     const redirectUrl = resolveLegacyDomainRedirect(c.req.url, c.req.header('host'))
     if (redirectUrl) {
-      return c.redirect(redirectUrl, 308)
+      // 301 是可缓存的永久重定向，搜索引擎迁移（Search Console 地址更改）只接受 301；
+      // 非 GET/HEAD 保留 308，避免 legacy API 客户端的方法被改写为 GET。
+      const method = c.req.method.toUpperCase()
+      return c.redirect(redirectUrl, method === 'GET' || method === 'HEAD' ? 301 : 308)
     }
 
     const pathRedirect = resolveLegacyPathRedirect(c.req.url)
