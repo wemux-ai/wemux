@@ -7,6 +7,12 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
+if(MSVC)
+  # 统一 CRT：全局静态运行时（/MT）。FetchContent 拉入的 llama/ggml 与主程序
+  # 必须一致，否则 Windows 链接报 __imp_* 未解析（LNK1120）。
+  set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+endif()
+
 include(FetchContent)
 if(POLICY CMP0169)
   cmake_policy(SET CMP0169 OLD)
@@ -83,7 +89,6 @@ target_include_directories(wemux-meeting-runtime PRIVATE
 target_link_libraries(wemux-meeting-runtime PRIVATE wemux_moss llama)
 
 if(MSVC)
-  set_property(TARGET wemux-meeting-runtime PROPERTY
-    MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+  # CRT 已由上方 CMAKE_MSVC_RUNTIME_LIBRARY 全局统一，勿在单目标上覆盖。
   target_compile_definitions(wemux-meeting-runtime PRIVATE _CRT_SECURE_NO_WARNINGS)
 endif()
