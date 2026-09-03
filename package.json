@@ -100,7 +100,7 @@
     "@agentclientprotocol/sdk": "^0.16.1",
     "@ai-sdk/deepseek": "^2.0.55",
     "@alibaba-group/opensandbox": "^0.1.11",
-    "@asciidev/box-sdk": "0.0.34",
+    "@asciidev/box-sdk": "0.0.19",
     "@base-ui/react": "^1.7.0",
     "@fontsource-variable/geist": "^5.3.0",
     "@fontsource-variable/inter": "^5.3.0",

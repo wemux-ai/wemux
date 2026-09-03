@@ -11,6 +11,9 @@ updates:
         update-types:
           - "minor"
           - "patch"
+    # 0.0.x SDK，patch 即 breaking（商业运行时依赖），升级需专门验证迁移
+    ignore:
+      - dependency-name: "@asciidev/box-sdk"
 
   # Keep GitHub Actions in .github/workflows up to date
   - package-ecosystem: "github-actions"
