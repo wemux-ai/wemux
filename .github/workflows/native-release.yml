@@ -59,6 +59,14 @@ jobs:
       - name: Build static renderer
         run: pnpm build:native:web-static
 
+      - name: Add swap (llama.cpp 编译吃内存，ubuntu runner 7GB 不够)
+        if: runner.os == 'Linux'
+        run: |
+          sudo fallocate -l 8G /mnt/swapfile
+          sudo chmod 600 /mnt/swapfile
+          sudo mkswap /mnt/swapfile
+          sudo swapon /mnt/swapfile
+
       - name: Build meeting runtime
         # 公开 runner 内存有限（ubuntu/macos 7GB），llama 栈全核并行会 OOM（cc1plus 被 kill），
         # 限到 -j2 换取三平台稳定出包。
