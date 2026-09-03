@@ -10,8 +10,15 @@ const shouldNotarize = Boolean(
   process.env.APPLE_ID && process.env.APPLE_APP_SPECIFIC_PASSWORD && process.env.APPLE_TEAM_ID,
 )
 // Community builds run unsigned when no certificate secret is provided.
-// Signing is enabled per-platform by CSC_* secrets in native-release.yml.
+// Signing is enabled per-platform by CSC_* secrets in the building workflow.
 const shouldSignMac = Boolean(process.env.CSC_LINK || process.env.MACOS_CERTIFICATE)
+
+// Update-feed target: set WEMUX_DESKTOP_PUBLISH_URL (generic provider, e.g. a
+// self-hosted R2 download base) to emit latest*.yml pointing there; default is
+// the public GitHub Releases channel.
+const publishTargets = process.env.WEMUX_DESKTOP_PUBLISH_URL?.trim()
+  ? [{ provider: 'generic', url: process.env.WEMUX_DESKTOP_PUBLISH_URL.trim().replace(/\/+$/, '') }]
+  : [{ provider: 'github', owner: 'wemux-ai', repo: 'wemux' }]
 
 module.exports = {
   appId: 'com.wemux.app',
@@ -54,13 +61,7 @@ module.exports = {
   ],
   asar: true,
   npmRebuild: false,
-  publish: [
-    {
-      provider: 'github',
-      owner: 'wemux-ai',
-      repo: 'wemux',
-    },
-  ],
+  publish: publishTargets,
   mac: {
     category: 'public.app-category.productivity',
     icon: 'assets/icons/icon.icns',
