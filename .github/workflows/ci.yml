@@ -2,9 +2,9 @@ name: ci
 
 on:
   pull_request:
-    branches: [main, dev, preview]
+    branches: [main, preview]
   push:
-    branches: [main, dev, preview]
+    branches: [main, preview]
     # 只源码/workflow 变更才跑全量校验，
     # 纯文档/README 提交不触发（PR 门禁保持全量，不受此限制）。
     paths:
