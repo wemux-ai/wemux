@@ -1164,11 +1164,20 @@ export function useWorkspacesCreateController({
         commitAuthorName,
         commitAuthorEmail,
       })
+      if (response.alreadyInstalled) {
+        await loadGitHubAppInstallations()
+        toast.success(response.message ?? '检测到 GitHub App 已安装，已重新连接。')
+        return
+      }
+      if (!response.url) {
+        toast.error(response.message ?? '无法打开 GitHub 授权页面')
+        return
+      }
       window.location.assign(response.url)
     } catch (error) {
       toast.error(error instanceof Error ? error.message : '无法打开 GitHub 授权页面')
     }
-  }, [user?.email, user?.name])
+  }, [user?.email, user?.name, loadGitHubAppInstallations])
 
   return {
     closeCreatePanel,

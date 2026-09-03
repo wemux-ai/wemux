@@ -4,7 +4,36 @@ import test from 'node:test'
 import { Hono } from 'hono'
 import type { MiddlewareHandler } from 'hono'
 import { createToken } from '../repositories/auth'
+import {
+  getGitHubAppInstallationById,
+  saveGitHubAppUserAuth,
+} from '../services/github-app-installation-store'
 import { registerUserGitHubAppRoutes } from './user-github-app-routes'
+
+// ── DB 集成（本地 Postgres 可用时执行，与 global-search-service.test.ts 同模式）──
+
+const resolveDbUrl = () => process.env.DATABASE_URL?.trim()
+  || process.env.POSTGRES_URL?.trim()
+  || 'postgres://vibemux:vibemux@127.0.0.1:5434/vibemux'
+
+let dbAvailable: boolean | null = null
+const isDbAvailable = async (): Promise<boolean> => {
+  if (dbAvailable !== null) {
+    return dbAvailable
+  }
+  try {
+    process.env.DATABASE_URL = resolveDbUrl()
+    const { getDrizzleDb } = await import('../storage/postgres/drizzle-db')
+    const { sql } = await import('drizzle-orm')
+    await getDrizzleDb().execute(sql`select 1`)
+    dbAvailable = true
+  } catch {
+    dbAvailable = false
+  }
+  return dbAvailable
+}
+
+const dbSkip = async () => (await isDbAvailable()) ? false : '本地 Postgres 不可用，跳过 DB 集成用例'
 
 const requireAuth: MiddlewareHandler = async (_c, next) => {
   await next()
@@ -215,5 +244,93 @@ test('github app callback rejects a mismatched authenticated user', async () => 
   } finally {
     globalThis.fetch = originalFetch
     restoreEnv()
+  }
+})
+
+test('connect-url falls back to the install page when the user has no stored oauth auth', async () => {
+  const restoreEnv = setGitHubAppEnv()
+  const originalFetch = globalThis.fetch
+  const app = createApp()
+  const userId = `user-${crypto.randomUUID()}`
+
+  globalThis.fetch = async (input) => {
+    throw new Error(`fetch should not be called before rebind lookup succeeds: ${String(input)}`)
+  }
+
+  try {
+    const response = await app.request('/api/user/github-app-installations/connect-url?returnTo=%2Fsettings%3Fsection%3Dgit&commitAuthorName=Alice%20Dev&commitAuthorEmail=alice%40example.com', {
+      headers: {
+        Authorization: `Bearer ${createToken(userId)}`,
+      },
+    })
+
+    assert.equal(response.status, 200)
+    const payload = await response.json() as { configured: boolean; url?: string; alreadyInstalled?: boolean }
+    assert.equal(payload.configured, true)
+    assert.equal(payload.alreadyInstalled, undefined)
+    assert.ok(payload.url?.startsWith('https://github.test/apps/vibemux-test-app/installations/new'))
+  } finally {
+    globalThis.fetch = originalFetch
+    restoreEnv()
+  }
+})
+
+test('connect-url silently rebinds existing installations without visiting GitHub', async () => {
+  if (await dbSkip()) {
+    return
+  }
+  const restoreEnv = setGitHubAppEnv()
+  const originalFetch = globalThis.fetch
+  const app = createApp()
+  const userId = `user-${crypto.randomUUID()}`
+  const installationId = 150000000 + Math.floor(Math.random() * 1000000)
+
+  await saveGitHubAppUserAuth({ userId, accessToken: 'user-token-rebind' })
+
+  globalThis.fetch = async (input) => {
+    const url = String(input)
+    assert.equal(url, 'https://api.github.test/user/installations?per_page=100&page=1')
+    return Response.json({
+      total_count: 1,
+      installations: [{
+        id: installationId,
+        account: { login: 'octocat', id: 9527, type: 'User' },
+        repository_selection: 'all',
+        permissions: { contents: 'read' },
+        suspended_at: null,
+      }],
+    })
+  }
+
+  try {
+    const response = await app.request('/api/user/github-app-installations/connect-url?returnTo=%2Fsettings%3Fsection%3Dgit&commitAuthorName=Alice%20Dev&commitAuthorEmail=alice%40example.com', {
+      headers: {
+        Authorization: `Bearer ${createToken(userId)}`,
+      },
+    })
+
+    assert.equal(response.status, 200)
+    const payload = await response.json() as {
+      configured: boolean
+      url?: string
+      alreadyInstalled?: boolean
+      installations?: { installationId: number; accountLogin: string }[]
+    }
+    assert.equal(payload.configured, true)
+    assert.equal(payload.alreadyInstalled, true)
+    assert.equal(payload.url, undefined)
+    assert.ok(payload.installations?.some((item) => item.installationId === installationId))
+
+    const installation = await getGitHubAppInstallationById(installationId)
+    assert.equal(installation?.accountLogin, 'octocat')
+  } finally {
+    globalThis.fetch = originalFetch
+    restoreEnv()
+    const { deleteGitHubAppInstallationEverywhere } = await import('../services/github-app-installation-store')
+    const { getDrizzleDb } = await import('../storage/postgres/drizzle-db')
+    const { githubAppUserAuths } = await import('../storage/postgres/schema')
+    const { eq } = await import('drizzle-orm')
+    await deleteGitHubAppInstallationEverywhere(installationId)
+    await getDrizzleDb().delete(githubAppUserAuths).where(eq(githubAppUserAuths.userId, userId))
   }
 })

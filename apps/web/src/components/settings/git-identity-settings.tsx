@@ -266,6 +266,18 @@ export function GitIdentitySettings() {
         commitAuthorName: githubAppCommitName,
         commitAuthorEmail: githubAppCommitEmail,
       })
+      if (response.alreadyInstalled) {
+        await loadGitIdentities()
+        setGithubAppIdentityOpen(false)
+        toast.success(response.message ?? '检测到 GitHub App 已安装，已重新连接。')
+        setBusy(false)
+        return
+      }
+      if (!response.url) {
+        toast.error(response.message ?? '无法打开 GitHub 授权页面')
+        setBusy(false)
+        return
+      }
       window.location.assign(response.url)
     } catch (error) {
       toast.error(error instanceof Error ? error.message : '无法保存 GitHub App 提交身份')
