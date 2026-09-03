@@ -9,6 +9,7 @@ type RuntimeEnv = ImportMeta['env'] & {
   VITE_DEMO_EMAIL?: string
   VITE_COMMUNITY_DISCORD_URL?: string
   VITE_COMMUNITY_WECHAT_QR_URL?: string
+  VITE_DESKTOP_SERVER_LOCKED?: string
 }
 
 const trimTrailingSlash = (value: string) => value.replace(/\/$/, '')
@@ -190,8 +191,12 @@ export const isManagedCloudDevOnlyEnabled = () => isDevEnvironment() || isPrevie
 export const DEFAULT_SERVER_URL = 'https://wemux.ai'
 const CUSTOM_SERVER_STORAGE_KEY = 'wemux.serverUrl'
 
-/** 读取用户自定义服务器地址（未设置返回 null） */
+/** 商业分发构建锁：置 1 时桌面客户端固定连默认官方服务，忽略/禁用自定义服务器 */
+export const isDesktopServerLocked = (): boolean => getEnvValue('VITE_DESKTOP_SERVER_LOCKED') === '1'
+
+/** 读取用户自定义服务器地址（未设置返回 null；锁定构建恒返回 null） */
 export const getCustomServerUrl = (): string | null => {
+  if (isDesktopServerLocked()) return null
   if (typeof window === 'undefined') return null
   try {
     return window.localStorage.getItem(CUSTOM_SERVER_STORAGE_KEY)
@@ -202,6 +207,7 @@ export const getCustomServerUrl = (): string | null => {
 
 /** 保存用户自定义服务器地址（校验 http/https，去尾部斜杠）；非法输入不保存 */
 export const setCustomServerUrl = (url: string): boolean => {
+  if (isDesktopServerLocked()) return false
   if (typeof window === 'undefined') return false
   const trimmed = url.trim().replace(/\/+$/, '')
   if (!/^https?:\/\//i.test(trimmed)) {

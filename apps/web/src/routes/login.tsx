@@ -15,7 +15,7 @@ import { useAuth } from '../lib/auth-context'
 import { useTranslation } from '../lib/i18n/react'
 import { buildNoIndexHead } from '../lib/marketing-site'
 import { isMacNativeClient, isNativeClient } from '../lib/native-client'
-import { clearCustomServerUrl, DEFAULT_SERVER_URL, getCustomServerUrl, resolveCanonicalLoopbackUrl, setCustomServerUrl } from '../lib/runtime-config'
+import { clearCustomServerUrl, DEFAULT_SERVER_URL, getCustomServerUrl, isDesktopServerLocked, resolveCanonicalLoopbackUrl, setCustomServerUrl } from '../lib/runtime-config'
 import { cn } from '../lib/utils'
 
 export const Route = createFileRoute('/login')({
@@ -325,8 +325,8 @@ export function LoginPage() {
           <p className="text-xs leading-5 text-zinc-500">{subtitle}</p>
         </header>
 
-        {/* 桌面端客户端：服务器地址选择（自托管用户连自己的实例；浏览器网页不显示） */}
-        {isNativeClient() ? <ServerSelector tr={tr} /> : null}
+        {/* 桌面端客户端：服务器地址选择（自托管用户连自己的实例；商业锁定构建与浏览器网页不显示） */}
+        {isNativeClient() && !isDesktopServerLocked() ? <ServerSelector tr={tr} /> : null}
 
         {checkingSession ? <LoadingNotice /> : null}
         {!checkingSession ? (
