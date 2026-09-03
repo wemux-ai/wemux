@@ -16,6 +16,9 @@ const shouldSignMac = Boolean(process.env.CSC_LINK || process.env.MACOS_CERTIFIC
 module.exports = {
   appId: 'com.wemux.app',
   productName: 'Wemux',
+  // 包名是 scoped（@wemux/desktop），electron-builder 会拿它当可执行文件名，
+  // '@' 和 '/' 在 AppImage 路径里不合法 —— 显式指定安全名称。
+  executableName: 'wemux-desktop',
   extraMetadata: {
     version: productPackage.version,
     description: 'Wemux desktop client',
