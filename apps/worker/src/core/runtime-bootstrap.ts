@@ -389,7 +389,82 @@ const resolveUnzipInstallStrategy = (): InstallStrategy | null => {
   })
 }
 
-const resolveOpencodeInstallStrategy = (): InstallStrategy | null => {
+// worker 内置 @opencode-ai/sdk 与 opencode CLI 是同版本号发布；
+// 读取内置 SDK 版本，把 CLI 钳到同一版本，避免“最新二进制 + 旧 SDK”的运行时协议偏差。
+const resolveBundledOpencodeSdkVersion = () => {
+  const probe = [
+    "const fs=require('fs'),path=require('path');",
+    "let d=path.dirname(require.resolve('@opencode-ai/sdk'));",
+    "for(;;){if(fs.existsSync(path.join(d,'package.json')))break;const p=path.dirname(d);if(p===d)break;d=p}",
+    "const pkg=JSON.parse(fs.readFileSync(path.join(d,'package.json'),'utf8'));",
+    "if(pkg.name==='@opencode-ai/sdk'&&pkg.version)console.log(pkg.version)",
+  ].join('')
+  const result = runCommand(process.execPath, ['-e', probe], { cwd: workspaceRoot })
+  return result.ok ? result.stdout.trim() : ''
+}
+
+export const resolveOpencodeGlobalNpmStrategy = (): InstallStrategy | null => {
+  if (!hasCommand('npm')) {
+    return null
+  }
+
+  return {
+    installer: 'npm',
+    commandSummary: 'npm install -g opencode-ai@<与内置 SDK 匹配的版本>',
+    manualHint: '请先安装 Node.js/npm。worker 会优先安装与内置 @opencode-ai/sdk 同版本的 opencode-ai；若该版本不可用则回退最新版（`npm install -g opencode-ai`）。',
+    run(options) {
+      const sdkVersion = resolveBundledOpencodeSdkVersion()
+      if (sdkVersion) {
+        const pinned = runGlobalNodeInstall(
+          `opencode-ai@${sdkVersion}`,
+          `npm install -g opencode-ai@${sdkVersion}`,
+          'opencode',
+          `安装 opencode-ai@${sdkVersion} 失败`,
+          options,
+        )
+        if (pinned.ok) {
+          return pinned
+        }
+        // 锁定版本可能尚未发布或源不可用，回退最新版。
+      }
+
+      return runGlobalNodeInstall('opencode-ai', 'npm install -g opencode-ai', 'opencode', '安装 OpenCode runtime 失败', options)
+    },
+  }
+}
+
+// 安装包构建时会剔除 opencode 平台二进制以控制体积（见 scripts/build-worker-installer.mjs），
+// 而包管理器 install 在 node_modules 已完整时是 no-op，无法找回二进制；
+// 因此本地策略执行后若仍解析不到 opencode，回退 npm 全局安装，在目标机现场拉取平台二进制。
+const withOpencodeBinaryFallback = (base: InstallStrategy): InstallStrategy => ({
+  ...base,
+  commandSummary: `${base.commandSummary}；若 opencode 仍缺失则回退 npm install -g opencode-ai@<与内置 SDK 匹配的版本>`,
+  manualHint: `${base.manualHint}；若本地依赖已完整但仍缺 opencode 可执行文件，执行 \`npm install -g opencode-ai\`。`,
+  run(options) {
+    const attempt = base.run(options)
+    if (resolveOpencodeExecutable(workspaceRoot)) {
+      return attempt
+    }
+
+    const fallback = resolveOpencodeGlobalNpmStrategy()
+    if (!fallback) {
+      return attempt
+    }
+
+    const globalAttempt = fallback.run(options)
+    return globalAttempt.ok ? globalAttempt : attempt
+  },
+})
+
+export const resolveOpencodeInstallStrategy = (): InstallStrategy | null => {
+  const packageManagerStrategy = resolveOpencodePackageManagerStrategy()
+  if (!packageManagerStrategy) {
+    return resolveOpencodeGlobalNpmStrategy()
+  }
+  return withOpencodeBinaryFallback(packageManagerStrategy)
+}
+
+const resolveOpencodePackageManagerStrategy = (): InstallStrategy | null => {
   if (!existsSync(`${workspaceRoot}/package.json`)) {
     return null
   }

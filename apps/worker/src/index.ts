@@ -24,7 +24,6 @@ import { clearWorkerPairing, loadWorkerConfig, resetWorkerConfig, saveWorkerConf
 import { getLocalWorkerConsoleUrl } from './core/local-console'
 import {
   ensureWorkerRuntimeReady,
-  ensureWorkerRuntimeReadyInteractive,
   type WorkerRuntimeTarget,
 } from './core/runtime-bootstrap'
 import { updateWorkerRuntimeState } from './core/runtime-state'
@@ -135,10 +134,11 @@ const resolveBootstrapTarget = (rawTarget: string): WorkerRuntimeTarget => {
 }
 
 const startWorkerDaemonAfterConnect = async () => {
-  const bootstrap = await ensureWorkerRuntimeReadyInteractive('connect', 'all')
-  if (bootstrap.status !== 'ready') {
-    process.exitCode = 1
-    return
+  // 配对后启动 daemon：agent runtime 未就绪只提示，不阻断（与 daemon 命令同一策略）。
+  const report = await ensureWorkerRuntimeReady({ target: 'all' })
+  if (!report.ok) {
+    console.warn(`[worker] 部分运行环境未就绪，daemon 继续启动：\n${report.message}`)
+    console.warn(`[worker] 可运行 "${getCliName()} worker doctor" 补齐。`)
   }
 
   await runWorkerDaemon()
@@ -387,10 +387,12 @@ const main = async () => {
   }
 
   if (runtimeGuardedCommands.has(command) && !skipRuntimeGuard) {
-    const bootstrap = await ensureWorkerRuntimeReadyInteractive(command, 'all')
-    if (bootstrap.status !== 'ready') {
-      process.exitCode = 1
-      return
+    // agent runtime 缺失不应阻断 worker 启动：只有执行对应 agent 任务时才真正需要。
+    // 这里只检查并提示，不做安装也不退出；补齐交给任务执行时按需准备与 `worker doctor`。
+    const report = await ensureWorkerRuntimeReady({ target: 'all' })
+    if (!report.ok) {
+      console.warn(`[worker] ${command} 启动前检测到部分运行环境未就绪，继续启动：\n${report.message}`)
+      console.warn(`[worker] 可运行 "${getCliName()} worker doctor" 补齐。`)
     }
   }
 
