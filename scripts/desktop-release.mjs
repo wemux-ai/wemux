@@ -52,7 +52,7 @@ const expectedArtifacts = {
   'darwin-aarch64': `Wemux-${version}-arm64.dmg`,
   'darwin-x86_64': `Wemux-${version}-x64.dmg`,
   'windows-x86_64': `Wemux-${version}-x64-setup.exe`,
-  'linux-x86_64': `Wemux-${version}-x64.AppImage`,
+  'linux-x86_64': `Wemux-${version}-x86_64.AppImage`,
 }
 
 const sha256File = (filePath) => {
