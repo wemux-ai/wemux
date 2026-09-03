@@ -305,6 +305,9 @@ export const registerAuthRoutes = (app: Hono, requireAuth: MiddlewareHandler) =>
         userId: sessionUser.id,
         accountId: sessionUser.id,
         providerId: 'credential',
+        // better-auth 1.7 scopes credential accounts by the synthetic local issuer
+        // (createLocalAccountIssuer('credential')).
+        issuer: 'local:credential',
         password: hash,
         createdAt: now,
         updatedAt: now,

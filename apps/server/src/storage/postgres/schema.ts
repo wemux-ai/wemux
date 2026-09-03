@@ -79,6 +79,9 @@ export const betterAuthAccounts = pgTable('account', {
   id: text('id').primaryKey(),
   accountId: text('accountId').notNull(),
   providerId: text('providerId').notNull(),
+  // better-auth 1.7 scopes account identities by issuer. Existing rows are
+  // backfilled by migration 0002 before the NOT NULL constraint applies.
+  issuer: text('issuer').notNull(),
   userId: text('userId').notNull().references(() => betterAuthUsers.id, { onDelete: 'cascade' }),
   accessToken: text('accessToken'),
   refreshToken: text('refreshToken'),
