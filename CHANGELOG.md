@@ -16,7 +16,7 @@ and this project follows [Semantic Versioning](https://semver.org/).
 - **Landing positioning**: the Hero H1 now uses the product's primary positioning, “AI 原生组织的操作系统” / “The AI-Native Organization OS”; the supporting eyebrow is the control-plane anchor sentence.
 - **Dashboard overview**: removed the redundant last-activity row and Kanban shortcut.
 
-### Changed
+### Fixed
 
 - 清理根目录遗留文件：移除 npm 时代遗留的 `package-lock.json` 与误提交的 `vite.config.d.ts`，并加入 .gitignore 防复发
 - 修复 worker 对 `WEMUX_WORKER_HOME` / `WEMUX_HOME` 中未展开 `~` 前缀的解析，避免在项目目录下生成 `~/` 错误目录
