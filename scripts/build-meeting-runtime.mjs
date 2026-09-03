@@ -1,9 +1,10 @@
 import { existsSync, mkdirSync } from 'node:fs'
 import { spawnSync } from 'node:child_process'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import process from 'node:process'
 
-const repoRoot = path.resolve(new URL('..', import.meta.url).pathname)
+const repoRoot = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 const sourceDir = path.join(repoRoot, 'apps/meeting-runtime/native')
 const buildDir = path.join(sourceDir, 'build')
 mkdirSync(buildDir, { recursive: true })
