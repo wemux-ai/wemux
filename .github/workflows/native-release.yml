@@ -60,6 +60,10 @@ jobs:
         run: pnpm build:native:web-static
 
       - name: Build meeting runtime
+        # 公开 runner 内存有限（ubuntu/macos 7GB），llama 栈全核并行会 OOM（cc1plus 被 kill），
+        # 限到 -j2 换取三平台稳定出包。
+        env:
+          CMAKE_BUILD_PARALLEL_LEVEL: "2"
         run: pnpm build:meeting-runtime
 
       - name: Build Electron artifacts
