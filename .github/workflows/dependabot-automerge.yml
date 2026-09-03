@@ -1,0 +1,25 @@
+name: dependabot-automerge
+
+# 依赖自动化门禁：dependabot 的 PR 一律设置 auto-merge，
+# 只有必需检查（check + dco）全绿才会真正合入；红了自动卡住等人工。
+# 批量大改动（如整包 lockfile 漂移）跑不绿就永远停在 PR，不会带坏 main。
+
+on:
+  pull_request
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  enable-automerge:
+    if: >-
+      github.actor == 'dependabot[bot]' &&
+      github.event.pull_request.base.ref == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable auto-merge
+        run: gh pr merge --auto --merge "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
