@@ -168,7 +168,7 @@
     "ws": "^8.18.3",
     "xterm": "^5.3.0",
     "yaml": "^2.9.0",
-    "zbsearch": "^3.3.4",
+    "zbsearch": "^4.0.0",
     "zod": "^3.24.2"
   },
   "devDependencies": {
