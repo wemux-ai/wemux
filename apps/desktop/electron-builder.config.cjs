@@ -9,6 +9,9 @@ const runtimeBinary = process.platform === 'win32'
 const shouldNotarize = Boolean(
   process.env.APPLE_ID && process.env.APPLE_APP_SPECIFIC_PASSWORD && process.env.APPLE_TEAM_ID,
 )
+// Community builds run unsigned when no certificate secret is provided.
+// Signing is enabled per-platform by CSC_* secrets in native-release.yml.
+const shouldSignMac = Boolean(process.env.CSC_LINK || process.env.MACOS_CERTIFICATE)
 
 module.exports = {
   appId: 'com.wemux.app',
@@ -58,6 +61,7 @@ module.exports = {
   mac: {
     category: 'public.app-category.productivity',
     icon: 'assets/icons/icon.icns',
+    identity: shouldSignMac ? undefined : null,
     minimumSystemVersion: '10.15',
     extendInfo: {
       NSMicrophoneUsageDescription: 'Wemux uses the microphone for local meeting transcription.',
