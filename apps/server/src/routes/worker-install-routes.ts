@@ -435,25 +435,17 @@ try {
   if (-not $InstallDir) {
     $isPreviewPackage = ($packageName -eq "vibemux-worker-preview" -or $packageName -eq "wemux-worker-preview")
     if ($isPreviewPackage) {
-      # 品牌迁移兼容：存量 .vibemux-preview-worker 沿用，新装用 .wemux-preview-worker
-      $legacyInstallDir = Join-Path $HOME ".vibemux-preview-worker"
-      $InstallDir = if (Test-Path $legacyInstallDir) { $legacyInstallDir } else { Join-Path $HOME ".wemux-preview-worker" }
+      $InstallDir = Join-Path $HOME ".wemux-preview-worker"
     } else {
-      # 品牌迁移兼容：存量 .vibemux-worker 沿用，新装用 .wemux-worker
-      $legacyInstallDir = Join-Path $HOME ".vibemux-worker"
-      $InstallDir = if (Test-Path $legacyInstallDir) { $legacyInstallDir } else { Join-Path $HOME ".wemux-worker" }
+      $InstallDir = Join-Path $HOME ".wemux-worker"
     }
   }
 
   if ($packageName -eq "vibemux-worker-preview" -or $packageName -eq "wemux-worker-preview") {
-    # 品牌迁移兼容：存量 .vibemux-preview 沿用，新装用 .wemux-preview
-    $legacyWorkerHome = Join-Path $HOME ".vibemux-preview"
-    $env:VIBEMUX_WORKER_HOME = if (Test-Path $legacyWorkerHome) { $legacyWorkerHome } else { Join-Path $HOME ".wemux-preview" }
+    $env:VIBEMUX_WORKER_HOME = Join-Path $HOME ".wemux-preview"
     $env:VIBEMUX_WORKER_RELEASE_CHANNEL = "preview"
   } else {
-    # 品牌迁移兼容：存量 .vibemux 沿用，新装用 .wemux
-    $legacyWorkerHome = Join-Path $HOME ".vibemux"
-    $env:VIBEMUX_WORKER_HOME = if (Test-Path $legacyWorkerHome) { $legacyWorkerHome } else { Join-Path $HOME ".wemux" }
+    $env:VIBEMUX_WORKER_HOME = Join-Path $HOME ".wemux"
     $env:VIBEMUX_WORKER_RELEASE_CHANNEL = "production"
   }
 
@@ -540,9 +532,11 @@ call "$workerBin" %*
   $workerPackageBinDir = Join-Path (Join-Path $packageDir "node_modules") ".bin"
   $env:VIBEMUX_WORKER_INSTALL_PREFIX = $InstallDir
   $env:Path = "$workerBinDir;$workerPackageBinDir;$env:Path"
+  # Runtime bootstrap 是增强步骤：失败不阻断安装，worker 主体仍可配对并运行。
   & $workerBin bootstrap --target base
   if ($LASTEXITCODE -ne 0) {
-    throw "worker bootstrap failed"
+    Write-Host "Runtime bootstrap failed; continuing installation. The worker can still run." -ForegroundColor Yellow
+    Write-Host "Fix agent runtimes later with: $CommandBin worker doctor" -ForegroundColor Yellow
   }
 
   if ($Foreground -or $InstallMode -eq "Foreground") {
@@ -1092,38 +1086,18 @@ PACKAGE_NAME="$(node -e "const fs=require('fs');const data=JSON.parse(fs.readFil
 BIN_NAME="$(node -e "const fs=require('fs');const data=JSON.parse(fs.readFileSync(process.argv[1],'utf8'));process.stdout.write(data.binName||data.packageName||'wemux-worker-preview')" "$MANIFEST_PATH")"
 
 if [[ "$PACKAGE_NAME" == "vibemux-worker-preview" || "$PACKAGE_NAME" == "wemux-worker-preview" ]]; then
-  # 品牌迁移兼容：存量 .vibemux-preview 沿用，新装用 .wemux-preview
-  if [[ -d "\${HOME}/.vibemux-preview" ]]; then
-    WORKER_HOME="\${HOME}/.vibemux-preview"
-  else
-    WORKER_HOME="\${HOME}/.wemux-preview"
-  fi
+  WORKER_HOME="\${HOME}/.wemux-preview"
   RELEASE_CHANNEL="preview"
 else
-  # 品牌迁移兼容：存量 .vibemux 沿用，新装用 .wemux
-  if [[ -d "\${HOME}/.vibemux" ]]; then
-    WORKER_HOME="\${HOME}/.vibemux"
-  else
-    WORKER_HOME="\${HOME}/.wemux"
-  fi
+  WORKER_HOME="\${HOME}/.wemux"
   RELEASE_CHANNEL="production"
 fi
 
 if [[ -z "$INSTALL_DIR" ]]; then
   if [[ "$RELEASE_CHANNEL" == "preview" ]]; then
-    # 品牌迁移兼容：存量 .vibemux-preview-worker 沿用，新装用 .wemux-preview-worker
-    if [[ -d "\${HOME}/.vibemux-preview-worker" ]]; then
-      INSTALL_DIR="\${HOME}/.vibemux-preview-worker"
-    else
-      INSTALL_DIR="\${HOME}/.wemux-preview-worker"
-    fi
+    INSTALL_DIR="\${HOME}/.wemux-preview-worker"
   else
-    # 品牌迁移兼容：存量 .vibemux-worker 沿用，新装用 .wemux-worker
-    if [[ -d "\${HOME}/.vibemux-worker" ]]; then
-      INSTALL_DIR="\${HOME}/.vibemux-worker"
-    else
-      INSTALL_DIR="\${HOME}/.wemux-worker"
-    fi
+    INSTALL_DIR="\${HOME}/.wemux-worker"
   fi
 fi
 
@@ -1212,7 +1186,11 @@ elif [[ -e "$SHIM_DIR/wemux" ]]; then
 fi
 
 print_step "Bootstrapping Git and agent runtimes..."
-"$WORKER_WRAPPER" bootstrap --target base
+# Runtime bootstrap 是增强步骤：失败不阻断安装，worker 主体仍可配对并运行。
+if ! "$WORKER_WRAPPER" bootstrap --target base; then
+  say_err "$C_YELLOW" "Runtime bootstrap failed; continuing installation. The worker can still run."
+  say_err "$C_YELLOW" "Fix agent runtimes later with: $WEMUX_CMD worker doctor"
+fi
 
 if [[ "$FOREGROUND" == "1" ]]; then
   print_step "Pairing worker and starting in foreground..."

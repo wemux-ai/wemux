@@ -27,12 +27,14 @@ test('buildWorkerInstallScript installs production workers into the production p
   assert.match(script, /wemux worker installer \(vibemux-worker@0\.3\.30\)/)
   assert.match(script, /Installer commit: abcdef1234567890/)
   assert.match(script, /PACKAGE_NAME="\$\(node -e /)
-  assert.match(script, /INSTALL_DIR="\$\{HOME\}\/\.vibemux-worker"/)
+  assert.match(script, /INSTALL_DIR="\$\{HOME\}\/\.wemux-worker"/)
   assert.match(script, /WORKER_WRAPPER="\$INSTALL_DIR\/bin\/\$BIN_NAME-node-wrapper"/)
   assert.match(script, /export VIBEMUX_WORKER_EXECUTABLE_PATH="__VIBEMUX_WORKER_BIN__"/)
   assert.match(script, /export VIBEMUX_WORKER_INSTALL_PREFIX="__VIBEMUX_INSTALL_DIR__"/)
-  assert.match(script, /WORKER_HOME="\$\{HOME\}\/\.vibemux"/)
+  assert.match(script, /WORKER_HOME="\$\{HOME\}\/\.wemux"/)
   assert.match(script, /RELEASE_CHANNEL="production"/)
+  assert.doesNotMatch(script, /\.vibemux-worker"/)
+  assert.doesNotMatch(script, /\.vibemux"/)
   assert.match(script, /export VIBEMUX_WORKER_HOME="__VIBEMUX_WORKER_HOME__"/)
   assert.match(script, /export VIBEMUX_WORKER_RELEASE_CHANNEL="__VIBEMUX_RELEASE_CHANNEL__"/)
   assert.match(script, /NODE_BIN_DIR="\$\(dirname "\$NODE_BIN"\)"/)
@@ -74,9 +76,11 @@ test('buildWorkerInstallScript keeps the preview prefix for preview packages', (
   })
 
   assert.match(script, /if \[\[ "\$PACKAGE_NAME" == "vibemux-worker-preview" \|\| "\$PACKAGE_NAME" == "wemux-worker-preview" \]\]/)
-  assert.match(script, /INSTALL_DIR="\$\{HOME\}\/\.vibemux-preview-worker"/)
-  assert.match(script, /WORKER_HOME="\$\{HOME\}\/\.vibemux-preview"/)
+  assert.match(script, /INSTALL_DIR="\$\{HOME\}\/\.wemux-preview-worker"/)
+  assert.match(script, /WORKER_HOME="\$\{HOME\}\/\.wemux-preview"/)
   assert.match(script, /RELEASE_CHANNEL="preview"/)
+  assert.doesNotMatch(script, /\.vibemux-preview-worker/)
+  assert.doesNotMatch(script, /\.vibemux-preview"/)
 })
 
 test('buildWorkerInstallScript installs and loads nvm when Node.js is missing', () => {
@@ -144,9 +148,11 @@ test('buildWorkerInstallPowerShellScript installs Windows workers in current-use
   assert.doesNotMatch(script, /npm is required/)
   assert.match(script, /tar is required to extract the self-contained worker package/)
   assert.match(script, /\$env:VIBEMUX_WORKER_INSTALL_PREFIX = \$InstallDir/)
-  assert.match(script, /\$legacyWorkerHome = Join-Path \$HOME "\.vibemux"/)
-  assert.match(script, /Test-Path \$legacyWorkerHome/)
-  assert.match(script, /Join-Path \$HOME "\.wemux"/)
+  assert.match(script, /\$env:VIBEMUX_WORKER_HOME = Join-Path \$HOME "\.wemux"/)
+  assert.match(script, /\$InstallDir = Join-Path \$HOME "\.wemux-preview-worker"/)
+  assert.doesNotMatch(script, /legacyWorkerHome/)
+  assert.doesNotMatch(script, /legacyInstallDir/)
+  assert.doesNotMatch(script, /\.vibemux-preview-worker/)
   assert.match(script, /\$env:VIBEMUX_WORKER_RELEASE_CHANNEL = "production"/)
   assert.match(script, /Installing and starting current-user worker startup/)
   assert.match(script, /service install --name \$ServiceName --worker-path \$workerBin --install-prefix \$InstallDir --log-dir \$LogDir/)
@@ -486,6 +492,108 @@ appendFileSync(process.env.FAKE_WORKER_LOG, JSON.stringify(process.argv.slice(2)
     assert.deepEqual(invocations[2]?.slice(0, 4), ['service', 'install', '--name', 'fake-vibemux-worker'])
     assert.match(invocations[2]?.[5] ?? '', /vibemux-worker-preview-node-wrapper$/)
     assert.deepEqual(invocations[3], ['update', '--check'])
+  } finally {
+    await rm(installDir, { recursive: true, force: true })
+  }
+})
+
+test('generated installer continues to pairing when runtime bootstrap fails', { skip: process.platform !== 'darwin' ? 'macOS-only installer smoke test' : false }, async () => {
+  const installDir = await mkdtemp(path.join(os.tmpdir(), 'vibemux-worker-install-bootstrap-fail-'))
+
+  try {
+    const packageName = 'vibemux-worker-preview'
+    const packageRoot = path.join(installDir, packageName)
+    const packageBinDir = path.join(packageRoot, 'bin')
+    const serverRoot = path.join(installDir, 'server')
+    const workerArtifactDir = path.join(serverRoot, 'install', 'worker')
+    const workerLogPath = path.join(installDir, 'worker-invocations.log')
+    const scriptPath = path.join(installDir, 'install.sh')
+    const targetInstallDir = path.join(installDir, 'target')
+    const fakeHomeDir = path.join(installDir, 'home')
+    const serverUrl = pathToFileURL(serverRoot).href
+
+    await mkdir(packageBinDir, { recursive: true })
+    await mkdir(workerArtifactDir, { recursive: true })
+    await mkdir(fakeHomeDir, { recursive: true })
+    await writeFile(path.join(packageRoot, 'package.json'), `${JSON.stringify({
+      name: 'vibemux-worker-preview',
+      version: '0.0.0-smoke',
+      type: 'module',
+      bin: { 'vibemux-worker-preview': 'bin/cli.mjs' },
+    }, null, 2)}\n`)
+    await writeFile(path.join(packageBinDir, 'cli.mjs'), `#!/usr/bin/env node
+import { appendFileSync } from 'node:fs'
+
+appendFileSync(process.env.FAKE_WORKER_LOG, JSON.stringify(process.argv.slice(2)) + '\\n')
+if (process.env.FAKE_WORKER_BOOTSTRAP_EXIT && process.argv[2] === 'bootstrap') {
+  process.stderr.write('[worker] 自动准备失败：OpenCode runtime (fake)\\n')
+  process.exit(Number(process.env.FAKE_WORKER_BOOTSTRAP_EXIT))
+}
+`)
+    await chmod(path.join(packageBinDir, 'cli.mjs'), 0o755)
+    await writeFile(path.join(packageBinDir, 'vbx.mjs'), '#!/usr/bin/env node\n')
+    await writeFile(path.join(packageBinDir, 'vibemux.mjs'), '#!/usr/bin/env node\n')
+    await writeFile(path.join(packageBinDir, 'wemux.mjs'), '#!/usr/bin/env node\n')
+    await writeFile(path.join(packageBinDir, 'node-wrapper.mjs'), '#!/usr/bin/env node\n')
+
+    const packedFileName = `${packageName}-0.0.0-smoke.tgz`
+    const archivePath = path.join(workerArtifactDir, 'package.tgz')
+    const pack = spawnSync('tar', ['-czf', archivePath, '-C', installDir, packageName], {
+      encoding: 'utf8',
+    })
+    assert.equal(pack.status, 0, pack.stderr)
+    await writeFile(path.join(workerArtifactDir, 'manifest.json'), `${JSON.stringify({
+      packageName: 'vibemux-worker-preview',
+      packageVersion: '0.0.0-smoke',
+      binName: 'vibemux-worker-preview',
+      fileName: packedFileName,
+      builtAt: new Date().toISOString(),
+    }, null, 2)}\n`)
+    await writeFile(scriptPath, buildWorkerInstallScript(serverUrl, {
+      packageName: 'vibemux-worker-preview',
+      packageVersion: '0.0.0-smoke',
+      binName: 'vibemux-worker-preview',
+      fileName: packedFileName,
+      builtAt: new Date().toISOString(),
+    }))
+    await chmod(scriptPath, 0o755)
+
+    const install = spawnSync('bash', [
+      scriptPath,
+      '--pairing-code',
+      'TESTPAIR',
+      '--install-dir',
+      targetInstallDir,
+      '--service-name',
+      'fake-vibemux-worker',
+    ], {
+      encoding: 'utf8',
+      env: {
+        ...process.env,
+        FAKE_WORKER_LOG: workerLogPath,
+        FAKE_WORKER_BOOTSTRAP_EXIT: '1',
+        HOME: fakeHomeDir,
+        VIBEMUX_INSTALL_GLOBAL_SHIM: '0',
+        VIBEMUX_INSTALL_SKIP_CONNECT_CHECK: '1',
+      },
+    })
+
+    // 关键断言：runtime bootstrap 失败不阻断安装，安装继续完成配对与服务安装。
+    assert.equal(install.status, 0, `${install.stdout}\n${install.stderr}`)
+    assert.match(install.stderr, /Runtime bootstrap failed; continuing installation\./)
+    assert.match(install.stderr, /\[8\/10\] Bootstrapping Git and agent runtimes/)
+    assert.match(install.stderr, /\[9\/10\] Pairing worker/)
+    assert.match(install.stderr, /\[10\/10\] Installing and starting worker service/)
+    assert.match(install.stdout, /wemux Worker is installed, paired, and connected\./)
+
+    const invocations = (await readFile(workerLogPath, 'utf8'))
+      .trim()
+      .split('\n')
+      .map((line) => JSON.parse(line) as string[])
+
+    assert.deepEqual(invocations[0], ['bootstrap', '--target', 'base'])
+    assert.deepEqual(invocations[1], ['connect', '--pairing-code', 'TESTPAIR', '--server-url', serverUrl, '--no-start'])
+    assert.deepEqual(invocations[2]?.slice(0, 4), ['service', 'install', '--name', 'fake-vibemux-worker'])
   } finally {
     await rm(installDir, { recursive: true, force: true })
   }
