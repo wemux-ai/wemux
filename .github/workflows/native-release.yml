@@ -72,7 +72,7 @@ jobs:
         run: pnpm exec electron-builder --config electron-builder.config.cjs ${{ matrix.builder_args }} --publish never
 
       - name: Upload Electron artifacts
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: electron-${{ matrix.platform }}
           path: |
