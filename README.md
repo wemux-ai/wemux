@@ -6,6 +6,7 @@
 >
 > **English**: README.md | **中文**: [README.zh-CN.md](README.zh-CN.md)
 
+[![CI](https://github.com/wemux-ai/wemux/actions/workflows/ci.yml/badge.svg)](https://github.com/wemux-ai/wemux/actions/workflows/ci.yml)
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 [![Self-hosted](https://img.shields.io/badge/Self--hosted-✔-brightgreen.svg)](docs/SELF-HOSTING.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
