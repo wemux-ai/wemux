@@ -133,6 +133,41 @@ export const registerUserGitHubAppRoutes = (app: Hono, requireAuth: MiddlewareHa
       return c.json({ message: '请先填写有效的 Git 提交用户名和邮箱。' }, 400)
     }
 
+    // 静默重绑：已授权 OAuth 且 GitHub 侧仍有本 App installation 的用户
+    // （例如在本系统删除过连接记录，或安装后 callback 从未回跳），
+    // 无需再走 /installations/new（已安装时 GitHub 不会回跳 callback）。
+    const userAuth = await getGitHubAppUserAuth(userId).catch(() => null)
+    if (userAuth?.accessToken) {
+      try {
+        const accessibleInstallations = await fetchGitHubAppUserInstallations(userAuth.accessToken)
+        if (accessibleInstallations.length > 0) {
+          for (const installation of accessibleInstallations) {
+            await upsertGitHubAppInstallationForUser({
+              userId,
+              installationId: installation.installationId,
+              accountId: installation.accountId,
+              accountLogin: installation.accountLogin,
+              accountType: installation.accountType,
+              repositorySelection: installation.repositorySelection,
+              permissions: installation.permissions,
+              suspendedAt: installation.suspendedAt,
+              commitIdentity,
+            })
+          }
+          return c.json({
+            configured: true as const,
+            alreadyInstalled: true,
+            message: '检测到 GitHub App 已安装，已重新连接。',
+            installations: await listGitHubAppInstallationSummariesForUser(userId),
+          })
+        }
+      } catch (error) {
+        // user token 失效等场景：回落到安装页流程，由安装流程重新完成 OAuth 授权。
+        const message = error instanceof Error ? error.message : String(error)
+        console.warn(`[github-app] connect rebind lookup failed, fallback to install page: ${message}`)
+      }
+    }
+
     const exp = Date.now() + 10 * 60 * 1000
     const state = createGitHubAppState({
       userId,

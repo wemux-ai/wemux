@@ -229,6 +229,7 @@ WEMUX_USAGE_REPORTING_DISABLED=1
 
 ## 社区与资源
 
+- [X（推特）](https://x.com/Wemux_ai) — 产品动态与公告
 - [GitHub Issues](https://github.com/wemux-ai/wemux/issues) — 可复现缺陷与范围明确的工程任务
 - [GitHub Discussions](https://github.com/wemux-ai/wemux/discussions) — 使用问题、想法、使用案例与路线图讨论
 - [社区治理](docs/COMMUNITY-GOVERNANCE.md) — 入口分流、Issue 标准与维护流程

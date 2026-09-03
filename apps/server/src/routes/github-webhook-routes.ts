@@ -1,6 +1,6 @@
 // [INPUT]: Hono app，GitHub Webhook 事件（签名校验）
 // [OUTPUT]: POST /api/github/webhooks 入站路由
-// [POS]: GitHub Webhook 入站协议层（PR/Issue/Workflow Run 同步）
+// [POS]: GitHub Webhook 入站协议层（PR/Issue/Workflow Run 同步与 Installation 生命周期同步）
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
 
 import { createHmac, timingSafeEqual } from 'node:crypto'
@@ -28,6 +28,10 @@ import {
   persistSuggestedWorkflowRunBinding,
 } from '../services/project-pull-request-review-service'
 import { parseGitRepoUrl } from '../services/github-pull-request-service'
+import {
+  deleteGitHubAppInstallationEverywhere,
+  upsertGitHubAppInstallation,
+} from '../services/github-app-installation-store'
 
 // ─── Signature verification ──────────────────────────────────────────
 
@@ -335,6 +339,54 @@ const handleWorkflowRunEvent = async (payload: Record<string, unknown>) => {
   }))
 }
 
+// ─── Installation lifecycle ──────────────────────────────────────
+
+type GitHubWebhookInstallationPayload = {
+  id?: number
+  account?: {
+    id?: number
+    login?: string
+    type?: string
+  } | null
+  repository_selection?: string
+  permissions?: Record<string, string>
+  suspended_at?: string | null
+}
+
+const handleInstallationEvent = async (payload: Record<string, unknown>) => {
+  const action = typeof payload.action === 'string' ? payload.action : ''
+  const installation = payload.installation as GitHubWebhookInstallationPayload | undefined
+  const installationId = typeof installation?.id === 'number' ? installation.id : Number(installation?.id ?? 0)
+  if (!installation || !Number.isFinite(installationId) || installationId < 1) {
+    console.warn('[GitHub Webhook] installation event without a valid installation id')
+    return
+  }
+
+  if (action === 'deleted') {
+    // GitHub 侧已卸载：清理项目绑定、用户绑定与全局 installation 记录。
+    await deleteGitHubAppInstallationEverywhere(installationId)
+    return
+  }
+
+  // created / new_permissions_accepted / suspend / unsuspend：按最新快照落库，
+  // 覆盖用户绕过本系统、直接在 GitHub 上完成安装/修改权限的场景。
+  const accountLogin = installation.account?.login?.trim()
+  if (!accountLogin) {
+    console.warn(`[GitHub Webhook] installation ${action} event without account login, skipped`)
+    return
+  }
+
+  await upsertGitHubAppInstallation({
+    installationId,
+    accountId: installation.account?.id,
+    accountLogin,
+    accountType: installation.account?.type === 'Organization' ? 'Organization' : 'User',
+    repositorySelection: installation.repository_selection === 'all' ? 'all' : 'selected',
+    permissions: installation.permissions ?? {},
+    suspendedAt: installation.suspended_at ?? undefined,
+  })
+}
+
 // ─── Route registration ──────────────────────────────────────────────
 
 export const registerGitHubWebhookRoutes = (app: Hono) => {
@@ -368,6 +420,9 @@ export const registerGitHubWebhookRoutes = (app: Hono) => {
           break
         case 'workflow_run':
           await handleWorkflowRunEvent(payload)
+          break
+        case 'installation':
+          await handleInstallationEvent(payload)
           break
         default:
           return c.json({ ok: true, skipped: true, event })

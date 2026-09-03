@@ -16,7 +16,10 @@ import {
   githubAppUserLinks,
 } from '../storage/postgres/schema'
 import { isGitHubAppUserInstallationAccessible } from './github-app-service'
-import { deleteBindingsForUserGitHubInstallation } from './project-git-binding-store'
+import {
+  deleteBindingsForGitHubInstallation,
+  deleteBindingsForUserGitHubInstallation,
+} from './project-git-binding-store'
 import { decryptSecret, encryptSecret } from './secret-crypto'
 
 export const isGitHubAppInstallationAccessibleToUser = async (userId: string, installationId: number): Promise<boolean> => {
@@ -306,6 +309,17 @@ export const deleteGitHubAppInstallation = async (installationId: number) => {
     .where(eq(githubAppInstallations.installationId, installationId))
     .returning({ installationId: githubAppInstallations.installationId })
   return rows.length > 0
+}
+
+export const deleteGitHubAppInstallationEverywhere = async (installationId: number) => {
+  // GitHub 侧 installation 已卸载（webhook installation.deleted）：
+  // 清理项目绑定、所有用户绑定，再删除全局 installation 记录。
+  await deleteBindingsForGitHubInstallation(installationId)
+  await ensurePostgresReady()
+  await getDrizzleDb()
+    .delete(githubAppUserLinks)
+    .where(eq(githubAppUserLinks.installationId, installationId))
+  await deleteGitHubAppInstallation(installationId)
 }
 
 export const linkGitHubAppInstallationToUser = async (

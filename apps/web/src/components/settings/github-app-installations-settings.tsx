@@ -78,6 +78,17 @@ export function GitHubAppInstallationsSettings({ onSummaryChange }: GitHubAppIns
         commitAuthorName,
         commitAuthorEmail,
       })
+      if (response.alreadyInstalled) {
+        await loadInstallations()
+        toast.success(response.message ?? '检测到 GitHub App 已安装，已重新连接。')
+        setBusy(false)
+        return
+      }
+      if (!response.url) {
+        toast.error(response.message ?? '无法打开 GitHub 授权页面')
+        setBusy(false)
+        return
+      }
       window.location.assign(response.url)
     } catch (error) {
       toast.error(error instanceof Error ? error.message : '无法打开 GitHub 授权页面')

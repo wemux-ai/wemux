@@ -9,6 +9,7 @@
 [![License: Apache-2.0](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE)
 [![Self-hosted](https://img.shields.io/badge/Self--hosted-✔-brightgreen.svg)](docs/SELF-HOSTING.md)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+[![X (Twitter)](https://img.shields.io/badge/X-@Wemux__ai-black?logo=x&logoColor=white)](https://x.com/Wemux_ai)
 
 Wemux is an open-source agent collaboration platform. It orchestrates AI agents that execute real coding work on **worker machines** (your machines, your credentials), in isolated Git worktrees, with full traceability — not in a black box in the cloud. A control plane handles planning, routing and review; the actual work always runs on workers you own.
 
@@ -251,6 +252,7 @@ Reporting is best-effort and never blocks anything — disabling it does not aff
 
 ## Community & resources
 
+- [X (Twitter)](https://x.com/Wemux_ai) — product updates and announcements
 - [GitHub Issues](https://github.com/wemux-ai/wemux/issues) — reproducible bugs and clearly scoped engineering tasks
 - [GitHub Discussions](https://github.com/wemux-ai/wemux/discussions) — usage questions, ideas, use cases and roadmap discussion
 - [Community governance](docs/COMMUNITY-GOVERNANCE.md) — channel rules, Issue quality bar and maintainer workflow
