@@ -191,7 +191,7 @@
     "postcss": "^8.4.49",
     "railway": "^3.11.0",
     "react-grep": "^0.3.3",
-    "tailwindcss": "^3.4.15",
+    "tailwindcss": "^4.3.3",
     "tsx": "^4.19.3",
     "turbo": "^2.8.17",
     "typescript": "^5.6.3",
