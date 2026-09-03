@@ -8,8 +8,7 @@ on:
   pull_request
 
 permissions:
-  contents: write
-  pull-requests: write
+  contents: read
 
 jobs:
   enable-automerge:
@@ -19,7 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Enable auto-merge
-        run: gh pr merge --auto --merge "$PR_URL"
+        # 必须用 PAT：GITHUB_TOKEN 触发的 automerge,其合并 push 归因
+        # 到 github-actions[bot]，不会触发 notify-commercial 等下游 workflow
         env:
+          GH_TOKEN: ${{ secrets.WEMUX_CLOUD_DISPATCH_TOKEN }}
           PR_URL: ${{ github.event.pull_request.html_url }}
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh pr merge --auto --merge "$PR_URL"
