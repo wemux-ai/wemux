@@ -15,6 +15,13 @@
       "when": 1787936356657,
       "tag": "0001_retire-legacy-tables",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1788464579595,
+      "tag": "0002_motionless_marrow",
+      "breakpoints": true
     }
   ]
 }
