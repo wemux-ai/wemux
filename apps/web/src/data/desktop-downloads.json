@@ -1,48 +1,31 @@
 {
-  "schemaVersion": 1,
-  "version": "0.3.115",
-  "publishedAt": null,
-  "notes": "首版 macOS 桌面客户端（Apple Silicon）：Agent 聊天 / 工作区 / 任务一体化，支持系统托盘、深链（Wemux://）、自动更新。",
-  "platforms": [
+  "version": "0.3.131",
+  "generatedAt": "2026-09-03T21:11:20.284Z",
+  "files": [
     {
-      "id": "darwin-aarch64",
-      "os": "macos",
-      "label": "macOS (Apple Silicon)",
-      "recommended": true,
-      "file": "wemux_0.3.115_aarch64.dmg",
-      "url": null,
-      "sizeBytes": null,
-      "sha256": null
+      "name": "Wemux-0.3.131-arm64-mac.zip",
+      "size": 163675226,
+      "sha512": "YhBbJ4jJJPBKG64Cd7H0vrwm8+Ix//c6tT8DBg5OcJxHWH/sF8ueq0wmpvLuhTQGVqSBSTfcHZrfnXGNSXuy8Q=="
     },
     {
-      "id": "darwin-x86_64",
-      "os": "macos",
-      "label": "macOS (Intel)",
-      "recommended": false,
-      "file": "wemux_0.3.127_x64.dmg",
-      "url": null,
-      "sizeBytes": null,
-      "sha256": null
+      "name": "Wemux-0.3.131-arm64.dmg",
+      "size": 163940050,
+      "sha512": "m4E2EdXs4rGW+1N8jsCrseEQZLJkgiWq+9qTyWmqpOJ1ShRy3DitxlKLnS/woGU1VAy2q3E262qRY6IaMqskew=="
     },
     {
-      "id": "windows-x86_64",
-      "os": "windows",
-      "label": "Windows (x64)",
-      "recommended": false,
-      "file": "wemux_0.3.115_x64-setup.exe",
-      "url": null,
-      "sizeBytes": null,
-      "sha256": null
+      "name": "Wemux-0.3.131-mac.zip",
+      "size": 167599983,
+      "sha512": "umcECJ3NfYjsHnmUokGPAP0yzIKbOynxUNf+xFY19yUSDUt6unYWO7qv0Hr86YcMkOrPlxTwbC1ZCjFNZHOIxA=="
     },
     {
-      "id": "linux-x86_64",
-      "os": "linux",
-      "label": "Linux (AppImage)",
-      "recommended": false,
-      "file": "wemux_0.3.115_amd64.AppImage",
-      "url": null,
-      "sizeBytes": null,
-      "sha256": null
+      "name": "Wemux-0.3.131-x64-setup.exe",
+      "size": 143219386,
+      "sha512": "tYF4F0Y1hdEjuYS+MDJ0jPmN2u113nNPAqSI8d6rwB2JT1/4qQZnpnUwJ3iQCHPd4O0+FSiPf9PYL8mKW9y/tA=="
+    },
+    {
+      "name": "Wemux-0.3.131-x64.dmg",
+      "size": 167835837,
+      "sha512": "30S/n9+XIflnjUor/PQfWp/o1M6BpV1mfvJaXd0kA4B1L/F0Mvc+WY6xqM0ULifIU71NXRqFlTZh0zg6Ube/Vg=="
     }
   ]
 }
