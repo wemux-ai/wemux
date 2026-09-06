@@ -21,7 +21,7 @@ export const Route = createFileRoute('/download')({
           '@type': 'SoftwareApplication',
           name: 'Wemux',
           applicationCategory: 'DeveloperApplication',
-          operatingSystem: 'macOS, Windows, Linux',
+          operatingSystem: 'macOS, Windows',
           url: buildPageUrl('/download'),
           image: marketingSite.ogImageUrl,
           description: seoPage.description,

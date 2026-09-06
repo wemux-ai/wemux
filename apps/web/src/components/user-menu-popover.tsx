@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { ChevronRight, LogOut, Settings, User as UserIcon, HelpCircle, FileText, Home } from 'lucide-react'
+import { ChevronRight, LogOut, Settings, User as UserIcon, HelpCircle, FileText, Home, Download } from 'lucide-react'
 import { useNavigate } from '@tanstack/react-router'
 import { Avatar, AvatarFallback, AvatarImage } from './ui/avatar'
 import { Popover, PopoverContent, PopoverTrigger } from './ui/popover'
@@ -117,6 +117,11 @@ export function UserMenuPopover({ user, onLogout, language = 'zh' }: UserMenuPop
 
           {/* 外部链接 */}
           <div className="space-y-0.5">
+            <MenuLinkItem
+              icon={Download}
+              label={language === 'zh' ? '下载桌面端' : 'Download Desktop'}
+              onClick={() => handleNavigate('/download')}
+            />
             <MenuLinkItem
               icon={Home}
               label={language === 'zh' ? '主页' : 'Home'}
