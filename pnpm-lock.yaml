@@ -30,11 +30,11 @@ importers:
         specifier: ^5.3.0
         version: 5.3.0
       '@hono/node-server':
-        specifier: ^1.13.8
-        version: 1.19.11(hono@4.12.7)
+        specifier: ^1.19.15
+        version: 1.19.15(hono@4.12.7)
       '@hono/node-ws':
         specifier: ^1.3.0
-        version: 1.3.0(@hono/node-server@1.19.11(hono@4.12.7))(hono@4.12.7)
+        version: 1.3.0(@hono/node-server@1.19.15(hono@4.12.7))(hono@4.12.7)
       '@larksuiteoapi/node-sdk':
         specifier: ^1.71.1
         version: 1.71.1
@@ -1318,8 +1318,8 @@ packages:
     peerDependencies:
       graphql: ^0.8.0 || ^0.9.0 || ^0.10.0 || ^0.11.0 || ^0.12.0 || ^0.13.0 || ^14.0.0 || ^15.0.0 || ^16.0.0 || ^17.0.0
 
-  '@hono/node-server@1.19.11':
-    resolution: {integrity: sha512-dr8/3zEaB+p0D2n/IUrlPF1HZm586qgJNXK1a9fhg/PzdtkK7Ksd5l312tJX2yBuALqDYBlG20QEbayqPyxn+g==}
+  '@hono/node-server@1.19.15':
+    resolution: {integrity: sha512-Za2ai6TLdKjUvnur+eenO6nuYYipVAEhyCAdaV8IRvmU9kK8crOZUSYvIXn72E4f8fJqyAbpcJuTsYYmZp9Deg==}
     engines: {node: '>=18.14.1'}
     peerDependencies:
       hono: ^4
@@ -5923,8 +5923,8 @@ packages:
     resolution: {integrity: sha512-W/KYk+NFhkmsYpuHq5JykngiOCnxeVL8v8dFnqxSD8qEEdRfXk1SDM6JzNqcERbcGYj9tMrDQBYV9cjgnunFIg==}
     engines: {node: '>=18'}
 
-  tinyexec@1.3.0:
-    resolution: {integrity: sha512-QKAl9m8gWWGHV8jZcPeym6j+XULi6tOf1mT83WYJ4Lk2ytW/uwAWkrP0uFsdoYMdueVJ0qs26wZ+23xeB4ibNQ==}
+  tinyexec@1.3.1:
+    resolution: {integrity: sha512-GCvB3aoys96IuDFBMcTB46JOR6mdMtAToqwiW8JlWhsoh1mhHi/xn9ss/Dg7N555GiJyEt2qzoG/NHCwM6h1EA==}
     engines: {node: '>=18'}
 
   tinyglobby@0.2.15:
@@ -7571,13 +7571,13 @@ snapshots:
     dependencies:
       graphql: 16.13.1
 
-  '@hono/node-server@1.19.11(hono@4.12.7)':
+  '@hono/node-server@1.19.15(hono@4.12.7)':
     dependencies:
       hono: 4.12.7
 
-  '@hono/node-ws@1.3.0(@hono/node-server@1.19.11(hono@4.12.7))(hono@4.12.7)':
+  '@hono/node-ws@1.3.0(@hono/node-server@1.19.15(hono@4.12.7))(hono@4.12.7)':
     dependencies:
-      '@hono/node-server': 1.19.11(hono@4.12.7)
+      '@hono/node-server': 1.19.15(hono@4.12.7)
       hono: 4.12.7
       ws: 8.20.0
     transitivePeerDependencies:
@@ -7908,7 +7908,7 @@ snapshots:
 
   '@modelcontextprotocol/sdk@1.27.1(zod@3.25.76)':
     dependencies:
-      '@hono/node-server': 1.19.11(hono@4.12.7)
+      '@hono/node-server': 1.19.15(hono@4.12.7)
       ajv: 8.18.0
       ajv-formats: 3.0.1(ajv@8.18.0)
       content-type: 1.0.5
@@ -11393,7 +11393,7 @@ snapshots:
     dependencies:
       citty: 0.2.2
       pathe: 2.0.3
-      tinyexec: 1.3.0
+      tinyexec: 1.3.1
     optional: true
 
   object-assign@4.1.1: {}
@@ -12449,7 +12449,7 @@ snapshots:
 
   tinyexec@1.0.2: {}
 
-  tinyexec@1.3.0:
+  tinyexec@1.3.1:
     optional: true
 
   tinyglobby@0.2.15:
