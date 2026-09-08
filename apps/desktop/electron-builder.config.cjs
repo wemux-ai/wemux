@@ -7,11 +7,15 @@ const runtimeBinary = process.platform === 'win32'
   ? path.join(repoRoot, 'apps/meeting-runtime/native/build/Release/wemux-meeting-runtime.exe')
   : path.join(repoRoot, 'apps/meeting-runtime/native/build/wemux-meeting-runtime')
 const shouldNotarize = Boolean(
-  process.env.APPLE_ID && process.env.APPLE_APP_SPECIFIC_PASSWORD && process.env.APPLE_TEAM_ID,
+  (process.env.APPLE_ID && process.env.APPLE_APP_SPECIFIC_PASSWORD && process.env.APPLE_TEAM_ID) ||
+    (process.env.APPLE_API_KEY && process.env.APPLE_API_KEY_ID && process.env.APPLE_API_ISSUER),
 )
 // Community builds run unsigned when no certificate secret is provided.
-// Signing is enabled per-platform by CSC_* secrets in the building workflow.
-const shouldSignMac = Boolean(process.env.CSC_LINK || process.env.MACOS_CERTIFICATE)
+// Signing is enabled per-platform by CSC_* secrets or a keychain identity
+// selected via CSC_NAME in the building workflow.
+const shouldSignMac = Boolean(
+  process.env.CSC_LINK || process.env.MACOS_CERTIFICATE || process.env.CSC_NAME,
+)
 
 // Update-feed target: set WEMUX_DESKTOP_PUBLISH_URL (generic provider, e.g. a
 // self-hosted R2 download base) to emit latest*.yml pointing there; default is
