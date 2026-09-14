@@ -67,6 +67,12 @@ function SettingsRoute() {
   }
 
   useEffect(() => {
+    void api.getAvatarStorageStatus()
+      .then((response) => setAvatarStorage(response.storage))
+      .catch(() => undefined)
+  }, [])
+
+  useEffect(() => {
     if (search.section !== 'runtime') {
       return
     }
