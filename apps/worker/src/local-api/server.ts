@@ -536,7 +536,7 @@ export const startLocalWorkerServer = async (options: StartLocalWorkerServerOpti
       }
 
       if (request.method === 'GET' && url.pathname === '/api/update') {
-        sendJson(response, 200, await checkForWorkerUpdate())
+        sendJson(response, 200, await checkForWorkerUpdate({ pairedCloudUrl: loadWorkerConfig().cloudUrl }))
         return
       }
 

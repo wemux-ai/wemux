@@ -192,3 +192,82 @@ test('checkNpmPackageUpdate falls back when npm dist-tag is missing', async () =
   assert.equal(result.available, true)
   assert.equal(result.latestVersion, '0.3.86-preview.new')
 })
+
+const withInstallerEnv = async (
+  overrides: Record<string, string | undefined>,
+  run: () => Promise<void>,
+) => {
+  const keys = ['WEMUX_WORKER_INSTALLER_URL', 'VIBEMUX_WORKER_INSTALLER_URL', 'WEMUX_INSTALL_URL', 'VIBEMUX_INSTALL_URL']
+  const saved = new Map(keys.map((key) => [key, process.env[key]]))
+  const originalFetch = globalThis.fetch
+  try {
+    for (const key of keys) {
+      delete process.env[key]
+    }
+    for (const [key, value] of Object.entries(overrides)) {
+      if (value !== undefined) {
+        process.env[key] = value
+      }
+    }
+    await run()
+  } finally {
+    for (const key of keys) {
+      const value = saved.get(key)
+      if (value === undefined) {
+        delete process.env[key]
+      } else {
+        process.env[key] = value
+      }
+    }
+    globalThis.fetch = originalFetch
+  }
+}
+
+test('checkInstallerPackageUpdate follows the paired control plane when no override is set', async () => {
+  await withInstallerEnv({}, async () => {
+    globalThis.fetch = (async (input: string | URL | Request) => {
+      assert.equal(String(input), 'https://selfhosted.example/install/worker/manifest.json')
+      return new Response(JSON.stringify({
+        packageName: 'wemux-worker-preview',
+        packageVersion: '0.3.131-new',
+      }), { status: 200 })
+    }) as typeof fetch
+
+    const result = await checkInstallerPackageUpdate(
+      '0.3.131-old',
+      'preview',
+      'wemux-worker-preview',
+      'preview',
+      { pairedCloudUrl: 'https://selfhosted.example/' },
+    )
+
+    assert.equal(result.ok, true)
+    assert.equal(result.available, true)
+    assert.equal(result.latestVersion, '0.3.131-new')
+    assert.equal(result.packageUrl, 'https://selfhosted.example/install/worker/package.tgz')
+  })
+})
+
+test('explicit installer URL env takes precedence over the paired control plane', async () => {
+  await withInstallerEnv({ VIBEMUX_WORKER_INSTALLER_URL: 'https://override.example/install' }, async () => {
+    globalThis.fetch = (async (input: string | URL | Request) => {
+      assert.equal(String(input), 'https://override.example/install/worker/manifest.json')
+      return new Response(JSON.stringify({
+        packageName: 'wemux-worker-preview',
+        packageVersion: '0.3.131-new',
+      }), { status: 200 })
+    }) as typeof fetch
+
+    const result = await checkInstallerPackageUpdate(
+      '0.3.131-old',
+      'preview',
+      'wemux-worker-preview',
+      'preview',
+      { pairedCloudUrl: 'https://selfhosted.example' },
+    )
+
+    assert.equal(result.ok, true)
+    assert.equal(result.available, true)
+    assert.equal(result.packageUrl, 'https://override.example/install/worker/package.tgz')
+  })
+})

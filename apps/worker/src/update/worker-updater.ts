@@ -411,7 +411,7 @@ export const beginWorkerSelfUpdate = async (
 ): Promise<WorkerUpdateStartResult> => {
   cleanupStaleWorkerUpdateDirs()
 
-  const check = prefetchedCheck ?? await checkForWorkerUpdate()
+  const check = prefetchedCheck ?? await checkForWorkerUpdate({ pairedCloudUrl: loadWorkerConfig().cloudUrl })
   if (!check.ok || !check.available) {
     return {
       ok: check.ok,
@@ -563,7 +563,7 @@ export const maybeAutoApplyWorkerUpdate = async (prefetchedCheck?: WorkerUpdateC
   updateCheckInFlight = true
 
   try {
-    const check = prefetchedCheck ?? await checkForWorkerUpdate()
+    const check = prefetchedCheck ?? await checkForWorkerUpdate({ pairedCloudUrl: loadWorkerConfig().cloudUrl })
     if (!check.ok || !check.available || !check.latestVersion) {
       lastNotifiedVersion = null
       return false

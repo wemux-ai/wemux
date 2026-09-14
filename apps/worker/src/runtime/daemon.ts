@@ -97,7 +97,7 @@ type WorkerVersionStatus = {
 
 const loadWorkerVersionStatus = async (): Promise<WorkerVersionStatus> => {
   const currentVersion = getWorkerVersion()
-  const check = await checkForWorkerUpdate()
+  const check = await checkForWorkerUpdate({ pairedCloudUrl: loadWorkerConfig().cloudUrl })
 
   return {
     currentVersion,
@@ -981,7 +981,7 @@ export const runWorkerDaemon = async () => {
     }
 
     autoUpdateCheckInFlight = true
-    void checkForWorkerUpdate().then((check) => {
+    void checkForWorkerUpdate({ pairedCloudUrl: config.cloudUrl }).then((check) => {
       if (updateDrainRequested || !check.ok || !check.available) {
         return
       }

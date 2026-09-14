@@ -139,10 +139,16 @@ const loadNpmPackageMetadata = async (packageName: string) => {
   return (await response.json()) as NpmPackageMetadata
 }
 
-const getInstallerServerUrl = () => {
+const getInstallerServerUrl = (pairedCloudUrl?: string) => {
   const explicitUrl = getEnv('WEMUX_WORKER_INSTALLER_URL')?.trim() || getEnv('WEMUX_INSTALL_URL')?.trim()
   if (explicitUrl) {
     return explicitUrl.replace(/\/(?:install(?:\/worker\.sh)?|install\/worker(?:\/manifest\.json)?)?$/, '')
+  }
+
+  // 自托管部署：未显式指定时跟随配对控制面，而不是厂商默认云地址，否则私有化 worker 永远查不到自己控制面分发的更新
+  const pairedUrl = pairedCloudUrl?.trim().replace(/\/+$/, '')
+  if (pairedUrl) {
+    return pairedUrl
   }
 
   const defaultUrl = getReleaseMetadata().defaultCloudUrl?.trim().replace(/\/$/, '') || 'https://wemux.ai'
@@ -167,9 +173,10 @@ export const checkInstallerPackageUpdate = async (
   channel: string,
   packageName: string,
   packageTag: string,
+  options: { pairedCloudUrl?: string } = {},
 ): Promise<WorkerUpdateCheckResult> => {
   try {
-    const serverUrl = getInstallerServerUrl()
+    const serverUrl = getInstallerServerUrl(options.pairedCloudUrl)
     const manifest = await loadInstallerManifest(serverUrl)
     const latestVersion = manifest.packageVersion?.trim()
     if (manifest.packageName?.trim()) {
@@ -294,7 +301,9 @@ export const checkNpmPackageUpdate = async (
   }
 }
 
-export const checkForWorkerUpdate = async (): Promise<WorkerUpdateCheckResult> => {
+export const checkForWorkerUpdate = async (
+  options: { pairedCloudUrl?: string } = {},
+): Promise<WorkerUpdateCheckResult> => {
   const currentVersion = getWorkerVersion()
   const channel = getWorkerReleaseChannel()
   const currentPackageName = getWorkerPackageJson().name?.trim() || ''
@@ -315,5 +324,5 @@ export const checkForWorkerUpdate = async (): Promise<WorkerUpdateCheckResult> =
 
   // worker 更新统一走 server installer（HTTP）通道，npm registry 不再参与。
   // 存量 vibemux-* 包与 wemux-* 包都能从各自 server 的 manifest / package.tgz 更新。
-  return checkInstallerPackageUpdate(currentVersion, channel, packageName, packageTag)
+  return checkInstallerPackageUpdate(currentVersion, channel, packageName, packageTag, options)
 }

@@ -310,7 +310,7 @@ const runWorkerService = async (args: string[]) => {
 const runWorkerUpdate = async (args: string[]) => {
   const flags = parseCliFlags(args)
   if (hasFlag(flags, 'check')) {
-    const result = await checkForWorkerUpdate()
+    const result = await checkForWorkerUpdate({ pairedCloudUrl: loadWorkerConfig().cloudUrl })
     console.log(JSON.stringify(result, null, 2))
     return
   }
