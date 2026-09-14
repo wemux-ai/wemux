@@ -67,11 +67,23 @@ const db = new Kysely({
   }),
 })
 
+const baseUrl = resolveBaseUrl()
+
+// 桌面端（wemux-app://local）经 CORS 跨站调用 API 时，SameSite=Lax 的会话
+// cookie 不会被跨站 POST 携带，导致 /api/auth/*/bridge 读不到会话。
+// https 部署下升级为 SameSite=None + Secure；http 本地/自托管保持默认 Lax。
+const crossSiteCookieAttributes = baseUrl.startsWith('https://')
+  ? { defaultCookieAttributes: { sameSite: 'none' as const, secure: true } }
+  : {}
+
 export const auth = betterAuth({
   secret: resolveBetterAuthSecret() || 'dev-better-auth-secret-change-me',
-  baseURL: resolveBaseUrl(),
+  baseURL: baseUrl,
   basePath: BETTER_AUTH_BASE_PATH,
   trustedOrigins: resolveTrustedOrigins(),
+  advanced: {
+    ...crossSiteCookieAttributes,
+  },
   account: {
     // Hybrid dev serves web and auth on different ports, so Better Auth's
     // extra state cookie check can fail even when the DB-backed state is valid.
