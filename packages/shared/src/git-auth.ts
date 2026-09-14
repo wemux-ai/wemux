@@ -347,7 +347,11 @@ export const createGitAuthContext = (params: {
     if (!existsSync(knownHostsFile)) {
       writeFileSync(knownHostsFile, '', { encoding: 'utf8', mode: 0o600 })
     }
-    writeFileSync(keyFile, params.identity.credentialToken, { encoding: 'utf8', mode: 0o600 })
+    // OpenSSH 私钥解析要求 PEM 以换行结束；落库前被 trim 过的密钥必须补回结尾换行，否则 ssh 报 identity file type -1 并拒绝递出任何钥匙
+    const keyMaterial = params.identity.credentialToken.endsWith('\n')
+      ? params.identity.credentialToken
+      : `${params.identity.credentialToken}\n`
+    writeFileSync(keyFile, keyMaterial, { encoding: 'utf8', mode: 0o600 })
     chmodSync(keyFile, 0o600)
     chmodSync(knownHostsFile, 0o600)
     env.GIT_SSH_COMMAND = createSshCommand(keyFile, knownHostsFile)

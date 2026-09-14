@@ -1,5 +1,5 @@
 import assert from 'node:assert/strict'
-import { existsSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import os from 'node:os'
 import path from 'node:path'
 import test from 'node:test'
@@ -129,5 +129,22 @@ test('resolveGitCertificateAuthorityEnv generates a CA bundle from Node roots wh
     assert.equal(result.CURL_CA_BUNDLE, generatedBundle)
   } finally {
     rmSync(tempDir, { recursive: true, force: true })
+  }
+})
+
+test('writes SSH private key files with a trailing newline required by OpenSSH', () => {
+  const trimmedKey = '-----BEGIN OPENSSH PRIVATE KEY-----\nfake-key-body\n-----END OPENSSH PRIVATE KEY-----'
+  const context = createGitAuthContext({
+    taskId: 'ssh-key-newline-test',
+    identity: { mode: 'personal', authMode: 'ssh', credentialToken: trimmedKey },
+  })
+
+  try {
+    assert.ok(context.sshKeyFile)
+    const written = readFileSync(context.sshKeyFile, 'utf8')
+    assert.equal(written, trimmedKey + '\n')
+    assert.equal(written.endsWith('\n'), true)
+  } finally {
+    context.cleanup()
   }
 })

@@ -95,6 +95,9 @@ const toFailureMessage = (result: CommandResult, repoUrl?: string) => {
       ? 'Worker 缺少 Git 或 OpenSSH 客户端，无法执行 SSH 验证。'
       : 'Worker 无法执行 SSH 验证，请检查节点运行环境。'
   }
+  if (/identity file .* type -1/i.test(detail)) {
+    return 'Worker 无法加载 SSH 私钥（密钥格式异常），请删除后重新生成该身份。'
+  }
   if (detail.includes('permission denied (publickey)')) {
     return 'SSH 公钥认证失败，请确认已将该公钥添加到 Git 平台账号。'
   }

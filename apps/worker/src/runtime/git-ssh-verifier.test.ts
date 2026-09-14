@@ -58,6 +58,26 @@ test('reports Codeup public-key authentication failure without leaking command d
   })
 })
 
+test('reports SSH private key load failure with a regenerate hint', async () => {
+  await withWorkerRoot(async (workspaceRoot) => {
+    const result = await verifyGitSshCredential({
+      host: 'github.com',
+      privateKey: 'test-private-key',
+      workspaceRoot,
+      run: async () => ({
+        status: 255,
+        stdout: '',
+        stderr: 'debug1: identity file /tmp/vibemux-git/ssh-verify-1/id_ed25519 type -1\ngit@github.com: Permission denied (publickey).',
+      }),
+    })
+
+    assert.equal(result.ok, false)
+    assert.match(result.message, /无法加载 SSH 私钥/)
+    assert.match(result.message, /重新生成/)
+    assert.doesNotMatch(result.message, /test-private-key/)
+  })
+})
+
 test('normalizes unexpected command failures without leaking private-key details', async () => {
   await withWorkerRoot(async (workspaceRoot) => {
     const result = await verifyGitSshCredential({
