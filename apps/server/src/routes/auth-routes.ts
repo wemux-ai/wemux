@@ -11,7 +11,7 @@ import { z } from 'zod'
 import type { PersonalAccessTokenCreateResponse, PersonalAccessTokenListResponse } from '@shared/auth'
 import { listTeamSharedExecutors } from '../control-plane/collaboration'
 import { executorRegistry } from '../control-plane/executor-registry'
-import { acceptTeamInvitation, addTeamMember, addTeamMemberAndWait, addTeamProject, addTeamProjectAndWait, cancelTeamInvitation, createTeam, createTeamAndWait, createTeamInvitation, createTeamInvitationAndWait, createToken, ensureOAuthUser, ensurePasswordUser, ensureUsernameBackfill, getInvitationById, getInvitationByToken, getPendingTeamInvitationsByEmail, getTeamActivities, getTeamById, getTeamInvitations, getTeamMemberRole, getTeamMembers, getTeamProjects, getUserByEmail, getUserById, getUserTeams, isProjectAccessible, isTeamAdmin, isUsernameTaken, logTeamActivity, recordAuthEvent, removeTeamMember, removeTeamMemberAndWait, removeTeamProject, revokeToken, resolveEffectiveUserStatus, setUserLastLogin, updateTeam, updateTeamAndWait, updateTeamMemberRole, updateTeamMemberRoleAndWait, updateUserOnboarding, updateUserProfile } from '../repositories/auth'
+import { acceptTeamInvitation, addTeamMember, addTeamMemberAndWait, addTeamProject, addTeamProjectAndWait, cancelTeamInvitation, createTeam, createTeamAndWait, createTeamInvitation, createTeamInvitationAndWait, createToken, ensureOAuthUser, ensurePasswordUser, ensureUsernameBackfill, getInvitationById, getInvitationByToken, getPendingTeamInvitationsByEmail, getTeamActivities, getTeamById, getTeamInvitations, getTeamMemberRole, getTeamMembers, getTeamProjects, getUserByEmail, getUserById, getUserTeams, isProjectAccessible, isTeamAdmin, isUsernameTaken, logTeamActivity, parseTokenUserIdAsync, recordAuthEvent, removeTeamMember, removeTeamMemberAndWait, removeTeamProject, revokeToken, resolveEffectiveUserStatus, setUserLastLogin, updateTeam, updateTeamAndWait, updateTeamMemberRole, updateTeamMemberRoleAndWait, updateUserOnboarding, updateUserProfile } from '../repositories/auth'
 import { isValidUsername, normalizeUsername, USERNAME_CHANGE_COOLDOWN_MS } from '@shared/username'
 import { createPersonalAccessToken, listPersonalAccessTokens, deletePersonalAccessToken, revokeAllPersonalAccessTokens } from '../repositories/auth'
 import { ensureTeamMember, getRawToken, getUserIdFromHeader, publishState } from './shared'
@@ -38,7 +38,7 @@ import { getBetterAuthSession, isEmailVerificationRequired, isGoogleSocialConfig
 import { getDevLoginAccounts, isDevLoginEnabled, signInDevLoginAccount } from '../services/dev-auth-service'
 import { getEmailSendingStatus, listRecentConsoleEmails, resolveEmailProvider } from '../services/email-service'
 import { and, eq } from 'drizzle-orm'
-import { betterAuthAccounts } from '../storage/postgres/schema'
+import { betterAuthAccounts, betterAuthUsers } from '../storage/postgres/schema'
 import { resolveEnvAdminEmails } from './admin-routes'
 import { getDrizzleDb } from '../storage/postgres/drizzle-db'
 import { hashPassword, verifyPassword } from 'better-auth/crypto'
@@ -241,7 +241,25 @@ export const registerAuthRoutes = (app: Hono, requireAuth: MiddlewareHandler) =>
 
   const resolveBetterAuthIdentity = async (c: import('hono').Context) => {
     const session = await getBetterAuthSession(c.req.raw.headers)
-    return session?.user ?? null
+    if (session?.user) {
+      return session.user
+    }
+
+    // 桌面端 / 移动端只携带 wemux Bearer token（跨源请求不带 better-auth cookie），
+    // 回退到 Bearer token：解析 wemux 用户后按 email 映射到 better-auth user，
+    // 保证 /api/auth/account/* 对 token-only 客户端同样可用。
+    const rawToken = getRawToken(c)
+    const wemuxUserId = rawToken ? await parseTokenUserIdAsync(rawToken) : null
+    const wemuxUser = wemuxUserId ? getUserById(wemuxUserId) : null
+    if (!wemuxUser?.email) {
+      return null
+    }
+    const rows = await getDrizzleDb()
+      .select({ id: betterAuthUsers.id, email: betterAuthUsers.email, emailVerified: betterAuthUsers.emailVerified })
+      .from(betterAuthUsers)
+      .where(eq(betterAuthUsers.email, wemuxUser.email))
+      .limit(1)
+    return rows[0] ?? null
   }
 
   /** 当前 better-auth 用户已绑定的 provider 列表 */
