@@ -239,7 +239,9 @@ export const registerUserGitHubAppRoutes = (app: Hono, requireAuth: MiddlewareHa
           console.warn(`[github-app] failed to persist user oauth auth: ${message}`)
         })
         oauthAuthorized = true
-      } catch {
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error)
+        console.warn(`[github-app] oauth code exchange failed for user ${userId}: ${message}`)
         return c.redirect(appendResultToReturnTo(state.returnTo, {
           githubApp: 'error',
           message: 'github_app_oauth_exchange_failed',
@@ -266,7 +268,9 @@ export const registerUserGitHubAppRoutes = (app: Hono, requireAuth: MiddlewareHa
           ...installation,
           commitIdentity: commitIdentity ?? undefined,
         })
-      } catch {
+      } catch (error) {
+        const message = error instanceof Error ? error.message : String(error)
+        console.warn(`[github-app] installation ${installationId} sync failed for user ${userId}: ${message}`)
         return c.redirect(appendResultToReturnTo(state.returnTo, {
           githubApp: 'error',
           message: 'github_app_installation_sync_failed',
