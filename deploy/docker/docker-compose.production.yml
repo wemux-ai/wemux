@@ -96,8 +96,25 @@ services:
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
       WEMUX_HEALTH_TOKEN: ${WEMUX_HEALTH_TOKEN:-}
+      # Worker Mesh 私有组网（EasyTier；不配 WEMUX_MESH_ENABLED 则节点 Mesh 关闭）
+      WEMUX_MESH_ENABLED: ${WEMUX_MESH_ENABLED:-}
+      WEMUX_EASYTIER_NETWORK_NAME: ${WEMUX_EASYTIER_NETWORK_NAME:-}
+      WEMUX_EASYTIER_NETWORK_PREFIX: ${WEMUX_EASYTIER_NETWORK_PREFIX:-}
+      WEMUX_EASYTIER_NETWORK_SECRET: ${WEMUX_EASYTIER_NETWORK_SECRET:-}
+      WEMUX_EASYTIER_PEERS: ${WEMUX_EASYTIER_PEERS:-}
+      WEMUX_EASYTIER_IPV4_PREFIX: ${WEMUX_EASYTIER_IPV4_PREFIX:-}
+      WEMUX_EASYTIER_SERVER_IPV4: ${WEMUX_EASYTIER_SERVER_IPV4:-}
+      WEMUX_EASYTIER_LISTEN_URLS: ${WEMUX_EASYTIER_LISTEN_URLS:-}
+      WEMUX_EASYTIER_DOWNLOAD_BASE_URL: ${WEMUX_EASYTIER_DOWNLOAD_BASE_URL:-}
+      # 运行时根目录（EasyTier 二进制缓存等）；默认 /tmp/vibemux-runtime 不在挂载卷上，
+      # 建议显式设为 /tmp/wemux-runtime 以持久化，避免容器重建后重复下载
+      WEMUX_RUNTIME_DIR: ${WEMUX_RUNTIME_DIR:-}
     ports:
       - '${SERVER_PORT:-8989}:8989'
+      # EasyTier 公共节点（启用 Mesh 时 worker 经此接入；production 端口档默认 11020，
+      # 自定义 WEMUX_EASYTIER_LISTEN_URLS 时需同步调整此处映射）
+      - '${WEMUX_EASYTIER_PUBLIC_PORT:-11020}:11020/tcp'
+      - '${WEMUX_EASYTIER_PUBLIC_PORT:-11020}:11020/udp'
     volumes:
       - wemux-server-runtime:/tmp/wemux-runtime
 
