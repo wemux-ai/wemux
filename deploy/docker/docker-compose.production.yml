@@ -96,6 +96,21 @@ services:
       GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID:-}
       GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET:-}
       WEMUX_HEALTH_TOKEN: ${WEMUX_HEALTH_TOKEN:-}
+      # GitHub App 集成（可选；不配置则 GitHub App 相关功能返回 503）
+      # 核心三件套：缺一则 GitHub App 功能整体关闭
+      GITHUB_APP_ID: ${GITHUB_APP_ID:-}
+      GITHUB_APP_SLUG: ${GITHUB_APP_SLUG:-}
+      GITHUB_APP_PRIVATE_KEY: ${GITHUB_APP_PRIVATE_KEY:-}
+      # OAuth（授权账号 / 协作仓库聚合）：不配则仅无 OAuth 的安装链路可用
+      GITHUB_APP_CLIENT_ID: ${GITHUB_APP_CLIENT_ID:-}
+      GITHUB_APP_CLIENT_SECRET: ${GITHUB_APP_CLIENT_SECRET:-}
+      GITHUB_APP_CALLBACK_URL: ${GITHUB_APP_CALLBACK_URL:-}
+      # GitHub Enterprise / bot 提交身份 / state 签名（一般留空）
+      GITHUB_APP_API_BASE_URL: ${GITHUB_APP_API_BASE_URL:-}
+      GITHUB_APP_WEB_BASE_URL: ${GITHUB_APP_WEB_BASE_URL:-}
+      GITHUB_APP_BOT_LOGIN: ${GITHUB_APP_BOT_LOGIN:-}
+      GITHUB_APP_BOT_EMAIL: ${GITHUB_APP_BOT_EMAIL:-}
+      GITHUB_APP_STATE_SECRET: ${GITHUB_APP_STATE_SECRET:-}
     ports:
       - '${SERVER_PORT:-8989}:8989'
     volumes:
