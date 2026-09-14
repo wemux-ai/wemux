@@ -1244,7 +1244,9 @@ export const registerRuntimeSystemRoutes = (app: Hono, requireAuth: MiddlewareHa
         config: nextConfig,
         adapters,
       }
-      const managedCloudSync = await getManagedCloudGate().reconcileExecutors(nextState.config)
+      // gate 实现可能返回 null（如无托管云能力），兜底为空汇总避免保存流程被打断
+      const managedCloudSync = (await getManagedCloudGate().reconcileExecutors(nextState.config))
+        ?? { totalCount: 0, rewrittenConfigCount: 0, relabeledCount: 0, warnings: [] as string[] }
       const syncedExecutorIds = syncSettingsToVisibleExecutors({
         userId,
         config: nextState.config,

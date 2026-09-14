@@ -30,6 +30,7 @@ export interface ManagedCloudGate {
   startExecutor(params: ManagedCloudExecutorStartParams): Promise<any>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ensureExecutor(params: ManagedCloudExecutorStartParams): Promise<any>
+  /** 调和托管 executor 配置；公开版无托管 executor，恒返回空汇总而非 null。 */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   reconcileExecutors(config: unknown): Promise<any>
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -98,7 +99,7 @@ export const openSourceManagedCloudGate: ManagedCloudGate = {
     throw new Error('managed cloud is not available in the open-source edition')
   },
   async reconcileExecutors() {
-    return null
+    return { totalCount: 0, rewrittenConfigCount: 0, relabeledCount: 0, warnings: [] as string[] }
   },
   buildUsageRecord: () => null,
   recordUsage: () => {},

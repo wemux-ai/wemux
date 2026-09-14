@@ -560,7 +560,8 @@ export const registerExecutorControlPlaneRoutes = (app: Hono, requireAuth: Middl
 
     try {
       const state = loadState()
-      const result = await getManagedCloudGate().reconcileExecutors(state.config)
+      const result = (await getManagedCloudGate().reconcileExecutors(state.config))
+        ?? { totalCount: 0, rewrittenConfigCount: 0, relabeledCount: 0, warnings: [] as string[] }
       const executors = listVisibleExecutorsForUser(userId)
       const runtime = await getManagedCloudGate().inspectRuntime(state.config.managedCloud)
       const targets = await getManagedCloudGate().inspectRuntimeTargets(executors, state.config.managedCloud)

@@ -36,7 +36,12 @@ test('executor lifecycle calls throw for managed cloud (disappeared capability)'
 
 test('non-blocking hooks stay silent and permissive', async () => {
   assert.doesNotThrow(() => openSourceManagedCloudGate.ensureDevOnlyAccess())
-  assert.equal(await openSourceManagedCloudGate.reconcileExecutors({}), null)
+  assert.deepEqual(await openSourceManagedCloudGate.reconcileExecutors({}), {
+    totalCount: 0,
+    rewrittenConfigCount: 0,
+    relabeledCount: 0,
+    warnings: [],
+  })
   assert.equal(openSourceManagedCloudGate.buildUsageRecord({}), null)
   assert.doesNotThrow(() => openSourceManagedCloudGate.recordUsage({}))
   const usage = await openSourceManagedCloudGate.ensureUsageAccess({ userId: 'user-1' })
