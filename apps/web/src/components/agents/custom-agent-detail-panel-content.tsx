@@ -8,7 +8,7 @@ import { useEffect, useMemo, useRef, useState } from 'react'
 import { MANAGED_CLOUD_AUTO_EXECUTOR_ID } from '@shared/managed-cloud'
 import { isExecutorEffectivelyOnline } from '../../lib/managed-cloud-executor'
 import type { RuntimeId } from '@shared/types'
-import { Activity, Bot, BrainCircuit, Cable, CalendarClock, Camera, Check, ChevronRight, Cpu, FolderOpen, Inbox, Loader2, Lock, MessageSquareText, Radio, Settings2, ShieldCheck, Sparkles, Unplug, Users, Waypoints } from 'lucide-react'
+import { Activity, Bot, BrainCircuit, Cable, CalendarClock, Camera, Check, ChevronRight, Cpu, FolderOpen, Inbox, Loader2, Lock, MessageSquareText, Radio, RefreshCw, Settings2, ShieldCheck, Sparkles, Unplug, Users, Waypoints } from 'lucide-react'
 import { CustomAgentActivityPanel, type CustomAgentAuditEntry, type CustomAgentAuditSummary } from './custom-agent-activity-panel'
 import { AgentRunOverview } from './agent-run-overview'
 import { CustomAgentChatPanel } from './custom-agent-chat-panel'
@@ -69,7 +69,7 @@ import {
   SettingsTab,
   ToggleField,
 } from './custom-agent-detail-panel-shared'
-import { useCustomAgentDetailState } from './use-custom-agent-detail-state'
+import { applyCustomAgentRuntimeChange, useCustomAgentDetailState } from './use-custom-agent-detail-state'
 
 export function CustomAgentDetailPanel({
   creating,
@@ -134,7 +134,7 @@ export function CustomAgentDetailPanel({
 }: CustomAgentDetailPanelProps) {
   const { language, t } = useTranslation()
   const avatarInputRef = useRef<HTMLInputElement | null>(null)
-  const { preferredModelOptions } = useCustomAgentDetailState({ draft, state })
+  const { modelLoading, preferredModelOptions, refreshPreferredModels } = useCustomAgentDetailState({ draft, state })
   const [executors, setExecutors] = useState<Array<{ executorId: string; name: string; status: string; executorSource?: string; managedBy?: string }>>([])
   const [executorMenuOpen, setExecutorMenuOpen] = useState(false)
   const [feishuBindOpen, setFeishuBindOpen] = useState(false)
@@ -487,7 +487,21 @@ export function CustomAgentDetailPanel({
                 ? '设置这个 Agent 的默认模型、执行端和执行节点。'
                 : 'Set this agent’s default model, runtime, and executor.'}
             />
-            <Field label={t('agents.custom.detail.runtime.preferredModel')}>
+            <div className="space-y-2">
+              <div className="flex items-center justify-between gap-2">
+                <span className="text-sm font-medium text-zinc-200">{t('agents.custom.detail.runtime.preferredModel')}</span>
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon-sm"
+                  disabled={modelLoading}
+                  aria-label={t('agents.custom.detail.runtime.refreshModels')}
+                  title={t('agents.custom.detail.runtime.refreshModels')}
+                  onClick={refreshPreferredModels}
+                >
+                  <RefreshCw className={cn('size-3.5', modelLoading && 'animate-spin')} />
+                </Button>
+              </div>
               <SearchableSelect
                 value={draft.preferredModel}
                 options={preferredModelOptions}
@@ -496,9 +510,9 @@ export function CustomAgentDetailPanel({
                 emptyText={t('agents.custom.detail.empty.noMatchedModels')}
                 onChange={(value) => onDraftChange((current) => ({ ...current, preferredModel: value }))}
               />
-            </Field>
+            </div>
             <Field label={t('agents.custom.detail.runtime.preferredRuntime')}>
-              <NativeSelect value={draft.preferredRuntime} onChange={(event) => onDraftChange((current) => ({ ...current, preferredRuntime: event.target.value as RuntimeId }))}>
+              <NativeSelect value={draft.preferredRuntime} onChange={(event) => onDraftChange((current) => applyCustomAgentRuntimeChange(current, event.target.value as RuntimeId))}>
                 {runtimeOptions.map((option) => (
                   <option key={option.value} value={option.value}>{option.label}</option>
                 ))}
