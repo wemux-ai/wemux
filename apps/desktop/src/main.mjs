@@ -14,6 +14,7 @@ import { fileURLToPath } from 'node:url'
 import {
   app,
   BrowserWindow,
+  clipboard,
   globalShortcut,
   ipcMain,
   Menu,
@@ -603,6 +604,12 @@ const registerIpc = () => {
           })
         }, 0)
         return activeDesktopServerUrl
+      }
+      case 'clipboard_write_text': {
+        const text = typeof args.text === 'string' ? args.text : ''
+        if (!text || text.length > 1_000_000) throw new Error('invalid clipboard text')
+        clipboard.writeText(text)
+        return true
       }
       case 'worker_daemon_status':
         return workerStatus()

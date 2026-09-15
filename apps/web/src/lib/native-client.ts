@@ -101,6 +101,11 @@ export const connectDesktopToServer = (serverUrl: string) => isElectronDesktopCl
   ? invokeNative<string>('desktop_server_connect', { serverUrl })
   : Promise.resolve(null)
 
+/** Write plain text through Electron when browser clipboard permissions are unavailable. */
+export const writeNativeClipboardText = (text: string) => isElectronDesktopClient()
+  ? invokeNative<boolean>('clipboard_write_text', { text })
+  : Promise.resolve(null)
+
 /** 查询桌面端开机自启动状态（非桌面端返回 null） */
 export const getAutostartEnabled = () => isDesktopNativeClient()
   ? invokeNative<boolean>('autostart_is_enabled')
