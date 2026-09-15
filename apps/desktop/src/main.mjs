@@ -1,3 +1,8 @@
+// [INPUT]: Electron lifecycle, native IPC requests, packaged web assets, and persisted desktop settings.
+// [OUTPUT]: Sandboxed desktop window, worker/runtime controls, updates, and trusted server navigation.
+// [POS]: Main process for the Wemux desktop shell.
+// [PROTOCOL]: Update this header when desktop lifecycle, IPC, or navigation contracts change, then check AGENTS.md.
+
 import { createHash } from 'node:crypto'
 import { createReadStream, createWriteStream, existsSync, mkdirSync, readFileSync, renameSync, statSync, unlinkSync, writeFileSync } from 'node:fs'
 import { createInterface } from 'node:readline'
@@ -5,7 +10,7 @@ import { spawn } from 'node:child_process'
 import net from 'node:net'
 import path from 'node:path'
 import process from 'node:process'
-import { fileURLToPath, pathToFileURL } from 'node:url'
+import { fileURLToPath } from 'node:url'
 import {
   app,
   BrowserWindow,
@@ -14,7 +19,6 @@ import {
   Menu,
   nativeImage,
   nativeTheme,
-  net as electronNet,
   Notification,
   protocol,
   screen,
@@ -23,6 +27,14 @@ import {
   Tray,
 } from 'electron'
 import updater from 'electron-updater'
+import { createAppProtocolResponse } from './app-protocol.mjs'
+import {
+  buildDesktopServerPageUrl,
+  DEFAULT_DESKTOP_SERVER_URL,
+  normalizeDesktopServerUrl,
+  persistDesktopServerUrl,
+  readDesktopServerUrl,
+} from './desktop-server-url.mjs'
 
 const { autoUpdater } = updater
 const DESKTOP_SCHEME = 'wemux-app'
@@ -30,8 +42,8 @@ const DEEP_LINK_SCHEME = 'wemux'
 const WORKER_HOST = '127.0.0.1'
 const WORKER_PORT = 48121
 const DEFAULT_BOUNDS = { width: 1440, height: 960 }
-const DEV_LOAD_RETRY_DELAY_MS = 750
-const DEV_LOAD_MAX_ATTEMPTS = 4
+const INITIAL_LOAD_RETRY_DELAY_MS = 750
+const INITIAL_LOAD_MAX_ATTEMPTS = 4
 const MEETING_MODELS = {
   'moss-transcribe': {
     fileName: 'moss-transcribe-q4_k.gguf',
@@ -80,9 +92,17 @@ let updateDownloaded = false
 let pendingDeepLinks = []
 let workerRunning = false
 let stateSaveTimer = null
+let activeDesktopServerUrl = DEFAULT_DESKTOP_SERVER_URL
+const allowedRendererOrigins = new Set([`${DESKTOP_SCHEME}://local`])
 const meetingModelJobs = new Map()
 let meetingRuntime = null
 let meetingRuntimeStarting = null
+
+const allowDesktopServerOrigin = (serverUrl) => {
+  allowedRendererOrigins.clear()
+  allowedRendererOrigins.add(`${DESKTOP_SCHEME}://local`)
+  allowedRendererOrigins.add(new URL(serverUrl).origin)
+}
 
 const meetingRuntimeBinaryPath = () => {
   const binaryName = process.platform === 'win32' ? 'wemux-meeting-runtime.exe' : 'wemux-meeting-runtime'
@@ -559,6 +579,31 @@ const registerIpc = () => {
     switch (command) {
       case 'app_version':
         return app.getVersion()
+      case 'desktop_server_url':
+        return activeDesktopServerUrl
+      case 'desktop_server_connect': {
+        const requestedServerUrl = typeof args.serverUrl === 'string' ? args.serverUrl : ''
+        const normalizedServerUrl = normalizeDesktopServerUrl(requestedServerUrl)
+        if (!normalizedServerUrl) throw new Error('invalid desktop server URL')
+
+        activeDesktopServerUrl = persistDesktopServerUrl(
+          path.join(app.getPath('userData'), 'server-connection.json'),
+          normalizedServerUrl,
+        )
+        allowDesktopServerOrigin(activeDesktopServerUrl)
+        const loginUrl = buildDesktopServerPageUrl(activeDesktopServerUrl, '/login')
+        setTimeout(() => {
+          if (!mainWindow || mainWindow.isDestroyed()) return
+          void mainWindow.loadURL(loginUrl).catch((error) => {
+            console.error(`[desktop] failed to connect to ${loginUrl}`, error)
+            if (!mainWindow || mainWindow.isDestroyed()) return
+            void mainWindow.loadURL(`${DESKTOP_SCHEME}://local/login`).catch((fallbackError) => {
+              console.error('[desktop] failed to load bundled connection page', fallbackError)
+            })
+          })
+        }, 0)
+        return activeDesktopServerUrl
+      }
       case 'worker_daemon_status':
         return workerStatus()
       case 'meeting_models_status':
@@ -643,28 +688,17 @@ const registerIpc = () => {
 
 const registerAppProtocol = () => {
   const webRoot = path.join(process.resourcesPath, 'web')
-  protocol.handle(DESKTOP_SCHEME, (request) => {
-    const requestUrl = new URL(request.url)
-    let pathname
-    try {
-      pathname = decodeURIComponent(requestUrl.pathname)
-    } catch {
-      return new Response('Bad Request', { status: 400 })
-    }
-    const requestedPath = path.resolve(webRoot, `.${pathname}`)
-    if (requestedPath !== webRoot && !requestedPath.startsWith(`${webRoot}${path.sep}`)) {
-      return new Response('Forbidden', { status: 403 })
-    }
-    const hasFile = existsSync(requestedPath) && statSync(requestedPath).isFile()
-    const filePath = hasFile ? requestedPath : path.join(webRoot, 'index.html')
-    return electronNet.fetch(pathToFileURL(filePath).toString())
-  })
+  protocol.handle(DESKTOP_SCHEME, (request) => createAppProtocolResponse(webRoot, request))
 }
 
 const createMainWindow = async () => {
   console.log('[desktop] creating main window')
   const saved = resolveWindowState()
   const windowIcon = resolveAppIconPath()
+  if (app.isPackaged) {
+    activeDesktopServerUrl = readDesktopServerUrl(path.join(app.getPath('userData'), 'server-connection.json'))
+    allowDesktopServerOrigin(activeDesktopServerUrl)
+  }
   mainWindow = new BrowserWindow({
     ...DEFAULT_BOUNDS,
     ...saved,
@@ -706,8 +740,12 @@ const createMainWindow = async () => {
     return { action: 'deny' }
   })
   mainWindow.webContents.on('will-navigate', (event, url) => {
-    const allowedOrigin = app.isPackaged ? `${DESKTOP_SCHEME}://local` : new URL(process.env.WEMUX_DESKTOP_DEV_URL || 'http://127.0.0.1:15173/chat').origin
-    if (new URL(url).origin === allowedOrigin) return
+    const allowedOrigins = app.isPackaged
+      ? allowedRendererOrigins
+      : new Set([new URL(process.env.WEMUX_DESKTOP_DEV_URL || 'http://127.0.0.1:15173/chat').origin])
+    try {
+      if (allowedOrigins.has(new URL(url).origin)) return
+    } catch {}
     event.preventDefault()
     if (/^https?:\/\//i.test(url)) void shell.openExternal(url)
   })
@@ -730,23 +768,37 @@ const createMainWindow = async () => {
     console.log('[desktop] main window ready to show')
   })
 
-  const initialUrl = app.isPackaged
-    ? `${DESKTOP_SCHEME}://local/chat`
+  const bundledInitialUrl = `${DESKTOP_SCHEME}://local/chat`
+  const preferredInitialUrl = app.isPackaged
+    ? buildDesktopServerPageUrl(activeDesktopServerUrl, '/chat')
     : process.env.WEMUX_DESKTOP_DEV_URL || 'http://127.0.0.1:15173/chat'
-  const retryableDevLoadError = (error) => !app.isPackaged
-    && (String(error?.code) === '-3' || String(error?.message).includes('ERR_ABORTED'))
-
-  for (let attempt = 1; attempt <= DEV_LOAD_MAX_ATTEMPTS; attempt += 1) {
-    try {
-      await mainWindow.loadURL(initialUrl)
-      break
-    } catch (error) {
-      if (!retryableDevLoadError(error) || attempt === DEV_LOAD_MAX_ATTEMPTS) throw error
-      console.warn(`[desktop] Vite interrupted initial navigation; retrying (${attempt}/${DEV_LOAD_MAX_ATTEMPTS})`)
-      await new Promise((resolve) => setTimeout(resolve, DEV_LOAD_RETRY_DELAY_MS))
+  const loadInitialUrl = async (url) => {
+    for (let attempt = 1; attempt <= INITIAL_LOAD_MAX_ATTEMPTS; attempt += 1) {
+      try {
+        await mainWindow.loadURL(url)
+        if (mainWindow.webContents.getURL() === 'about:blank') throw new Error('initial navigation remained on about:blank')
+        return
+      } catch (error) {
+        const retryable = String(error?.code) === '-3'
+          || String(error?.message).includes('ERR_ABORTED')
+          || String(error?.message).includes('about:blank')
+        if (!retryable || attempt === INITIAL_LOAD_MAX_ATTEMPTS) throw error
+        console.warn(`[desktop] initial navigation interrupted; retrying (${attempt}/${INITIAL_LOAD_MAX_ATTEMPTS})`)
+        await new Promise((resolve) => setTimeout(resolve, INITIAL_LOAD_RETRY_DELAY_MS))
+      }
     }
   }
-  console.log(`[desktop] main window loaded ${initialUrl}`)
+
+  let loadedUrl = preferredInitialUrl
+  try {
+    await loadInitialUrl(preferredInitialUrl)
+  } catch (error) {
+    if (!app.isPackaged) throw error
+    console.warn(`[desktop] preferred server unavailable; loading bundled connection page`, error)
+    loadedUrl = bundledInitialUrl
+    await loadInitialUrl(bundledInitialUrl)
+  }
+  console.log(`[desktop] main window loaded ${loadedUrl}`)
   if (saved.maximized) mainWindow.maximize()
   if (rendererReadyToShow || !mainWindow.isVisible()) showMainWindow()
 }

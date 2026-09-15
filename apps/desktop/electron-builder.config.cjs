@@ -39,6 +39,8 @@ module.exports = {
     buildResources: 'assets/icons',
   },
   files: [
+    'src/app-protocol.mjs',
+    'src/desktop-server-url.mjs',
     'src/main.mjs',
     'src/preload.cjs',
     'package.json',

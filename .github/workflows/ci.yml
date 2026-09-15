@@ -107,6 +107,9 @@ jobs:
         run: |
           find apps/web/src -name '*.test.ts' -o -name '*.test.tsx' | xargs pnpm exec tsx --test
 
+      - name: Unit tests (desktop)
+        run: pnpm --dir apps/desktop test
+
       - name: Public source boundary（受限实现和材料不得进入公开仓）
         if: github.repository == 'wemux-ai/wemux'
         run: |

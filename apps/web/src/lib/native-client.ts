@@ -91,6 +91,16 @@ const invokeNative = async <T>(cmd: string, args?: Record<string, unknown>): Pro
 export const invokeNativeShell = <T>(cmd: string, args?: Record<string, unknown>) =>
   invokeNative<T>(cmd, args)
 
+/** Read the control-plane origin persisted by the Electron main process. */
+export const getDesktopServerUrlNative = () => isElectronDesktopClient()
+  ? invokeNative<string>('desktop_server_url')
+  : Promise.resolve(null)
+
+/** Persist a control-plane origin and navigate Electron to its login page. */
+export const connectDesktopToServer = (serverUrl: string) => isElectronDesktopClient()
+  ? invokeNative<string>('desktop_server_connect', { serverUrl })
+  : Promise.resolve(null)
+
 /** 查询桌面端开机自启动状态（非桌面端返回 null） */
 export const getAutostartEnabled = () => isDesktopNativeClient()
   ? invokeNative<boolean>('autostart_is_enabled')

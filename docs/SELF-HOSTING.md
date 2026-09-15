@@ -152,6 +152,16 @@ docker compose -f deploy/docker/docker-compose.production.yml --env-file .env.pr
 > HTTPS：建议在控制面前放 Caddy / Nginx / Cloudflare Tunnel 做 TLS 终止，
 > 并把 `WEMUX_PUBLIC_BASE_URL` 设为 https 地址。
 
+### 桌面客户端连接自托管控制面
+
+在桌面客户端登录页的「服务器地址」中填写控制面的完整 origin，然后点击「保存并重连」。例如，同一台 Windows 电脑上的 Docker Compose 控制面使用：
+
+```text
+http://127.0.0.1:8989
+```
+
+桌面客户端会记住该地址，并在应用窗口中直接打开自托管控制面；登录请求与页面保持同源。远程部署建议使用 HTTPS 域名。若控制面暂时不可达，客户端会回退到内置连接页，方便修改服务器地址。
+
 ## 二、安装并配对 worker
 
 worker 是代码执行的唯一入口，运行在你的机器上（不要求与服务器同机）。
