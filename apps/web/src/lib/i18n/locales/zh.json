@@ -1885,6 +1885,7 @@
         "runtime": {
           "preferredRuntime": "偏好执行端",
           "preferredModel": "偏好模型",
+          "refreshModels": "刷新模型列表",
           "canWriteFilesTitle": "允许写文件",
           "canWriteFilesDescription": "只影响注入给底层执行端的权限提示，不会绕过系统本身的安全边界。",
           "canRunCommandsTitle": "允许跑命令",

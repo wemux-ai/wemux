@@ -9,6 +9,7 @@ import { toast } from 'sonner'
 import { ExecutionPage } from '../components/execution/execution-page'
 import { api, type CollaborationWorkspace, type ManagedCloudUsageResponse } from '../lib/api'
 import { useApp } from '../lib/app-provider'
+import { copyTextToClipboard } from '../lib/clipboard'
 import {
   COLLABORATION_WORKSPACE_CHANGE_EVENT,
   getStoredCollaborationWorkspaceId,
@@ -183,10 +184,9 @@ function ExecutionRoute() {
             displayName: pairingLabel.trim() || (language === 'zh' ? '我的 Worker' : 'My Worker'),
             installTarget: pairingInstallTarget,
           })
-          try {
-            await navigator.clipboard.writeText(nextConnectCommand)
+          if (await copyTextToClipboard(nextConnectCommand)) {
             toast.success(language === 'zh' ? '连接命令已生成并复制' : 'Connect command generated and copied')
-          } catch {
+          } else {
             toast.success(language === 'zh' ? '连接命令已生成' : 'Connect command generated')
           }
         } catch (error) {

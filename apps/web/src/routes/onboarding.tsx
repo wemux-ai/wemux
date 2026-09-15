@@ -23,6 +23,7 @@ import type { ExecutorNetworkType } from '../components/execution/executor-netwo
 import { api, type CollaborationWorkspace } from '../lib/api'
 import { useApp } from '../lib/app-provider'
 import { useAuth } from '../lib/auth-context'
+import { copyTextToClipboard } from '../lib/clipboard'
 import { useTranslation } from '../lib/i18n/react'
 import { buildWorkerRunCommand, type WorkerLocalInstallTarget, type WorkerRunMode } from '../lib/worker-connect-command'
 import {
@@ -881,10 +882,9 @@ function OnboardingRoute() {
         displayName: pairingDisplayName.trim() || (language === 'zh' ? '我的 Worker' : 'My Worker'),
         installTarget: pairingInstallTarget,
       })
-      try {
-        await navigator.clipboard.writeText(nextConnectCommand)
+      if (await copyTextToClipboard(nextConnectCommand)) {
         toast.success(t('onboarding.route.connectCommandGeneratedCopied'))
-      } catch {
+      } else {
         toast.success(t('onboarding.route.connectCommandGenerated'))
       }
     } catch (error) {
@@ -899,10 +899,9 @@ function OnboardingRoute() {
       return
     }
 
-    try {
-      await navigator.clipboard.writeText(connectCommand)
+    if (await copyTextToClipboard(connectCommand)) {
       toast.success(t('onboarding.route.connectCommandCopied'))
-    } catch {
+    } else {
       toast.error(t('onboarding.route.copyFailed'))
     }
   }

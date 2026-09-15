@@ -1,9 +1,39 @@
+/**
+ * [INPUT]: Custom Agent runtime/model draft plus the selected execution node.
+ * [OUTPUT]: Executor-scoped model options, refresh state, and runtime-change normalization for the Agent detail model selector.
+ * [POS]: Keeps Agent model discovery aligned with the Worker that will execute it.
+ * [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
+ */
 import { useEffect, useMemo, useState } from 'react'
-import type { ExecutionModelOption } from '@shared/types'
+import type { ExecutionModelOption, RuntimeId } from '@shared/types'
 import type { SearchableSelectOption } from '../ui/searchable-select'
 import { api } from '../../lib/api'
 import { formatExecutionModelProviderLabel } from '../../lib/utils'
 import type { CustomAgentDetailPanelProps } from './custom-agent-detail-panel-shared'
+
+const RUNTIME_MODEL_REFRESH_DELAY_MS = 2_000
+
+export const resolveCustomAgentModelRequest = (
+  draft: Pick<CustomAgentDetailPanelProps['draft'], 'defaultExecutorId' | 'preferredRuntime'>,
+) => ({
+  agentType: draft.preferredRuntime,
+  executorId: draft.defaultExecutorId.trim() || undefined,
+})
+
+export const applyCustomAgentRuntimeChange = <T extends {
+  preferredRuntime: RuntimeId
+  preferredModel: string
+}>(draft: T, preferredRuntime: RuntimeId): T => {
+  if (draft.preferredRuntime === preferredRuntime) {
+    return draft
+  }
+
+  return {
+    ...draft,
+    preferredRuntime,
+    preferredModel: '',
+  }
+}
 
 const mapModelOptions = (
   models: ExecutionModelOption[],
@@ -81,55 +111,99 @@ export const useCustomAgentDetailState = ({
   const [piModelOptions, setPiModelOptions] = useState<SearchableSelectOption[]>([])
   const [openCodeDefaultModel, setOpenCodeDefaultModel] = useState('')
   const [piDefaultModel, setPiDefaultModel] = useState('')
+  const [modelLoading, setModelLoading] = useState(false)
+  const [modelRefreshKey, setModelRefreshKey] = useState(0)
 
   useEffect(() => {
     let cancelled = false
+    let refreshTimer: ReturnType<typeof setTimeout> | undefined
 
-    const shouldLoadOpenCode = draft.preferredRuntime === 'OpenCode'
-    const shouldLoadCodex = draft.preferredRuntime === 'Codex'
-    const shouldLoadClaudeCode = draft.preferredRuntime === 'ClaudeCode'
-    const shouldLoadPi = draft.preferredRuntime === 'Pi'
+    const { agentType, executorId } = resolveCustomAgentModelRequest(draft)
+    const shouldLoadOpenCode = agentType === 'OpenCode'
+    const shouldLoadCodex = agentType === 'Codex'
+    const shouldLoadClaudeCode = agentType === 'ClaudeCode'
+    const shouldLoadPi = agentType === 'Pi'
 
     if (!shouldLoadOpenCode && !shouldLoadCodex && !shouldLoadClaudeCode && !shouldLoadPi) {
       return
     }
 
+    setModelLoading(true)
+
+    const applyModelResponse = (response: {
+      models: ExecutionModelOption[]
+      defaultModel?: string
+    } | null) => {
+      if (!response) {
+        return
+      }
+
+      if (shouldLoadOpenCode) {
+        setOpenCodeModelOptions(mapModelOptions(response.models, 'OpenCode'))
+        setOpenCodeDefaultModel(response.defaultModel ?? '')
+      } else if (shouldLoadCodex) {
+        setCodexModelOptions(mapModelOptions(response.models, 'Codex'))
+      } else if (shouldLoadClaudeCode) {
+        setClaudeCodeModelOptions(mapModelOptions(response.models, 'Claude Code'))
+      } else if (shouldLoadPi) {
+        setPiModelOptions(mapModelOptions(response.models, 'Pi'))
+        setPiDefaultModel(response.defaultModel ?? '')
+      }
+    }
+
     void Promise.all([
       shouldLoadOpenCode
-        ? api.listAgentModels('OpenCode').catch(() => api.listModels().catch(() => null))
+        ? api.listAgentModels('OpenCode', executorId).catch(() => api.listModels().catch(() => null))
         : Promise.resolve(null),
-      shouldLoadCodex ? api.listAgentModels('Codex').catch(() => null) : Promise.resolve(null),
-      shouldLoadClaudeCode ? api.listAgentModels('ClaudeCode').catch(() => null) : Promise.resolve(null),
-      shouldLoadPi ? api.listAgentModels('Pi').catch(() => null) : Promise.resolve(null),
+      shouldLoadCodex ? api.listAgentModels('Codex', executorId).catch(() => null) : Promise.resolve(null),
+      shouldLoadClaudeCode ? api.listAgentModels('ClaudeCode', executorId).catch(() => null) : Promise.resolve(null),
+      shouldLoadPi ? api.listAgentModels('Pi', executorId).catch(() => null) : Promise.resolve(null),
     ])
       .then(([openCodeResponse, codexResponse, claudeCodeResponse, piResponse]) => {
         if (cancelled) {
           return
         }
 
-        if (shouldLoadOpenCode) {
-          setOpenCodeModelOptions(mapModelOptions(openCodeResponse?.models ?? [], 'OpenCode'))
-          setOpenCodeDefaultModel(openCodeResponse?.defaultModel ?? '')
+        const selectedResponse = openCodeResponse ?? codexResponse ?? claudeCodeResponse ?? piResponse
+        applyModelResponse(selectedResponse)
+        if (!selectedResponse || !('runtimePending' in selectedResponse) || !selectedResponse.runtimePending) {
+          setModelLoading(false)
+          return
         }
 
-        if (shouldLoadCodex) {
-          setCodexModelOptions(mapModelOptions(codexResponse?.models ?? [], 'Codex'))
-        }
+        refreshTimer = setTimeout(() => {
+          if (cancelled) {
+            return
+          }
 
-        if (shouldLoadClaudeCode) {
-          setClaudeCodeModelOptions(mapModelOptions(claudeCodeResponse?.models ?? [], 'Claude Code'))
-        }
+          void api.listAgentModels(agentType, executorId, { waitRuntime: true })
+            .then((refreshed) => {
+              if (cancelled) {
+                return
+              }
 
-        if (shouldLoadPi) {
-          setPiModelOptions(mapModelOptions(piResponse?.models ?? [], 'Pi'))
-          setPiDefaultModel(piResponse?.defaultModel ?? '')
-        }
+              if (!refreshed.runtimePending) {
+                applyModelResponse(refreshed)
+              }
+            })
+            .catch(() => {
+              // Keep the initial catalog while this executor is unavailable.
+            })
+            .finally(() => {
+              if (!cancelled) {
+                setModelLoading(false)
+              }
+            })
+        }, RUNTIME_MODEL_REFRESH_DELAY_MS)
       })
 
     return () => {
       cancelled = true
+      if (refreshTimer) {
+        clearTimeout(refreshTimer)
+      }
     }
-  }, [draft.preferredRuntime])
+  }, [draft.defaultExecutorId, draft.preferredRuntime, modelRefreshKey])
 
   const preferredModelOptions = useMemo(() => {
     const openCodeFallbackDefaultModel = openCodeDefaultModel || state.config.agentSettings.OpenCode.defaultModel
@@ -174,6 +248,8 @@ export const useCustomAgentDetailState = ({
   ])
 
   return {
+    modelLoading,
     preferredModelOptions,
+    refreshPreferredModels: () => setModelRefreshKey((current) => current + 1),
   }
 }

@@ -1,3 +1,7 @@
+// [INPUT]: Vite runtime env, browser location/storage, and native-client detection.
+// [OUTPUT]: Canonical app, API, auth, websocket, and desktop server URLs.
+// [POS]: Central URL policy for the web renderer across browser and desktop shells.
+// [PROTOCOL]: Update this header when URL precedence or exported contracts change, then check AGENTS.md.
 import { isNativeClient } from './native-client'
 
 type RuntimeEnv = ImportMeta['env'] & {
@@ -231,11 +235,24 @@ export const clearCustomServerUrl = (): void => {
   }
 }
 
+export const resolveNativeApiBaseUrl = (params: {
+  currentOrigin?: string
+  customServerUrl?: string | null
+}) => {
+  const currentOrigin = trimTrailingSlash(params.currentOrigin?.trim() ?? '')
+  if (isAbsoluteHttpUrl(currentOrigin)) return ''
+
+  return trimTrailingSlash(params.customServerUrl?.trim() ?? '') || DEFAULT_SERVER_URL
+}
+
 export const getApiBaseUrl = () => {
-  // Native 客户端优先使用登录页保存的服务器地址，默认官方 wemux.ai。
-  // 浏览器网页（云托管/自托管站点）保持同源相对路径，不受影响。
+  // A desktop shell loading an HTTP(S) deployment must keep auth requests same-origin.
+  // The bundled wemux-app:// renderer still uses the saved server or the hosted default.
   if (isNativeClient() && !import.meta.env.DEV) {
-    return getCustomServerUrl() || DEFAULT_SERVER_URL
+    return resolveNativeApiBaseUrl({
+      currentOrigin: getCurrentWindowOrigin(),
+      customServerUrl: getCustomServerUrl(),
+    })
   }
   const envBaseUrl = getEnvValue('VITE_API_BASE_URL')
   if (shouldUseCurrentWindowOriginForLoopbackConfig(envBaseUrl) || shouldUseCurrentWindowOriginForLocalPreviewConfig(envBaseUrl)) return ''

@@ -14,7 +14,7 @@ import { isCommunityEdition, useAppBrand } from '../lib/app-brand'
 import { useAuth } from '../lib/auth-context'
 import { useTranslation } from '../lib/i18n/react'
 import { buildNoIndexHead } from '../lib/marketing-site'
-import { isMacNativeClient, isNativeClient } from '../lib/native-client'
+import { connectDesktopToServer, getDesktopServerUrlNative, isElectronDesktopClient, isMacNativeClient, isNativeClient } from '../lib/native-client'
 import { clearCustomServerUrl, DEFAULT_SERVER_URL, getCustomServerUrl, isDesktopServerLocked, resolveCanonicalLoopbackUrl, setCustomServerUrl } from '../lib/runtime-config'
 import { cn } from '../lib/utils'
 
@@ -411,7 +411,17 @@ function ServerSelector({ tr }: { tr: (zh: string, en: string) => string }) {
   const [url, setUrl] = useState<string>(() => getCustomServerUrl() ?? '')
   const [message, setMessage] = useState<string>('')
 
-  const handleSave = () => {
+  useEffect(() => {
+    let cancelled = false
+    void getDesktopServerUrlNative().then((serverUrl) => {
+      if (!cancelled && serverUrl) setUrl(serverUrl === DEFAULT_SERVER_URL ? '' : serverUrl)
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  const handleSave = async () => {
     const trimmed = url.trim().replace(/\/+$/, '')
     if (trimmed && !/^https?:\/\//i.test(trimmed)) {
       setMessage(tr('请输入以 http:// 或 https:// 开头的完整地址。', 'Enter a full URL starting with http:// or https://.'))
@@ -430,6 +440,13 @@ function ServerSelector({ tr }: { tr: (zh: string, en: string) => string }) {
       clearCustomServerUrl()
     }
     setMessage(tr('已保存，正在重新连接…', 'Saved, reconnecting…'))
+    if (isElectronDesktopClient()) {
+      const connectedServerUrl = await connectDesktopToServer(trimmed || DEFAULT_SERVER_URL)
+      if (!connectedServerUrl) {
+        setMessage(tr('连接失败，请检查服务器地址后重试。', 'Connection failed. Check the server URL and try again.'))
+      }
+      return
+    }
     window.setTimeout(() => window.location.reload(), 300)
   }
 
@@ -450,7 +467,7 @@ function ServerSelector({ tr }: { tr: (zh: string, en: string) => string }) {
         />
         <button
           type="button"
-          onClick={handleSave}
+          onClick={() => void handleSave()}
           className="h-8 shrink-0 rounded-lg bg-zinc-100 px-3 text-xs font-medium text-zinc-950 transition hover:bg-zinc-200"
         >
           {tr('保存并重连', 'Save & reconnect')}

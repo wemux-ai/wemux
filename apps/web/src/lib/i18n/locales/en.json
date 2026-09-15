@@ -1886,6 +1886,7 @@
         "runtime": {
           "preferredRuntime": "Preferred Runtime",
           "preferredModel": "Preferred Model",
+          "refreshModels": "Refresh model list",
           "canWriteFilesTitle": "Allow File Writes",
           "canWriteFilesDescription": "This only affects the permission hint injected into the underlying runtime and does not bypass system safety boundaries.",
           "canRunCommandsTitle": "Allow Commands",
