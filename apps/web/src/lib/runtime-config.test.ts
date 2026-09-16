@@ -2,11 +2,38 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import {
   resolveCanonicalLoopbackUrlForConfig,
+  resolveNativeApiBaseUrl,
   resolvePreviewEnvironment,
   resolveProductionEnvironment,
   resolveReviewCenterEnvironment,
   shouldUseCurrentOriginForLoopbackConfig,
 } from './runtime-config'
+
+test('resolveNativeApiBaseUrl keeps HTTP desktop pages same-origin despite stale preferences', () => {
+  assert.equal(resolveNativeApiBaseUrl({
+    currentOrigin: 'http://127.0.0.1:8989',
+    customServerUrl: 'https://self-hosted.example.com/',
+  }), '')
+})
+
+test('resolveNativeApiBaseUrl uses same-origin requests for an HTTP desktop page', () => {
+  assert.equal(resolveNativeApiBaseUrl({
+    currentOrigin: 'http://127.0.0.1:8989',
+  }), '')
+})
+
+test('resolveNativeApiBaseUrl defaults bundled desktop pages to hosted Wemux', () => {
+  assert.equal(resolveNativeApiBaseUrl({
+    currentOrigin: 'wemux-app://local',
+  }), 'https://wemux.ai')
+})
+
+test('resolveNativeApiBaseUrl uses the saved server from a bundled desktop page', () => {
+  assert.equal(resolveNativeApiBaseUrl({
+    currentOrigin: 'wemux-app://local',
+    customServerUrl: 'http://127.0.0.1:8989/',
+  }), 'http://127.0.0.1:8989')
+})
 
 test('resolvePreviewEnvironment enables preview for preview hosts', () => {
   assert.equal(resolvePreviewEnvironment({

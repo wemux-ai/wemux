@@ -9,6 +9,7 @@
   "scripts": {
     "dev": "node src/dev.mjs",
     "start": "electron .",
+    "test": "node --test src/*.test.mjs",
     "build": "pnpm --dir ../.. build:meeting-runtime && pnpm --dir ../.. build:native:web-static && electron-builder --config electron-builder.config.cjs",
     "pack": "pnpm --dir ../.. build:meeting-runtime && pnpm --dir ../.. build:native:web-static && electron-builder --dir --config electron-builder.config.cjs"
   },

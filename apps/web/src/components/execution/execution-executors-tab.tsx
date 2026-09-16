@@ -14,6 +14,7 @@ import { NativeSelect } from '../ui/native-select'
 import { SearchableSelect } from '../ui/searchable-select'
 import { Textarea } from '../ui/textarea'
 import { resolveApiUrl, type CollaborationWorkspace, type ManagedCloudUsageResponse } from '../../lib/api'
+import { copyTextToClipboard } from '../../lib/clipboard'
 import { formatExecutorLatency, resolveExecutorLatencyTone } from '../../lib/executor-latency'
 import { useTranslation } from '../../lib/i18n/react'
 import { CURRENT_APP_VERSION, isNodeVersionOutdated } from '../../lib/node-version'
@@ -1361,10 +1362,9 @@ export function ExecutorsTab({
                 ) : null}
                 <div className="flex flex-wrap gap-3">
                   <Button type="button" variant="outline" onClick={async () => {
-                    try {
-                      await navigator.clipboard.writeText(connectCommand)
+                    if (await copyTextToClipboard(connectCommand)) {
                       toast.success(tr(language, '已复制', 'Copied'))
-                    } catch {
+                    } else {
                       toast.error(tr(language, '复制失败', 'Copy failed'))
                     }
                   }} className="border-zinc-800 bg-zinc-900 text-zinc-200 hover:bg-zinc-800">
@@ -1373,10 +1373,9 @@ export function ExecutorsTab({
                   </Button>
                   {installerConnectCommand ? (
                     <Button type="button" variant="outline" onClick={async () => {
-                      try {
-                        await navigator.clipboard.writeText(installerConnectCommand)
+                      if (await copyTextToClipboard(installerConnectCommand)) {
                         toast.success(tr(language, '已复制', 'Copied'))
-                      } catch {
+                      } else {
                         toast.error(tr(language, '复制失败', 'Copy failed'))
                       }
                     }} className="border-zinc-800 bg-zinc-900 text-zinc-200 hover:bg-zinc-800">
@@ -1385,10 +1384,9 @@ export function ExecutorsTab({
                     </Button>
                   ) : null}
                   <Button type="button" variant="outline" onClick={async () => {
-                    try {
-                      await navigator.clipboard.writeText(pairingCode)
+                    if (await copyTextToClipboard(pairingCode)) {
                       toast.success(tr(language, '已复制', 'Copied'))
-                    } catch {
+                    } else {
                       toast.error(tr(language, '复制失败', 'Copy failed'))
                     }
                   }} className="border-zinc-800 bg-zinc-900 text-zinc-200 hover:bg-zinc-800">
