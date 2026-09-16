@@ -163,12 +163,21 @@ function HeroSection({ language, text }: { language: Language; text: LandingText
         <div className="mt-9 flex flex-col items-center justify-center gap-3 sm:flex-row">
           <a
             className="inline-flex items-center gap-2 rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-black transition hover:bg-zinc-100"
+            href={loginPath}
+          >
+            {text.hero.primaryCta}
+            <svg className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M7 17L17 7M7 7h10v10" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </a>
+          <a
+            className="inline-flex items-center gap-2 rounded-full border border-white/[0.14] px-5 py-2.5 text-sm font-medium text-zinc-200 transition hover:border-white/30 hover:text-white"
             href="/download"
           >
             <svg className="h-4 w-4" fill="currentColor" viewBox="0 0 24 24">
               <path d="M17.05 20.28c-.98.95-2.05.8-3.08.35-1.09-.46-2.09-.48-3.24 0-1.44.62-2.2.44-3.06-.35C2.79 15.25 3.51 7.59 9.05 7.31c1.35.07 2.29.74 3.08.8 1.18-.24 2.31-.93 3.57-.84 1.51.12 2.65.72 3.4 1.8-3.12 1.87-2.38 5.98.48 7.13-.57 1.5-1.31 2.99-2.54 4.09l.01-.01zM12.03 7.25c-.15-2.23 1.66-4.07 3.74-4.25.29 2.58-2.34 4.5-3.74 4.25z"/>
             </svg>
-            {localize({ zh: '下载 macOS 版', en: 'Download macOS' }, language)}
+            {localize({ zh: '下载桌面端', en: 'Get the desktop app' }, language)}
           </a>
           <a
             className="inline-flex items-center gap-2 text-base font-medium text-zinc-300 transition hover:text-white"
@@ -631,6 +640,15 @@ function FinalCtaSection({ language, text }: { language: Language; text: Landing
               <div className="mt-9 flex flex-wrap items-center gap-4">
                 <a
                   className="inline-flex items-center gap-2 rounded-lg bg-white px-7 py-3 text-xs font-bold text-black transition-colors hover:bg-zinc-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                  href={loginPath}
+                >
+                  <svg className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth={2} viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M7 17L17 7M7 7h10v10" strokeLinecap="round" strokeLinejoin="round" />
+                  </svg>
+                  {localize({ zh: '免费开始使用', en: 'Start for free' }, language)}
+                </a>
+                <a
+                  className="inline-flex items-center gap-2 rounded-lg border border-white/[0.14] px-6 py-3 text-xs font-semibold text-zinc-200 transition hover:border-white/30 hover:text-white"
                   href="/download"
                 >
                   <Download className="h-3.5 w-3.5" aria-hidden="true" />
