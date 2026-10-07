@@ -8,7 +8,7 @@ import { spawn } from 'node:child_process'
 import type http from 'node:http'
 import type { RuntimeEnvironmentExecutionPayload } from '@shared/runtime-environment'
 import type { DistributedTask, ExecutorToControlPlaneMessage } from '@shared/types'
-import { connectWorkerWebSocket, resolveWorkerConnectionRoute } from '../control-plane'
+import { connectWorkerWebSocket, isExecutorTokenInvalidError, resolveWorkerConnectionRoute } from '../control-plane'
 import { selectWorkerConnectionRoute } from '../control-plane/route-selection'
 import { getWorkerVersion } from '../core/app-root'
 import { getWorkerHome, loadWorkerConfig } from '../core/config'
@@ -410,6 +410,29 @@ export const runWorkerDaemon = async () => {
       assignedRoutingLabels = []
       managedRoutingLabels = []
       const resolutionError = error instanceof Error ? error.message : 'unknown error'
+      if (isExecutorTokenInvalidError(error)) {
+        const pairingError = 'Worker pairing is no longer valid. Pair this worker again with a new pairing code.'
+        updateWorkerRuntimeState({
+          daemonMode: 'unpaired',
+          paired: false,
+          connected: false,
+          effectiveCloudUrl: undefined,
+          lastError: pairingError,
+          routeSelection: {
+            bootstrapCloudUrl: bootstrapConfig.cloudUrl,
+            assignedCloudUrl: bootstrapConfig.cloudUrl,
+            selectedCloudUrl: bootstrapConfig.cloudUrl,
+            assignedLabels: [],
+            selectedLabels: [],
+            managedRoutingLabels: [],
+            candidateResults: [],
+            resolutionError: pairingError,
+            updatedAt: new Date().toISOString(),
+          },
+        })
+        console.error('[worker] connection route resolution failed', pairingError, `(${resolutionError})`)
+        return null
+      }
       updateWorkerRuntimeState({
         routeSelection: {
           bootstrapCloudUrl: bootstrapConfig.cloudUrl,
@@ -831,7 +854,11 @@ export const runWorkerDaemon = async () => {
         lastConnectAttemptAt: new Date().toISOString(),
       })
 
-      config = await resolveConnectionRouteConfig(bootstrapConfig)
+      const resolvedConfig = await resolveConnectionRouteConfig(bootstrapConfig)
+      if (!resolvedConfig) {
+        return
+      }
+      config = resolvedConfig
       if (daemonController.stopped || connectAttemptId !== connectAttemptSeq) {
         return
       }

@@ -3,6 +3,16 @@
 // [POS]: 请求 JSON 工具
 // [PROTOCOL]: 变更时更新此头部，然后检查 AGENTS.md
 
+export class RequestJsonError extends Error {
+  readonly status: number
+
+  constructor(message: string, status: number) {
+    super(message)
+    this.name = 'RequestJsonError'
+    this.status = status
+  }
+}
+
 export const requestJson = async <T,>(params: {
   url: string
   method?: string
@@ -25,7 +35,7 @@ export const requestJson = async <T,>(params: {
       .catch(() => ({ message: params.errorMessage }))) as {
       message?: string
     }
-    throw new Error(payload.message || params.errorMessage)
+    throw new RequestJsonError(payload.message || params.errorMessage, response.status)
   }
 
   return (await response.json()) as T

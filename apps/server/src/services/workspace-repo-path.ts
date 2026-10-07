@@ -157,15 +157,14 @@ export const resolveWorkspaceRepoPath = (params: {
     && isManagedWorkspaceContainerPath(workspaceRepoPathCandidate, params.workspaceRoot)
     ? undefined
     : workspaceRepoPathCandidate
-  const bindingPathHint = params.project.versionControl === 'git-remote'
-    ? undefined
-    : scopedBindingPathHint
+  const bindingPathHint = scopedBindingPathHint
   const workingDirectoryMode = resolveWorkingDirectoryMode(params.project, params.workspace, params.session)
   const autoWorkspaceRepoPath = resolveAutoWorkspaceRepoPath(params.project, params.workspaceRoot, workspaceId, ownerUserId)
 
   if (workingDirectoryMode === 'original-dir') {
     if (params.project.versionControl === 'git-remote') {
-      return autoWorkspaceRepoPath
+      return bindingPathHint
+        || autoWorkspaceRepoPath
         || workspaceRepoPath
         || undefined
     }

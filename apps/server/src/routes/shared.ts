@@ -640,6 +640,8 @@ export const projectSchema = z.object({
   workspaceId: z.string().trim().optional(),
   visibility: z.enum(['private', 'workspace']).optional(),
   rootPath: z.string().trim().optional(),
+  /** 当前执行节点上的项目目录；不会作为跨节点的全局绝对路径使用。 */
+  pathHint: z.string().trim().optional(),
   versionControl: z.enum(['none', 'git-local', 'git-remote']).optional(),
   defaultBranch: z.string().trim().optional(),
   environmentTemplate: projectEnvironmentTemplateSchema.nullable().optional(),

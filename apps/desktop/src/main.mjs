@@ -9,6 +9,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import {
   app,
   BrowserWindow,
+  dialog,
   globalShortcut,
   ipcMain,
   Menu,
@@ -608,6 +609,13 @@ const registerIpc = () => {
         if (!Notification.isSupported()) throw new Error('system notifications are unavailable')
         new Notification({ title, body }).show()
         return true
+      }
+      case 'select_directory': {
+        const result = await dialog.showOpenDialog(mainWindow, {
+          title: '选择项目目录',
+          properties: ['openDirectory', 'createDirectory'],
+        })
+        return result.canceled ? null : (result.filePaths[0] ?? null)
       }
       case 'autostart_is_enabled':
         return app.getLoginItemSettings().openAtLogin

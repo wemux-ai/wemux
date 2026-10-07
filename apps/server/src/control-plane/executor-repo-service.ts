@@ -296,11 +296,9 @@ export const getProjectBranchSnapshotFromExecutor = async (userId: string, proje
   }
 
   const executor = visibleExecutors.find((item) => item.executorId === selectedExecutorId)
-  const repoPath = effectiveProject.versionControl === 'git-remote'
-    ? resolveAutoRepoPath(executor?.workspaceRoot, effectiveProject, undefined, userId)
-    : selectedBinding?.pathHint?.trim()
-      || (effectiveProject.versionControl === 'git-local' ? resolveProjectRuntimeRootPath(effectiveProject, executor?.workspaceRoot, undefined, userId) : '')
-      || resolveAutoRepoPath(executor?.workspaceRoot, effectiveProject, undefined, userId)
+  const repoPath = selectedBinding?.pathHint?.trim()
+    || (effectiveProject.versionControl === 'git-local' ? resolveProjectRuntimeRootPath(effectiveProject, executor?.workspaceRoot, undefined, userId) : '')
+    || resolveAutoRepoPath(executor?.workspaceRoot, effectiveProject, undefined, userId)
 
   if (!repoPath) {
     return buildUnavailableResult(preferredBranch, `项目 ${project.name} 在所选执行节点上还没有可用的仓库目录，无法读取分支。`)
