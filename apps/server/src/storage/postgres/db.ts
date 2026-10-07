@@ -85,6 +85,10 @@ type LegacySchemaValidationResult =
   | { ok: false; missingTables: string[]; missingColumns: string[] }
 
 const DRIZZLE_MIGRATION_LOCK_KEY = 'vibemux:postgres:drizzle-migrations'
+// Core and enterprise migrations have independent journals. Drizzle compares a
+// migration's timestamp with the latest row in its journal, so sharing one table
+// lets a newer core migration silently skip an older enterprise baseline.
+const DRIZZLE_ENTERPRISE_MIGRATION_TABLE = '__drizzle_migrations_enterprise'
 const POSTGRES_READY_RETRY_ATTEMPTS = 5
 const POSTGRES_READY_RETRY_BASE_MS = 3000
 
@@ -474,7 +478,11 @@ const applyDrizzleMigrations = async (currentPool: Pool) => {
 
     await withPostgresAdvisoryLock(currentPool, DRIZZLE_MIGRATION_LOCK_KEY, async () => {
       const db = drizzle(currentPool)
-      await migrate(db, { migrationsFolder: enterpriseFolder })
+      await migrate(db, {
+        migrationsFolder: enterpriseFolder,
+        migrationsTable: DRIZZLE_ENTERPRISE_MIGRATION_TABLE,
+        migrationsSchema: 'drizzle',
+      })
     })
   }
 }

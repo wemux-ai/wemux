@@ -2,6 +2,17 @@ import assert from 'node:assert/strict'
 import test from 'node:test'
 import type { ProjectEnvironmentTemplate } from '@shared/types'
 import { mergeProjectEnvironmentTemplateUpdate } from './project-route-shared'
+import { projectSchema } from './shared'
+
+test('project payload accepts a node-local path hint', () => {
+  const parsed = projectSchema.parse({
+    name: 'local-project',
+    gitUrl: '',
+    pathHint: '/Users/me/work/local-project',
+  })
+
+  assert.equal(parsed.pathHint, '/Users/me/work/local-project')
+})
 
 test('mergeProjectEnvironmentTemplateUpdate keeps and updates full environment template fields', () => {
   const current: ProjectEnvironmentTemplate = {

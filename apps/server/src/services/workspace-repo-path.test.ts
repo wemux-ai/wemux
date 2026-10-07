@@ -102,7 +102,7 @@ test('resolveWorkspaceRepoPath uses user B executor repo path for a remote proje
   assert.equal(repoPath, buildWorkspaceRepoPath(userBWorkspaceRoot, remoteProject, undefined, ownerUserId))
 })
 
-test('resolveWorkspaceRepoPath uses the project default path for remote original-dir sessions', () => {
+test('resolveWorkspaceRepoPath uses the current executor binding for remote original-dir sessions', () => {
   const workspaceRoot = '/home/new/.vibemux-dev/workspace'
   const bindingPathHint = '/mnt/nodes/executor-1/todomap'
 
@@ -116,7 +116,7 @@ test('resolveWorkspaceRepoPath uses the project default path for remote original
     bindingPathHint,
   })
 
-  assert.equal(repoPath, buildWorkspaceRepoPath(workspaceRoot, remoteProject, undefined, ownerUserId))
+  assert.equal(repoPath, bindingPathHint)
 })
 
 test('resolveWorkspaceRepoPath falls back to the current executor default repo path for remote original-dir without binding', () => {

@@ -91,6 +91,11 @@ const invokeNative = async <T>(cmd: string, args?: Record<string, unknown>): Pro
 export const invokeNativeShell = <T>(cmd: string, args?: Record<string, unknown>) =>
   invokeNative<T>(cmd, args)
 
+/** 打开桌面端系统目录选择器；浏览器或移动端返回 null。 */
+export const pickNativeDirectory = () => isDesktopNativeClient()
+  ? invokeNativeShell<string | null>('select_directory')
+  : Promise.resolve(null)
+
 /** 查询桌面端开机自启动状态（非桌面端返回 null） */
 export const getAutostartEnabled = () => isDesktopNativeClient()
   ? invokeNative<boolean>('autostart_is_enabled')

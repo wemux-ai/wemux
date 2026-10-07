@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from 'react'
 import { useNavigate } from '@tanstack/react-router'
-import { ExternalLink, GitFork, Github, Link, Loader2, Plus } from 'lucide-react'
+import { ArrowRight, Check, ChevronLeft, ExternalLink, Folder, FolderOpen, GitFork, Github, Link, Loader2, Plus, X } from 'lucide-react'
 import { MANAGED_CLOUD_AUTO_EXECUTOR_ID } from '@shared/managed-cloud'
-import type { ExecutorRecord } from '@shared/types'
+import type { ExecutorDirectoryEntry, ExecutorDirectoryBrowseResult, ExecutorRecord } from '@shared/types'
 import { toast } from 'sonner'
 import { api, type CollaborationWorkspace, type GitCredentialSummary, type GitHubAppInstallationSummary, type GitHubAppRepositorySummary, type ManagedCloudRuntimeStatus } from '../../lib/api'
 import { useApp } from '../../lib/app-provider'
@@ -47,6 +47,7 @@ type CreateProjectDraft = {
   githubRepositoryName: string
   visibility: 'private' | 'workspace'
   workspaceId: string
+  pathHint: string
 }
 
 const EMPTY_DRAFT: CreateProjectDraft = {
@@ -62,6 +63,7 @@ const EMPTY_DRAFT: CreateProjectDraft = {
   githubRepositoryName: '',
   visibility: 'private',
   workspaceId: '',
+  pathHint: '',
 }
 
 const getManagedCloudBoxRuntimeLabel = (runtime: ManagedCloudRuntimeStatus | null | undefined) => (
@@ -185,6 +187,14 @@ export function CreateProjectModal({
   const [githubOAuthAuthorized, setGitHubOAuthAuthorized] = useState(false)
   const [managedCloudRuntime, setManagedCloudRuntime] = useState<ManagedCloudRuntimeStatus | null>(null)
   const [autoFilledNameFromUrl, setAutoFilledNameFromUrl] = useState('')
+  const [directoryPickerOpen, setDirectoryPickerOpen] = useState(false)
+  const [directoryPickerPath, setDirectoryPickerPath] = useState('')
+  const [directoryPickerInput, setDirectoryPickerInput] = useState('')
+  const [directoryPickerRoot, setDirectoryPickerRoot] = useState('')
+  const [directoryPickerEntries, setDirectoryPickerEntries] = useState<ExecutorDirectoryEntry[]>([])
+  const [directoryPickerParent, setDirectoryPickerParent] = useState<string | undefined>()
+  const [directoryPickerLoading, setDirectoryPickerLoading] = useState(false)
+  const [directoryPickerError, setDirectoryPickerError] = useState('')
 
   const executorOptions = useMemo(
     () => buildExecutorOptionsWithManagedCloud(executors, managedCloudRuntime),
@@ -257,6 +267,13 @@ export function CreateProjectModal({
 
   useEffect(() => {
     if (!open) {
+      setDirectoryPickerOpen(false)
+      setDirectoryPickerPath('')
+      setDirectoryPickerInput('')
+      setDirectoryPickerRoot('')
+      setDirectoryPickerEntries([])
+      setDirectoryPickerParent(undefined)
+      setDirectoryPickerError('')
       setMode(initialMode)
       setDraft({
         ...EMPTY_DRAFT,
@@ -489,12 +506,21 @@ export function CreateProjectModal({
       return
     }
 
+    if (draft.pathHint.trim() && draft.preferredExecutorId === MANAGED_CLOUD_AUTO_EXECUTOR_ID) {
+      toast.error('官方云节点不能使用本机目录，请清空自定义目录或选择本地 Worker。')
+      return
+    }
+
     const resolvedExecutorId = draft.preferredExecutorId === MANAGED_CLOUD_AUTO_EXECUTOR_ID
       ? (await api.ensureManagedCloudExecutor({
           workspaceId: draft.visibility === 'workspace' ? draft.workspaceId.trim() || undefined : undefined,
         })).executor.executorId
       : draft.preferredExecutorId
 
+    if (draft.pathHint.trim() && !resolvedExecutorId) {
+      toast.error('自定义项目目录需要先选择执行节点。')
+      return
+    }
     if (mode === 'clone') {
       if (!draft.gitUrl.trim()) {
         return
@@ -510,6 +536,7 @@ export function CreateProjectModal({
           githubInstallationId: draft.gitBindingMode === 'github-app' ? Number(draft.githubInstallationId || '0') || undefined : undefined,
           githubRepositoryId: draft.gitBindingMode === 'github-app' ? Number(draft.githubRepositoryId || '0') || undefined : undefined,
           githubRepositoryName: draft.gitBindingMode === 'github-app' ? draft.githubRepositoryName.trim() || undefined : undefined,
+          pathHint: draft.pathHint.trim() || undefined,
           workspaceId: draft.workspaceId.trim() || undefined,
           visibility: draft.visibility,
         }))
@@ -525,6 +552,7 @@ export function CreateProjectModal({
       name: draft.name,
       color: draft.color.trim() || undefined,
       gitUrl: '',
+      pathHint: draft.pathHint.trim() || undefined,
       preferredExecutorId: resolvedExecutorId,
       workspaceId: draft.workspaceId.trim() || undefined,
       visibility: draft.visibility,
@@ -543,10 +571,88 @@ export function CreateProjectModal({
     setDraft(EMPTY_DRAFT)
   }
 
+  const selectedDirectoryExecutor = useMemo(
+    () => executors.find((executor) => executor.executorId === draft.preferredExecutorId) ?? null,
+    [draft.preferredExecutorId, executors],
+  )
+
+  const loadDirectoryPicker = async (directoryPath: string) => {
+    if (!selectedDirectoryExecutor) {
+      return
+    }
+
+    setDirectoryPickerLoading(true)
+    setDirectoryPickerError('')
+    try {
+      const result: ExecutorDirectoryBrowseResult = await api.browseExecutorDirectory(
+        selectedDirectoryExecutor.executorId,
+        directoryPath,
+      )
+      if (!result.ok) {
+        setDirectoryPickerError(result.message || '目录读取失败。')
+        setDirectoryPickerEntries([])
+        return
+      }
+      setDirectoryPickerPath(result.path)
+      setDirectoryPickerInput(result.path)
+      setDirectoryPickerRoot(result.rootPath)
+      setDirectoryPickerParent(result.parentPath)
+      setDirectoryPickerEntries(result.entries.filter((entry) => entry.kind === 'directory'))
+    } catch (error) {
+      setDirectoryPickerError(error instanceof Error ? error.message : '目录读取失败。')
+      setDirectoryPickerEntries([])
+    } finally {
+      setDirectoryPickerLoading(false)
+    }
+  }
+
+  const handleOpenDirectoryPicker = () => {
+    if (draft.preferredExecutorId === MANAGED_CLOUD_AUTO_EXECUTOR_ID) {
+      toast.error('Hosted Cloud 没有可选择的本机目录，请改选自托管 Worker。')
+      return
+    }
+    if (!selectedDirectoryExecutor) {
+      toast.error('请先选择一个自托管 Worker。')
+      return
+    }
+    setDirectoryPickerPath('')
+    setDirectoryPickerInput('')
+    setDirectoryPickerRoot('')
+    setDirectoryPickerEntries([])
+    setDirectoryPickerParent(undefined)
+    setDirectoryPickerError('')
+    setDirectoryPickerOpen(true)
+    void loadDirectoryPicker(selectedDirectoryExecutor.workspaceRoot)
+  }
+
+  const handleUseDirectory = () => {
+    if (!directoryPickerPath) {
+      return
+    }
+    setDraft((current) => ({ ...current, pathHint: directoryPickerPath }))
+    setDirectoryPickerOpen(false)
+  }
+
+  const handleDirectoryPathSubmit = () => {
+    const nextPath = directoryPickerInput.trim()
+    if (!nextPath || directoryPickerLoading) {
+      return
+    }
+    void loadDirectoryPicker(nextPath)
+  }
+
   const handleExecutorChange = (executorId: string) => {
+    setDirectoryPickerOpen(false)
+    setDirectoryPickerPath('')
+    setDirectoryPickerInput('')
+    setDirectoryPickerRoot('')
+    setDirectoryPickerEntries([])
+    setDirectoryPickerParent(undefined)
+    setDirectoryPickerError('')
     setDraft((current) => ({
       ...current,
       preferredExecutorId: executorId,
+      pathHint: '',
     }))
   }
 
@@ -563,7 +669,8 @@ export function CreateProjectModal({
   }
 
   return (
-    <Dialog open={open} onOpenChange={onOpenChange}>
+    <>
+      <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[80vh] overflow-y-auto border-zinc-800 bg-[#09090b] text-zinc-100 sm:max-w-[520px]">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
@@ -856,6 +963,45 @@ export function CreateProjectModal({
             />
           </div>
 
+          <div className="space-y-2">
+            <label className="text-xs font-medium text-zinc-500">当前节点项目目录（可选）</label>
+            <div className="flex items-center gap-2 rounded-md border border-zinc-800 bg-zinc-950 px-3 py-2">
+              <FolderOpen className="h-4 w-4 shrink-0 text-zinc-500" />
+              <span className={`min-w-0 flex-1 truncate font-mono text-xs ${draft.pathHint ? 'text-zinc-200' : 'text-zinc-600'}`}>
+                {draft.pathHint || '留空则使用节点默认目录'}
+              </span>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={!selectedDirectoryExecutor && draft.preferredExecutorId !== MANAGED_CLOUD_AUTO_EXECUTOR_ID}
+                onClick={handleOpenDirectoryPicker}
+              >
+                <FolderOpen className="mr-2 h-3.5 w-3.5" />
+                选择目录
+              </Button>
+              {draft.pathHint ? (
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  title="使用节点默认目录"
+                  aria-label="使用节点默认目录"
+                  onClick={() => setDraft((current) => ({ ...current, pathHint: '' }))}
+                >
+                  <X className="h-4 w-4" />
+                </Button>
+              ) : null}
+            </div>
+            <p className="text-[11px] text-zinc-600">
+              {draft.preferredExecutorId === MANAGED_CLOUD_AUTO_EXECUTOR_ID
+                ? 'Hosted Cloud 运行在远程托管环境，不能选择本机目录；请选择自托管 Worker。'
+                : selectedDirectoryExecutor
+                ? '从当前节点可访问的目录中选择；切换到其他节点时会使用该节点自己的目录或自动准备路径。'
+                : '先选择执行节点，再从该节点可访问的目录中选择项目位置。'}
+            </p>
+          </div>
+
           {mode === 'clone' && draft.cloneSource === 'manual' && draft.gitBindingMode === 'credential' && (
             <div className="space-y-2">
               <label className="text-xs font-medium text-zinc-500">PAT / SSH 身份</label>
@@ -928,6 +1074,95 @@ export function CreateProjectModal({
           </Button>
         </DialogFooter>
       </DialogContent>
-    </Dialog>
+      </Dialog>
+
+      <Dialog open={directoryPickerOpen} onOpenChange={setDirectoryPickerOpen}>
+      <DialogContent className="max-w-xl">
+        <DialogHeader>
+          <DialogTitle>选择项目目录</DialogTitle>
+          <p className="truncate font-mono text-xs text-zinc-500" title={directoryPickerPath}>
+            {directoryPickerPath || '正在读取节点目录...'}
+          </p>
+        </DialogHeader>
+        <DialogBody className="space-y-3">
+          <div className="flex gap-2">
+            <Input
+              value={directoryPickerInput}
+              onChange={(event) => setDirectoryPickerInput(event.target.value)}
+              onKeyDown={(event) => {
+                if (event.key === 'Enter') {
+                  event.preventDefault()
+                  handleDirectoryPathSubmit()
+                }
+              }}
+              placeholder="输入节点目录路径"
+              className="border-zinc-800 bg-zinc-950 font-mono text-xs"
+              disabled={directoryPickerLoading}
+            />
+            <Button
+              type="button"
+              variant="outline"
+              disabled={!directoryPickerInput.trim() || directoryPickerLoading}
+              onClick={handleDirectoryPathSubmit}
+            >
+              <ArrowRight className="mr-2 h-3.5 w-3.5" />
+              前往
+            </Button>
+          </div>
+
+          <div className="flex items-center justify-between gap-2 rounded-md border border-zinc-800 bg-zinc-950 px-3 py-2">
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              disabled={!directoryPickerParent || directoryPickerLoading}
+              onClick={() => directoryPickerParent && void loadDirectoryPicker(directoryPickerParent)}
+            >
+              <ChevronLeft className="mr-1.5 h-4 w-4" />
+              返回上级
+            </Button>
+            <span className="truncate text-[11px] text-zinc-600">根目录：{directoryPickerRoot || '节点工作目录'}</span>
+          </div>
+
+          <div className="max-h-72 overflow-y-auto rounded-md border border-zinc-800 bg-zinc-950/70 p-1">
+            {directoryPickerLoading ? (
+              <div className="flex items-center justify-center gap-2 px-3 py-10 text-xs text-zinc-500">
+                <Loader2 className="h-4 w-4 animate-spin" />
+                正在读取目录...
+              </div>
+            ) : directoryPickerError ? (
+              <div className="px-3 py-10 text-center text-xs text-amber-300">{directoryPickerError}</div>
+            ) : directoryPickerEntries.length === 0 ? (
+              <div className="px-3 py-10 text-center text-xs text-zinc-500">当前目录下没有可进入的子目录。</div>
+            ) : (
+              directoryPickerEntries.map((entry) => (
+                <button
+                  key={entry.path}
+                  type="button"
+                  className="flex w-full items-center gap-2 rounded px-2.5 py-2 text-left text-sm text-zinc-300 transition-colors hover:bg-zinc-800 hover:text-zinc-100"
+                  onClick={() => void loadDirectoryPicker(entry.path)}
+                >
+                  <Folder className="h-4 w-4 shrink-0 text-amber-300" />
+                  <span className="truncate">{entry.name}</span>
+                </button>
+              ))
+            )}
+          </div>
+        </DialogBody>
+        <DialogFooter>
+          <Button type="button" variant="ghost" onClick={() => setDirectoryPickerOpen(false)}>取消</Button>
+          <Button
+            type="button"
+            disabled={!directoryPickerPath || directoryPickerLoading || Boolean(directoryPickerError)}
+            onClick={handleUseDirectory}
+            className="bg-zinc-100 text-zinc-950 hover:bg-zinc-200"
+          >
+            <Check className="mr-2 h-4 w-4" />
+            使用此目录
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+      </Dialog>
+    </>
   )
 }

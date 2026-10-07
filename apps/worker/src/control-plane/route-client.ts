@@ -5,7 +5,11 @@
 
 import type { ExecutorConnectionRouteResponse } from '@shared/types'
 import { trimTrailingSlash } from './cloud-url'
-import { requestJson } from './request-json'
+import { requestJson, RequestJsonError } from './request-json'
+
+export const isExecutorTokenInvalidError = (error: unknown) => (
+  error instanceof RequestJsonError && error.status === 401
+)
 
 export const resolveWorkerConnectionRoute = async (params: {
   bootstrapCloudUrl: string

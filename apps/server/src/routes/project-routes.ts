@@ -503,9 +503,13 @@ export const registerProjectRoutes = (app: Hono, requireAuth: MiddlewareHandler)
     }
 
     const creator = getUserById(userId)
-    const requestedRootPath = payload.rootPath?.trim() || ''
+    // pathHint 是创建时给当前节点的路径 override；rootPath 保留兼容旧 API。
+    const requestedRootPath = payload.pathHint?.trim() || payload.rootPath?.trim() || ''
     const explicitRootPath = hasInvalidManagedScopePlaceholder(requestedRootPath) ? '' : requestedRootPath
     const preferredExecutorId = payload.preferredExecutorId?.trim() || ''
+    if (payload.pathHint?.trim() && !preferredExecutorId) {
+      return c.json({ state: scopedState, message: '自定义项目目录需要同时选择执行节点。' }, 400)
+    }
     const preferredExecutorWorkspaceRoot = preferredExecutorId
       ? listVisibleExecutorsForUser(userId).find((item) => item.executorId === preferredExecutorId)?.workspaceRoot
       : undefined
@@ -535,7 +539,8 @@ export const registerProjectRoutes = (app: Hono, requireAuth: MiddlewareHandler)
       ...payload,
       workspaceId: workspaceAccess.workspaceId,
       visibility: workspaceAccess.visibility,
-      rootPath,
+      // 节点自定义路径只写入 project binding，避免绝对路径在其他节点复用。
+      rootPath: payload.pathHint?.trim() ? undefined : rootPath,
       displayOrder: resolveNextDisplayOrder(scopedState.projects),
     }, creator ?? undefined)
     const executorAccess = validatePreferredProjectExecutorAccess({
@@ -547,13 +552,13 @@ export const registerProjectRoutes = (app: Hono, requireAuth: MiddlewareHandler)
       return c.json({ state: getScopedState(state, userId), message: executorAccess.message }, executorAccess.status)
     }
     project.environmentTemplate = normalizeProjectEnvironmentTemplate(await detectProjectEnvironmentTemplate({
-      rootPath,
+      rootPath: explicitRootPath || rootPath,
     }) ?? project.environmentTemplate)
 
     await saveProjectAndWait(project)
     await saveProjectWorkspaceAssignment(project)
-    if (project.preferredExecutorId && project.rootPath && project.versionControl !== 'git-remote') {
-      upsertProjectBinding(buildProjectBinding(project, project.preferredExecutorId, project.rootPath))
+    if (project.preferredExecutorId && (project.rootPath || payload.pathHint?.trim()) && project.versionControl !== 'git-remote') {
+      upsertProjectBinding(buildProjectBinding(project, project.preferredExecutorId, payload.pathHint?.trim() || project.rootPath))
     }
 
     await addUserProjectAndWait(userId, project.id, 'owner')
@@ -646,6 +651,10 @@ export const registerProjectRoutes = (app: Hono, requireAuth: MiddlewareHandler)
     const state = loadState()
     const userId = getUserIdFromHeader(c)!
     const scopedState = getScopedState(state, userId)
+
+    if (payload.pathHint?.trim() && !payload.preferredExecutorId?.trim()) {
+      return c.json({ state: scopedState, message: '自定义项目目录需要同时选择执行节点。' }, 400)
+    }
 
     const exists = scopedState.projects.some((p) => p.name === payload.name.trim())
     if (exists) {
