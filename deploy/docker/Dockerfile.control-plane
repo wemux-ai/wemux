@@ -45,9 +45,36 @@ FROM deps AS worker-dev-deps
 
 RUN apt-get update && apt-get install -y --no-install-recommends ca-certificates curl git unzip && rm -rf /var/lib/apt/lists/*
 
-FROM quay.io/minio/minio:latest AS minio
+# MinIO stopped serving anonymous container pulls from the public registries used
+# here. Download the pinned release binaries instead so image builds do not depend
+# on a mutable registry tag or an interactive registry login.
+FROM worker-dev-deps AS minio
 
-FROM quay.io/minio/mc:latest AS minio-client
+ARG TARGETARCH
+ARG MINIO_VERSION=RELEASE.2025-09-07T16-13-09Z
+
+RUN case "$TARGETARCH" in \
+      amd64|arm64) minio_arch="$TARGETARCH" ;; \
+      *) echo "unsupported MinIO architecture: $TARGETARCH" >&2; exit 1 ;; \
+    esac \
+  && curl -fsSL --retry 3 --retry-delay 2 \
+      "https://github.com/minio/minio/releases/download/${MINIO_VERSION}/minio.linux-${minio_arch}.${MINIO_VERSION}" \
+      -o /usr/local/bin/minio \
+  && chmod 0755 /usr/local/bin/minio
+
+FROM worker-dev-deps AS minio-client
+
+ARG TARGETARCH
+ARG MC_VERSION=RELEASE.2025-08-13T08-35-41Z
+
+RUN case "$TARGETARCH" in \
+      amd64|arm64) mc_arch="$TARGETARCH" ;; \
+      *) echo "unsupported mc architecture: $TARGETARCH" >&2; exit 1 ;; \
+    esac \
+  && curl -fsSL --retry 3 --retry-delay 2 \
+      "https://github.com/minio/mc/releases/download/${MC_VERSION}/mc.linux-${mc_arch}.${MC_VERSION}" \
+      -o /usr/local/bin/mc \
+  && chmod 0755 /usr/local/bin/mc
 
 FROM node:22-bookworm-slim AS runtime
 
@@ -74,8 +101,8 @@ COPY --from=deps /app/node_modules ./node_modules
 COPY --from=build /app/dist-server ./dist-server
 COPY --from=build /app/apps/web/.output ./apps/web/.output
 COPY --from=build /app/apps/web/src/content ./apps/web/src/content
-COPY --from=minio /usr/bin/minio /usr/local/bin/minio
-COPY --from=minio-client /usr/bin/mc /usr/local/bin/mc
+COPY --from=minio /usr/local/bin/minio /usr/local/bin/minio
+COPY --from=minio-client /usr/local/bin/mc /usr/local/bin/mc
 COPY package.json ./
 COPY deploy/docker/control-plane-entrypoint.sh /usr/local/bin/control-plane-entrypoint.sh
 
