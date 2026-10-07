@@ -10,7 +10,7 @@ import { toast } from 'sonner'
 import { buildWorkspaceTaskExecutionView } from '@shared/task-workspace'
 import type { TaskChatAttachment } from '@shared/task-chat-attachment'
 import type { WorkspaceSessionEventRecord } from '@shared/workspace-session-history'
-import type { Task } from '@shared/types'
+import type { Project, Task } from '@shared/types'
 import { Card, CardContent } from '../../ui/card'
 import { useAppDialog } from '../../ui/app-dialog-provider'
 import { useSidebar } from '../../ui/sidebar'
@@ -86,6 +86,7 @@ export const WorkspaceSessionChat = forwardRef<WorkspaceSessionChatHandle, Works
   const [workspaceBranchSaving, setWorkspaceBranchSaving] = useState(false)
   const [workspaceBranchMessage, setWorkspaceBranchMessage] = useState('')
   const [workspaceCurrentBranchOverride, setWorkspaceCurrentBranchOverride] = useState('')
+  const [workspaceVersionControlOverride, setWorkspaceVersionControlOverride] = useState<Project['versionControl'] | undefined>(undefined)
   const [sessionTokenSummary, setSessionTokenSummary] = useState('')
   const [knownCollaborators, setKnownCollaborators] = useState<WorkspaceSessionKnownCollaborator[]>([])
   const [frozenTranscriptState, setFrozenTranscriptState] = useState<{
@@ -370,7 +371,7 @@ export const WorkspaceSessionChat = forwardRef<WorkspaceSessionChatHandle, Works
     showLoading?: boolean
   } = {}) => {
     const workspaceId = props.workspaceId?.trim()
-    if (!workspaceId || props.project?.versionControl === 'none') {
+    if (!workspaceId) {
       return
     }
 
@@ -393,6 +394,9 @@ export const WorkspaceSessionChat = forwardRef<WorkspaceSessionChatHandle, Works
       setWorkspaceBranchSources(response.branchSources)
       setWorkspaceBranchMessage(response.message || '')
       setWorkspaceCurrentBranchOverride(response.currentBranch?.trim() || '')
+      if (response.versionControl) {
+        setWorkspaceVersionControlOverride(response.versionControl)
+      }
     } catch (error) {
       if (resetOnError) {
         setWorkspaceBranchOptions([])
@@ -405,7 +409,7 @@ export const WorkspaceSessionChat = forwardRef<WorkspaceSessionChatHandle, Works
         setWorkspaceBranchLoading(false)
       }
     }
-  }, [props.project?.versionControl, props.task.id, props.workspaceId, props.workspaceSessionId])
+  }, [props.task.id, props.workspaceId, props.workspaceSessionId])
 
   useEffect(() => {
     if (!props.workspaceId) {
@@ -414,23 +418,16 @@ export const WorkspaceSessionChat = forwardRef<WorkspaceSessionChatHandle, Works
       setWorkspaceBranchLoading(false)
       setWorkspaceBranchMessage('')
       setWorkspaceCurrentBranchOverride('')
+      setWorkspaceVersionControlOverride(undefined)
       return
     }
 
-    if (props.project?.versionControl === 'none') {
-      setWorkspaceBranchOptions([])
-      setWorkspaceBranchSources(undefined)
-      setWorkspaceBranchLoading(false)
-      setWorkspaceBranchMessage('当前项目未启用 Git。')
-      setWorkspaceCurrentBranchOverride('')
-      return
-    }
-
-    void refreshWorkspaceBranches({ resetOnError: true, showLoading: true })
+    setWorkspaceVersionControlOverride(undefined)
+    void refreshWorkspaceBranches({ force: true, resetOnError: true, showLoading: true })
   }, [props.project?.versionControl, props.workspaceId, refreshWorkspaceBranches])
 
   useEffect(() => {
-    if (!props.workspaceId || props.project?.versionControl === 'none') {
+    if (!props.workspaceId) {
       return
     }
 
@@ -458,10 +455,10 @@ export const WorkspaceSessionChat = forwardRef<WorkspaceSessionChatHandle, Works
       document.removeEventListener('focusin', refreshOnWorkspaceFocus)
       document.removeEventListener('visibilitychange', handleVisibilityChange)
     }
-  }, [props.project?.versionControl, props.workspaceId, refreshWorkspaceBranches])
+  }, [props.workspaceId, refreshWorkspaceBranches])
 
   const displayedWorkspaceBranchName = resolveDisplayedWorkspaceBranchName({
-    versionControl: props.project?.versionControl,
+    versionControl: workspaceVersionControlOverride ?? props.project?.versionControl,
     workingDirectoryMode: props.workspaceWorkingDirectoryMode,
     currentRepoBranch: workspaceCurrentBranchOverride,
     workspaceSessionBranchName: props.workspaceBranchName,
@@ -894,7 +891,7 @@ export const WorkspaceSessionChat = forwardRef<WorkspaceSessionChatHandle, Works
               workspaceId={props.workspaceId}
               isSessionBusy={state.isSessionBusy}
               workspaceWorkingDirectoryMode={props.workspaceWorkingDirectoryMode}
-              workspaceVersionControl={props.project?.versionControl}
+              workspaceVersionControl={workspaceVersionControlOverride ?? props.project?.versionControl}
               workspaceBranchName={displayedWorkspaceBranchName}
               workspaceBaseBranch={props.workspaceBaseBranch}
               workspaceBranchLoading={workspaceBranchLoading}
