@@ -240,7 +240,7 @@ export const createHttpApp = () => {
     const stream = createStateStream(
       (state) => getScopedState(state, userId, { mainChat, scope, focus }),
       () => loadState(),
-      { lastStateHash },
+      { lastStateHash, signal: c.req.raw.signal },
     )
 
     return new Response(stream, {
