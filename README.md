@@ -204,6 +204,16 @@ Model keys are configured **on the worker side** — your keys never leave your 
 
 ## Development
 
+Prerequisites: Node.js 20+ (22 LTS recommended), pnpm 10 (`corepack enable`), and Docker for local Postgres + object storage. On Linux, `node-pty` has no prebuilt binaries and compiles during install, so install build tools first (Debian/Ubuntu: `sudo apt-get install -y build-essential python3`).
+
+The fastest path on a fresh checkout is one command: it installs dependencies, creates `.env.development.local`, starts the infra containers and runs the full dev stack.
+
+```bash
+pnpm quickstart                 # or `pnpm quickstart --no-dev` to only prepare the environment
+```
+
+Manual steps and common commands:
+
 ```bash
 pnpm install
 pnpm typecheck                  # strict TS across web + server

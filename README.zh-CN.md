@@ -180,6 +180,16 @@ Railway 模板会尝试预置控制面、Postgres 与对象存储 Bucket。如�
 
 ## 开发
 
+前置要求：Node.js 20+（推荐 22 LTS）、pnpm 10（`corepack enable`），以及用于本地 Postgres 与对象存储的 Docker。Linux 上 `node-pty` 没有预编译包，安装时会现场编译，需先装好构建工具（Debian/Ubuntu：`sudo apt-get install -y build-essential python3`）。
+
+全新 checkout 最快的方式是一条命令：自动安装依赖、生成 `.env.development.local`、启动基础设施容器并运行全栈 dev。
+
+```bash
+pnpm quickstart                 # 或 `pnpm quickstart --no-dev` 只准备环境
+```
+
+手动步骤与常用命令：
+
 ```bash
 pnpm install
 pnpm typecheck                  # web + server 严格 TS 检查

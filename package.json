@@ -89,7 +89,7 @@
     "open-core:install-hooks": "node scripts/open-core/install-hooks.mjs",
     "open-core:check": "node scripts/open-core/public-boundary.mjs --tree HEAD",
     "open-core:push": "node scripts/open-core/push-upstream.mjs --public",
-    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.server.json",
+    "typecheck": "cross-env NODE_OPTIONS=--max-old-space-size=8192 tsc --noEmit -p tsconfig.json && cross-env NODE_OPTIONS=--max-old-space-size=8192 tsc --noEmit -p tsconfig.server.json",
     "e2e:multi-node": "tsx scripts/multi-node-e2e.mjs",
     "seo:check": "pnpm exec tsx scripts/check-marketing-seo.ts",
     "seo:lint": "pnpm exec tsx scripts/lint-marketing-seo.ts",

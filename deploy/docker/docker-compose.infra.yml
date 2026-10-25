@@ -31,11 +31,11 @@ services:
     entrypoint: >-
       /bin/sh -c
       "until pg_isready -h postgres -U wemux -d wemux; do sleep 2; done;
-      psql -h postgres -U vibemux -d postgres -tc \"SELECT 1 FROM pg_database WHERE datname = 'vibemux_preview'\" | grep -q 1 || psql -h postgres -U vibemux -d postgres -c \"CREATE DATABASE \\\"vibemux_preview\\\"\";
-      psql -h postgres -U vibemux -d postgres -tc \"SELECT 1 FROM pg_database WHERE datname = 'vibemux_production'\" | grep -q 1 || psql -h postgres -U vibemux -d postgres -c \"CREATE DATABASE \\\"vibemux_production\\\"\""
+      psql -h postgres -U wemux -d postgres -tc \"SELECT 1 FROM pg_database WHERE datname = 'wemux_preview'\" | grep -q 1 || psql -h postgres -U wemux -d postgres -c \"CREATE DATABASE \\\"wemux_preview\\\"\";
+      psql -h postgres -U wemux -d postgres -tc \"SELECT 1 FROM pg_database WHERE datname = 'wemux_production'\" | grep -q 1 || psql -h postgres -U wemux -d postgres -c \"CREATE DATABASE \\\"wemux_production\\\"\""
 
   rustfs:
-    image: rustfs/rustfs:latest
+    image: rustfs/rustfs:1.0.3
     container_name: wemux-rustfs
     restart: unless-stopped
     environment:
@@ -53,15 +53,21 @@ services:
       - wemux-rustfs-data:/data
 
   rustfs-init:
-    image: minio/mc:latest
+    # minio/mc 已不再提供匿名拉取，这里用固定版本的 aws-cli 建桶。
+    image: amazon/aws-cli:2.38.5
     container_name: wemux-rustfs-init
     depends_on:
       - rustfs
     restart: 'no'
+    environment:
+      AWS_ACCESS_KEY_ID: wemux
+      AWS_SECRET_ACCESS_KEY: ${RUSTFS_SECRET_KEY:-local-dev-secret}
+      AWS_DEFAULT_REGION: us-east-1
     entrypoint: >-
       /bin/sh -c
-      "until mc alias set local http://rustfs:9000 wemux ${RUSTFS_SECRET_KEY:-local-dev-secret}; do sleep 2; done &&
-      mc mb --ignore-existing local/wemux"
+      "until aws --endpoint-url http://rustfs:9000 s3api list-buckets > /dev/null; do sleep 2; done;
+      aws --endpoint-url http://rustfs:9000 s3api head-bucket --bucket wemux 2>/dev/null ||
+      aws --endpoint-url http://rustfs:9000 s3api create-bucket --bucket wemux"
 
 volumes:
   wemux-postgres-data:

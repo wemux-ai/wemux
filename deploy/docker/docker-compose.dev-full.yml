@@ -29,13 +29,13 @@ services:
       POSTGRES_PRODUCTION_DB: wemux_production
     entrypoint: >-
       /bin/sh -c
-      "psql -h postgres -U vibemux -d postgres -tc \"SELECT 1 FROM pg_database WHERE datname = 'vibemux_preview'\" | grep -q 1 || psql -h postgres -U vibemux -d postgres -c \"CREATE DATABASE \\\"vibemux_preview\\\"\";
-      psql -h postgres -U vibemux -d postgres -tc \"SELECT 1 FROM pg_database WHERE datname = 'vibemux_production'\" | grep -q 1 || psql -h postgres -U vibemux -d postgres -c \"CREATE DATABASE \\\"vibemux_production\\\"\""
+      "psql -h postgres -U wemux -d postgres -tc \"SELECT 1 FROM pg_database WHERE datname = 'wemux_preview'\" | grep -q 1 || psql -h postgres -U wemux -d postgres -c \"CREATE DATABASE \\\"wemux_preview\\\"\";
+      psql -h postgres -U wemux -d postgres -tc \"SELECT 1 FROM pg_database WHERE datname = 'wemux_production'\" | grep -q 1 || psql -h postgres -U wemux -d postgres -c \"CREATE DATABASE \\\"wemux_production\\\"\""
 
   server:
     build:
       context: ../..
-      dockerfile: Dockerfile.control-plane
+      dockerfile: deploy/docker/Dockerfile.control-plane
       target: deps
       args:
         NPM_REGISTRY: ${NPM_REGISTRY:-}
@@ -93,7 +93,7 @@ services:
   web:
     build:
       context: ../..
-      dockerfile: Dockerfile.control-plane
+      dockerfile: deploy/docker/Dockerfile.control-plane
       target: deps
       args:
         NPM_REGISTRY: ${NPM_REGISTRY:-}
@@ -127,7 +127,7 @@ services:
   worker:
     build:
       context: ../..
-      dockerfile: Dockerfile.control-plane
+      dockerfile: deploy/docker/Dockerfile.control-plane
       target: worker-dev-deps
       args:
         NPM_REGISTRY: ${NPM_REGISTRY:-}

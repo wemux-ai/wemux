@@ -3,6 +3,8 @@
 // [OUTPUT]: local full-stack dev environment ready and running
 // [POS]: one-command quickstart for the open-source edition; keeps the default
 //        `pnpm dev` semantics and only automates the usual setup steps.
+// [PREFLIGHT]: checks Node >=20, pnpm and a running Docker daemon before touching
+//              anything, and on Linux warns when native build tools are missing.
 // [PROTOCOL]: change this header when editing, then check AGENTS.md
 //
 // 用法:
@@ -33,6 +35,36 @@ const run = (command, runArgs, options = {}) => {
     fail(`${command} ${runArgs.join(' ')} failed with status ${result.status}`)
   }
   return result.status
+}
+
+// ---- 0. 前置检查（尽早给出可操作的提示，而不是泛化的 status 错误）----
+const has = (command, checkArgs = ['--version']) =>
+  spawnSync(command, checkArgs, { stdio: 'ignore', shell: process.platform === 'win32' }).status === 0
+
+const nodeMajor = Number(process.versions.node.split('.')[0])
+if (nodeMajor < 20) {
+  fail(`Node.js >= 20 is required (found ${process.versions.node}). Install Node 22 LTS: https://nodejs.org/`)
+}
+if (!has('pnpm')) {
+  fail('pnpm not found. Run `corepack enable` (ships with Node) or see https://pnpm.io/installation')
+}
+if (!has('docker')) {
+  fail('docker not found. Install Docker Desktop (macOS/Windows) or Docker Engine (Linux): https://docs.docker.com/get-docker/')
+}
+if (!has('docker', ['info'])) {
+  fail('Docker is installed but the daemon is not reachable. Start Docker Desktop / `sudo systemctl start docker`, then retry.')
+}
+if (!has('docker', ['compose', 'version'])) {
+  fail('`docker compose` (v2) not available. Update Docker or install the compose plugin.')
+}
+if (process.platform === 'linux') {
+  const missing = ['make', 'g++', 'python3'].filter((tool) => !has(tool))
+  if (missing.length > 0) {
+    console.warn(
+      `[quickstart] warning: missing ${missing.join(', ')}. node-pty has no Linux prebuilds and compiles on install;\n` +
+        '  install build tools first, e.g. `sudo apt-get install -y build-essential python3` (Debian/Ubuntu).',
+    )
+  }
 }
 
 // ---- 1. 依赖检查（复用 dev-ensure-deps 的 hash 判断，缺依赖或 lockfile 变化才安装）----
