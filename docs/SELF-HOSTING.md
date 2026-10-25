@@ -9,7 +9,7 @@
 │ 一台服务器（或任意可跑 Docker 的机器）   │
 │  ├─ control-plane（web + server 一体） │
 │  ├─ Postgres 16                       │
-│  └─ MinIO（S3 兼容对象存储）           │
+│  └─ RustFS（S3 兼容对象存储）          │
 └──────────────┬───────────────────────┘
                │ WEMUX_NODE_URL / 配对码
 ┌──────────────▼───────────────────────┐
@@ -146,7 +146,7 @@ cp .env.production.example .env.production
 docker compose -f deploy/docker/docker-compose.production.yml --env-file .env.production up -d --build
 ```
 
-首次启动自动：建库 → 跑 Drizzle 迁移 → 起 MinIO 并建桶 → 起控制面。
+首次启动自动：建库 → 跑 Drizzle 迁移 → 起 RustFS 并建桶 → 起控制面。
 验证：`curl http://localhost:8989/api/health` 应返回 `{"ok":true,...}`。
 
 > HTTPS：建议在控制面前放 Caddy / Nginx / Cloudflare Tunnel 做 TLS 终止，
@@ -219,7 +219,38 @@ docker compose -f deploy/docker/docker-compose.production.yml --env-file .env.pr
 # 迁移在 server 启动时自动执行（Drizzle），无需手工 db:migrate
 ```
 
-升级前建议备份 Postgres 卷与 MinIO 卷。
+升级前建议备份 Postgres 卷与对象存储卷。
+
+### 从 MinIO 迁移到 RustFS（2026-10 之前部署的实例）
+
+MinIO 官方镜像已不再提供匿名拉取，内置对象存储改为 RustFS，数据卷由 `wemux-minio-data` 换成 `wemux-object-storage-data`。旧卷不会被删除，升级后用下面的步骤把文件拷过去（用户头像、Drive 文件等）：
+
+```bash
+# 1. 拉新版并启动（新的空 RustFS 会自动建桶）
+git pull
+docker compose -f deploy/docker/docker-compose.production.yml --env-file .env.production up -d --build
+
+# 2. 用旧卷临时起一个 MinIO（本地若已有缓存的 minio/minio 镜像即可直接用）
+set -a; . ./.env.production; set +a
+docker run -d --name wemux-minio-old --network wemux_default \
+  -e MINIO_ROOT_USER="${OBJECT_STORAGE_ACCESS_KEY_ID:-wemux}" \
+  -e MINIO_ROOT_PASSWORD="$OBJECT_STORAGE_SECRET_ACCESS_KEY" \
+  -v wemux_wemux-minio-data:/data minio/minio server /data
+
+# 3. 从旧桶同步到新桶
+docker run --rm --network wemux_default --entrypoint /bin/sh \
+  -e AWS_ACCESS_KEY_ID="${OBJECT_STORAGE_ACCESS_KEY_ID:-wemux}" \
+  -e AWS_SECRET_ACCESS_KEY="$OBJECT_STORAGE_SECRET_ACCESS_KEY" \
+  -e AWS_DEFAULT_REGION=us-east-1 amazon/aws-cli:2.38.5 -c \
+  "mkdir -p /tmp/b && aws --endpoint-url http://wemux-minio-old:9000 s3 sync s3://${OBJECT_STORAGE_BUCKET:-wemux} /tmp/b && \
+   aws --endpoint-url http://object-storage:9000 s3 sync /tmp/b s3://${OBJECT_STORAGE_BUCKET:-wemux}"
+
+# 4. 确认无误后清理
+docker rm -f wemux-minio-old
+# docker volume rm wemux_wemux-minio-data   # 确认新桶数据完整后再删
+```
+
+`MINIO_CONSOLE_PORT` 仍然兼容，新变量名为 `OBJECT_STORAGE_CONSOLE_PORT`。
 
 ## 五·五、AI 运维健康检查
 
@@ -256,8 +287,8 @@ curl "https://your-domain/api/health/detailed?token=$WEMUX_HEALTH_TOKEN"
 | `/api/health` 不通 | 看 `docker compose logs server`；常见为 DATABASE_URL 或迁移失败 |
 | worker 显示离线 | 检查 worker 与服务器网络（同网/公网可达）；确认 WEMUX_NODE_URL 配置 |
 | 任务卡「无执行节点」 | 确认 worker 已配对在线；OpenCode 任务需要 worker 上配置了模型 |
-| 上传头像/图片失败 | 确认 MinIO 健康且 `OBJECT_STORAGE_*` 与 compose 内一致 |
-| 想换 R2/S3 | 把 compose 的 MinIO 换成任意 S3 兼容服务，改 `OBJECT_STORAGE_ENDPOINT` 等环境变量 |
+| 上传头像/图片失败 | 确认 `object-storage` 容器健康且 `OBJECT_STORAGE_*` 与 compose 内一致 |
+| 想换 R2/S3 | 把 compose 的 `object-storage` 换成任意 S3 兼容服务，改 `OBJECT_STORAGE_ENDPOINT` 等环境变量 |
 
 
 ## 七、社区版能力边界

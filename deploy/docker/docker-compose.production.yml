@@ -4,7 +4,7 @@
 #   # 编辑 .env.production 里的强密码与域名
 #   docker compose -f docker-compose.production.yml --env-file .env.production up -d
 #
-# 组成：Postgres + MinIO（S3 兼容对象存储）+ control-plane（web+server 一体镜像）
+# 组成：Postgres + RustFS（S3 兼容对象存储）+ control-plane（web+server 一体镜像）
 # worker 不需要容器化：在目标机器上安装 worker 后指向本控制面即可（见 docs/SELF-HOSTING.md）
 
 name: wemux
@@ -25,37 +25,38 @@ services:
     volumes:
       - wemux-postgres-data:/var/lib/postgresql/data
 
-  minio:
-    image: minio/minio:latest
+  # 对象存储：RustFS（S3 兼容，与开发环境一致）。
+  # MinIO 官方镜像已不再提供匿名拉取，旧 MinIO 卷的迁移步骤见 docs/SELF-HOSTING.md「升级」。
+  object-storage:
+    image: rustfs/rustfs:1.0.3
     restart: unless-stopped
-    command: server /data --console-address ":9001"
+    command: ['/data']
     environment:
-      MINIO_ROOT_USER: ${OBJECT_STORAGE_ACCESS_KEY_ID:-wemux}
-      MINIO_ROOT_PASSWORD: ${OBJECT_STORAGE_SECRET_ACCESS_KEY:?set OBJECT_STORAGE_SECRET_ACCESS_KEY in .env.production}
-    healthcheck:
-      test: ['CMD', 'mc', 'ready', 'local']
-      interval: 10s
-      timeout: 5s
-      retries: 5
+      RUSTFS_ACCESS_KEY: ${OBJECT_STORAGE_ACCESS_KEY_ID:-wemux}
+      RUSTFS_SECRET_KEY: ${OBJECT_STORAGE_SECRET_ACCESS_KEY:?set OBJECT_STORAGE_SECRET_ACCESS_KEY in .env.production}
+      RUSTFS_ADDRESS: 0.0.0.0:9000
+      RUSTFS_CONSOLE_ENABLE: 'true'
+      RUSTFS_CONSOLE_ADDRESS: 0.0.0.0:9001
     volumes:
-      - wemux-minio-data:/data
+      - wemux-object-storage-data:/data
     ports:
-      - '${MINIO_CONSOLE_PORT:-9001}:9001'
+      - '${OBJECT_STORAGE_CONSOLE_PORT:-${MINIO_CONSOLE_PORT:-9001}}:9001'
 
-  minio-init:
-    image: minio/mc:latest
+  object-storage-init:
+    image: amazon/aws-cli:2.38.5
     restart: 'no'
     depends_on:
-      minio:
-        condition: service_healthy
+      - object-storage
     environment:
-      MINIO_ROOT_USER: ${OBJECT_STORAGE_ACCESS_KEY_ID:-wemux}
-      MINIO_ROOT_PASSWORD: ${OBJECT_STORAGE_SECRET_ACCESS_KEY:?set OBJECT_STORAGE_SECRET_ACCESS_KEY in .env.production}
-      MINIO_BUCKET: ${OBJECT_STORAGE_BUCKET:-wemux}
+      AWS_ACCESS_KEY_ID: ${OBJECT_STORAGE_ACCESS_KEY_ID:-wemux}
+      AWS_SECRET_ACCESS_KEY: ${OBJECT_STORAGE_SECRET_ACCESS_KEY:?set OBJECT_STORAGE_SECRET_ACCESS_KEY in .env.production}
+      AWS_DEFAULT_REGION: ${OBJECT_STORAGE_REGION:-us-east-1}
+      BUCKET: ${OBJECT_STORAGE_BUCKET:-wemux}
     entrypoint: >-
       /bin/sh -c
-      "mc alias set local http://minio:9000 $${MINIO_ROOT_USER} $${MINIO_ROOT_PASSWORD};
-       mc mb --ignore-existing local/$${MINIO_BUCKET:-wemux}"
+      "until aws --endpoint-url http://object-storage:9000 s3api list-buckets > /dev/null; do sleep 2; done;
+      aws --endpoint-url http://object-storage:9000 s3api head-bucket --bucket $${BUCKET} 2>/dev/null ||
+      aws --endpoint-url http://object-storage:9000 s3api create-bucket --bucket $${BUCKET}"
 
   server:
     build:
@@ -71,14 +72,14 @@ services:
     depends_on:
       postgres:
         condition: service_healthy
-      minio-init:
+      object-storage-init:
         condition: service_completed_successfully
     environment:
       NODE_ENV: production
       HOST: 0.0.0.0
       PORT: 8989
       DATABASE_URL: postgres://${POSTGRES_USER:-wemux}:${POSTGRES_PASSWORD}@postgres:5432/wemux
-      OBJECT_STORAGE_ENDPOINT: http://minio:9000
+      OBJECT_STORAGE_ENDPOINT: http://object-storage:9000
       OBJECT_STORAGE_REGION: ${OBJECT_STORAGE_REGION:-us-east-1}
       OBJECT_STORAGE_BUCKET: ${OBJECT_STORAGE_BUCKET:-wemux}
       OBJECT_STORAGE_ACCESS_KEY_ID: ${OBJECT_STORAGE_ACCESS_KEY_ID:-wemux}
@@ -118,5 +119,5 @@ services:
 
 volumes:
   wemux-postgres-data:
-  wemux-minio-data:
+  wemux-object-storage-data:
   wemux-server-runtime:
