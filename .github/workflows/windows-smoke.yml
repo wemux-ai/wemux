@@ -1,14 +1,30 @@
 name: Windows Smoke Test
 
+# Windows 冒烟：改到 worker / desktop / shared 或依赖时在 PR 上自动跑，也可手动触发。
+# worker 单测先以 report-only 方式运行（continue-on-error），积累 Windows 基线后再改为阻断。
+
 on:
   workflow_dispatch:
+  pull_request:
+    paths:
+      - 'apps/worker/**'
+      - 'apps/desktop/**'
+      - 'packages/shared/**'
+      - 'package.json'
+      - 'pnpm-lock.yaml'
+      - '.github/workflows/windows-smoke.yml'
 
 permissions:
   contents: read
 
+concurrency:
+  group: windows-smoke-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 jobs:
   windows-smoke:
     runs-on: windows-latest
+    timeout-minutes: 45
 
     steps:
       - name: Checkout
@@ -27,12 +43,19 @@ jobs:
 
       - name: Typecheck
         env:
-          NODE_OPTIONS: --max-old-space-size=4096
+          NODE_OPTIONS: --max-old-space-size=8192
         run: pnpm typecheck
 
       - name: Build Worker Runtime
         run: pnpm run build:worker:runtime
 
+      # doctor 对缺失的运行时只报告不退出非零；这里只拦崩溃（模块解析、路径、原生依赖加载失败）。
       - name: Worker Doctor Smoke Test
         shell: bash
-        run: node dist-worker/apps/worker/src/index.js doctor || true
+        run: node dist-worker/apps/worker/src/index.js doctor
+
+      - name: Worker unit tests (report-only)
+        continue-on-error: true
+        shell: bash
+        run: |
+          find apps/worker/src -name '*.test.ts' | sort | xargs -n 25 pnpm exec tsx --test --test-force-exit
