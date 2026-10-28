@@ -28,6 +28,12 @@ import updater from 'electron-updater'
 const { autoUpdater } = updater
 const DESKTOP_SCHEME = 'wemux-app'
 const DEEP_LINK_SCHEME = 'wemux'
+// Windows 通知（toast）按 AppUserModelID 归属应用；必须与 electron-builder 的 appId
+// 一致（NSIS 安装时写入开始菜单快捷方式），否则通知可能不弹或显示为 electron.app。
+const WINDOWS_APP_USER_MODEL_ID = 'com.wemux.app'
+if (process.platform === 'win32') {
+  app.setAppUserModelId(app.isPackaged ? WINDOWS_APP_USER_MODEL_ID : process.execPath)
+}
 const WORKER_HOST = '127.0.0.1'
 const WORKER_PORT = 48121
 const DEFAULT_BOUNDS = { width: 1440, height: 960 }
